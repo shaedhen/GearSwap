@@ -471,10 +471,11 @@ end
 
 buff_spell_lists = {
 	Auto = {--Options for When are: Always, Engaged, Idle, OutOfCombat, Combat
-		{Name='Crusade',	Buff='Enmity Boost',	SpellID=476,	When='Combat'},
-		{Name='Temper',		Buff='Multi Strikes',	SpellID=493,	When='Engaged'},
+		{Name='Crusade',	Buff='Enmity Boost',	SpellID=476,	When='Always'},
+		{Name='Temper',		Buff='Multi Strikes',	SpellID=493,	When='Always'},
 		{Name='Phalanx',	Buff='Phalanx',			SpellID=106,	When='Always'},
-		{Name='Refresh',	Buff='Refresh',			SpellID=109,	When='Idle'},
+		{Name='Refresh',	Buff='Refresh',			SpellID=109,	When='Always'},
+		{Name='Cocoon',		Buff='Defense Boost',	SpellID=547,	When='Always'},																	 
 	},
 
 	Default = {
