@@ -2201,6 +2201,10 @@ function check_rune()
 			
 		elseif not player.in_combat then
 			return false
+		elseif player.main_job == 'RUN' and abil_recasts[120] < latency and player.hpp < 65 then
+			windower.chat.input('/ja "Battuta" <me>')
+			tickdelay = os.clock() + 1.8
+			return true		  						
 			
 		elseif not buffactive['Pflug'] and abil_recasts[59] < latency then
 			windower.chat.input('/ja "Pflug" <me>')
@@ -2215,7 +2219,15 @@ function check_rune()
 				elseif abil_recasts[23] < latency then
 					windower.chat.input('/ja "Vallation" <me>')
 					tickdelay = os.clock() + 2.5
+					return true															   
+				elseif player.hpp < 30 and abil_recasts[118] < latency then
+					windower.chat.input('/ja "One for All" <me>')
+					tickdelay = os.clock() + 2.5
 					return true
+				elseif player.hpp < 50 and abil_recasts[117] < latency then
+					windower.chat.input('/ja "Liement" <me>')
+					tickdelay = os.clock() + 2.5
+					return true												  								 																			   											 									
 				end
 			end
 		elseif not (buffactive['Vallation'] or buffactive['Valiance']) then
