@@ -338,6 +338,7 @@ function job_tick()
 	if check_hasso() then return true end
 	if check_buff() then return true end
 	if check_buffup() then return true end
+	if check_offensive_ja() then return true end								 
 	if state.AutoTankMode.value and player.in_combat and player.target.type == "MONSTER" and not moving then
 		if check_flash_foil() then return true end
 		windower.send_command('gs c SubJobEnmity')
@@ -398,6 +399,28 @@ function check_hasso()
 	return false
 end
 
+function check_offensive_ja()
+	if  player.in_combat then
+		
+		local abil_recasts = windower.ffxi.get_ability_recasts()		
+		if abil_recasts[119] < latency and buffactive[state.RuneElement.value] > 2 then
+			windower.chat.input('/ja "Rayke" <t>')
+			tickdelay = os.clock() + 1.1
+			return true
+		elseif abil_recasts[25] < latency  and buffactive[state.RuneElement.value] > 2 then
+			windower.chat.input('/ja "Lunge" <t>')
+			tickdelay = os.clock() + 1.1
+			return true
+		elseif abil_recasts[116] < latency  and buffactive[state.RuneElement.value] > 2 then
+			windower.chat.input('/ja "Gambit" <t>')
+			tickdelay = os.clock() + 1.1
+			return true
+		end
+	
+	end
+		
+	return false
+end					 
 function check_buff()
 	if state.AutoBuffMode.value ~= 'Off' and not data.areas.cities:contains(world.area) then
 		local spell_recasts = windower.ffxi.get_spell_recasts()
