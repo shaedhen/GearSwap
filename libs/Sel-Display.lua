@@ -100,7 +100,7 @@ function init_job_states(job_bools,job_modes)
     stateBox:font(font)--Arial
     stateBox:size(size)
     stateBox:bold(bold)
-    stateBox:bg_alpha(bg)--128
+    stateBox:bg_alpha(128)--128
     stateBox:right_justified(false)
     stateBox:stroke_width(strokewidth)
     stateBox:stroke_transparency(stroketransparancy)
@@ -203,7 +203,7 @@ function update_job_states()
     }
 
     stateBox:clear()
-	stateBox:append('   ')
+	stateBox:append(' ---- \n')
 
     -- Construct and append info for boolean states
     for i,n in pairs(stateBool) do
@@ -216,7 +216,7 @@ function update_job_states()
 				else
 					stateBox:append(string.format("%sAuto WS: "..autows..": "..autowstp.."%s", clr.h, clr.n))
 				end
-				stateBox:append(spc)
+				
 			elseif n == 'AutoDefenseMode' then
 				if state.AutoDefenseMode.value then
 					if state.TankAutoDefense.value then
@@ -224,16 +224,16 @@ function update_job_states()
 					else
 						stateBox:append(string.format("%sAuto Defense%s", clr.h, clr.n))
 					end
-					stateBox:append(spc)
+					
 				end
 			else
 				stateBox:append(clr.h..labels[n]..clr.n)
-				stateBox:append(spc)
+				
 			end
 		else
-
+			stateBox:append(clr.s..labels[n]..clr.n)
 		end
-
+			stateBox:append(spc)
         -- Append basic formatted boolean state
 
     end
@@ -266,7 +266,7 @@ function update_job_states()
 					end
 				end
 				stateBox:append(string.format("%sAuto Buff: %s%s", clr.w, clr.h, state.AutoBuffMode.value))
-				stateBox:append(spc)
+				--stateBox:append(spc)
 			end
 		elseif n == 'RangedMode' then
 			stateBox:append(string.format("%s%s: ${%s}    ", clr.w, labels[n], n))
@@ -286,7 +286,7 @@ function update_job_states()
 				if state.ExtraDefenseMode and state.ExtraDefenseMode.value ~= 'None' then
 					stateBox:append(string.format("%s / %s%s%s", clr.n, clr.h, state.ExtraDefenseMode.current, clr.n))
 				end
-				stateBox:append(spc)
+				--stateBox:append(spc)
 			else
 				stateBox:append(string.format("%s%s: ${%s}", clr.w, labels[n], n))
 				if state.HybridMode then
@@ -296,14 +296,18 @@ function update_job_states()
 						stateBox:append(string.format("%s / %s%s%s", clr.n, clr.h, state.HybridMode.current, clr.n))
 					end
 				end
-				if state.ExtraMeleeMode then
-					if state.ExtraMeleeMode.value == 'None' then
-						stateBox:append(string.format("%s / %s%s%s", clr.n, clr.w, state.ExtraMeleeMode.current, clr.n))
-					else
-						stateBox:append(string.format("%s / %s%s%s", clr.n, clr.h, state.ExtraMeleeMode.current, clr.n))
-					end
-				end
+				--if state.ExtraMeleeMode then
+				--	if state.ExtraMeleeMode.value == 'None' then
+				--		stateBox:append(string.format("%s / %s%s%s", clr.n, clr.w, state.ExtraMeleeMode.current, clr.n))
+				--	else
+				--		stateBox:append(string.format("%s / %s%s%s", clr.n, clr.h, state.ExtraMeleeMode.current, clr.n))
+				--	end
+				--end
 				stateBox:append(spc)
+			end
+		elseif n == 'HasteLevel' then
+			if (player.main_job == 'NIN' or player.main_job == 'DNC'or player.main_job == 'THF' or player.sub_job == 'NIN' or player.sub_job == 'DNC') then
+				stateBox:append(string.format("%sHaste Lvl: %s%s    ", clr.w, clr.h, state.HasteLevel.value))
 			end
 		elseif n == 'AutoSambaMode' then
 			if state.AutoSambaMode.value ~= 'Off' then
@@ -372,6 +376,7 @@ function update_job_states()
 		else
 			stateBox:append(string.format("%s%s: ${%s}    ", clr.w, labels[n], n))
 		end
+		stateBox:append(spc)			  
     end
 	
 	if state.ExtraDefenseMode and state.ExtraDefenseMode.value ~= 'None' and state.DefenseMode.value == 'None' then
