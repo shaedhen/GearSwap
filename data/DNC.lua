@@ -208,6 +208,14 @@ function job_post_precast(spell, spellMap, eventArgs)
 	end
 end
 
+function job_midcast(spell, action, spellMap, eventArgs)
+	--Probably overkill but better safe than sorry.
+	if spell.action_type == 'Ranged Attack' then
+			disable('ammo')
+			add_to_chat(123,"Locking Ammo slot for RA!")
+			return
+		end
+end												
 -- Return true if we handled the aftercast work.  Otherwise it will fall back
 -- to the general aftercast() code in Mote-Include.
 function job_aftercast(spell, spellMap, eventArgs)
@@ -222,6 +230,11 @@ function job_aftercast(spell, spellMap, eventArgs)
 			state.CurrentStep:cycle()
 		end
     end
+			if spell.action_type == 'Ranged Attack' then
+			enable('ammo')
+			add_to_chat(123,"Re-enabling Ammo slot after RA!")
+			return
+		end										  
 end
 
 -------------------------------------------------------------------------------------------------------------------
