@@ -73,6 +73,13 @@ function get_sets()
     include('Sel-Include.lua')
 end
 
+function user_setup()
+    Haste = 0
+    DW_needed = 0
+    DW = false
+    update_combat_form()
+    determine_haste_group()
+end					 			 					 
 
 -- Setup vars that are user-independent.  state.Buff vars initialized here will automatically be tracked.
 function job_setup()
@@ -114,7 +121,8 @@ function job_setup()
 	step_feet_reduction = calculate_step_feet_reduction()
 	
     update_melee_groups()
-	init_job_states({"Capacity","AutoRuneMode","AutoTrustMode","AutoWSMode","AutoShadowMode","AutoFoodMode","AutoStunMode","AutoDefenseMode",},{"AutoBuffMode","AutoSambaMode","Weapons","OffenseMode","WeaponskillMode","IdleMode","DanceStance","Passive","RuneElement","TreasureMode",})
+	init_job_states({"Capacity","AutoWSMode","AutoShadowMode","AutoFoodMode","AutoStunMode","AutoDefenseMode",}
+	,{"AutoBuffMode","AutoSambaMode","Weapons","HasteLevel","OffenseMode","WeaponskillMode","IdleMode","DanceStance","Passive","TreasureMode",})
 end
 
 -------------------------------------------------------------------------------------------------------------------
@@ -230,7 +238,72 @@ end
 -------------------------------------------------------------------------------------------------------------------
 -- User code that supplements standard library decisions.
 -------------------------------------------------------------------------------------------------------------------
+-------GEARINFO DW HASTE--------------
+function determine_haste_group()
+    classes.CustomMeleeGroups:clear()
+    if DW == true then
+        if DW_needed <= 11 then
+            classes.CustomMeleeGroups:append('MaxHaste')
+			state.HasteLevel:set("Max")
+        elseif DW_needed > 11 and DW_needed <= 26 then
+            classes.CustomMeleeGroups:append('HighHaste')
+			state.HasteLevel:set("High")
+        elseif DW_needed > 26 and DW_needed <= 31 then
+            classes.CustomMeleeGroups:append('MidHaste')
+			state.HasteLevel:set("Mid")
+        elseif DW_needed > 31 and DW_needed <= 42 then
+            classes.CustomMeleeGroups:append('LowHaste')
+			state.HasteLevel:set("Low")
+        elseif DW_needed > 42 then
+            classes.CustomMeleeGroups:append('')
+			state.HasteLevel:set("None")
+        end
+		update_job_states()
+	end
+end
 
+function gearinfo(cmdParams, eventArgs)
+    if cmdParams[1] == 'gearinfo' then
+        if type(tonumber(cmdParams[2])) == 'number' then
+            if tonumber(cmdParams[2]) ~= DW_needed then
+            DW_needed = tonumber(cmdParams[2])
+            DW = true
+            end
+        elseif type(cmdParams[2]) == 'string' then
+            if cmdParams[2] == 'false' then
+        	      DW_needed = 0
+                DW = false
+      	    end
+        end
+        if type(tonumber(cmdParams[3])) == 'number' then
+          	if tonumber(cmdParams[3]) ~= Haste then
+              	Haste = tonumber(cmdParams[3])
+            end
+        end
+        if type(cmdParams[4]) == 'string' then
+            if cmdParams[4] == 'true' then
+                moving = true
+            elseif cmdParams[4] == 'false' then
+                moving = false
+            end
+        end
+    end
+end
+
+
+function update_combat_form()
+    if DW == true then
+        state.CombatForm:set('DW')
+    elseif DW == false then
+        state.CombatForm:reset()
+    end
+end
+
+function job_handle_equipping_gear(playerStatus, eventArgs)
+    update_combat_form()
+    determine_haste_group()
+end
+-------GEARINFO DW HASTE----END----------									 
 -- Called by the default 'update' self-command.
 function job_update(cmdParams, eventArgs)
     update_melee_groups()
@@ -313,6 +386,7 @@ function job_self_command(commandArgs, eventArgs)
         
         send_command('@input /ja "'..doStep..'" <t>')
     end
+	gearinfo(commandArgs, eventArgs)							 
 end
 
 function job_tick()
