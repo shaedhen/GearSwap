@@ -147,7 +147,7 @@ function init_include()
 	state.UnlockWeapons		  = M(false, 'Unlock Weapons')
 	state.SelfWarp2Block 	  = M(true, 'Block Warp2 on Self')
 
-	state.AutoBuffMode 		  = M{['description'] = 'Auto Buff Mode','Off','Auto'}
+	state.AutoBuffMode 		  = M{['description'] = 'Auto Buff Mode','Off','Auto','Tank'}
 	state.RuneElement 		  = M{['description'] = 'Rune Element','Ignis','Gelus','Flabra','Tellus','Sulpor','Unda','Lux','Tenebrae'}
 	state.ElementalMode 	  = M{['description'] = 'Elemental Mode', 'Fire','Ice','Wind','Earth','Lightning','Water','Light','Dark'}
 	state.AutoSambaMode 	  = M{['description']= 'Auto Samba Mode', 'Off', 'Haste Samba', 'Aspir Samba', 'Drain Samba II'}
@@ -506,10 +506,10 @@ function default_zone_change(new_id,old_id)
 	state.AutoBuffMode:reset()
 	state.AutoSubMode:reset()
 	state.AutoTrustMode:reset()
-	state.AutoTankMode:reset()
+	--state.AutoTankMode:reset()
 	state.AutoRuneMode:reset()
 	state.AutoFoodMode:reset()
-	state.AutoWSMode:reset()
+	--state.AutoWSMode:reset()
 	state.AutoNukeMode:reset()
 	send_command('gs rh disable')
 	state.RngHelper:reset()
