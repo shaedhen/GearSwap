@@ -61,13 +61,13 @@ function job_setup()
     state.Buff.Hasso = buffactive.Hasso or false
     state.Buff.Seigan = buffactive.Seigan or false
 	state.Stance = M{['description']='Stance','Hasso','Seigan','None'}
-    state.Steps = M{['description']='Current Step', 'Quickstep','Box Step','Stutter Step'}
 	
-	autows = 'Resolution'
+	autows = 'Dimidation'
 	autofood = 'Miso Ramen'
 	
 	update_melee_groups()
-	init_job_states({"Capacity","AutoRuneMode","AutoTrustMode","AutoTankMode","AutoWSMode","AutoShadowMode","AutoFoodMode","AutoNukeMode","AutoStunMode","AutoDefenseMode",},{"AutoBuffMode","AutoSambaMode","Weapons","OffenseMode","WeaponskillMode","Stance","IdleMode","Passive","RuneElement","PhysicalDefenseMode","MagicalDefenseMode","ResistDefenseMode","TreasureMode",})
+	init_job_states({"Capacity","AutoRuneMode","AutoTrustMode","AutoTankMode","AutoWSMode","AutoShadowMode","AutoFoodMode","AutoStunMode","AutoDefenseMode",}
+	,{"AutoBuffMode","Weapons","OffenseMode","WeaponskillMode","Stance","IdleMode","Passive","RuneElement","PhysicalDefenseMode","MagicalDefenseMode","ResistDefenseMode","TreasureMode",})
 end
 
 -------------------------------------------------------------------------------------------------------------------
@@ -243,8 +243,6 @@ function job_self_command(commandArgs, eventArgs)
 					
 			if spell_recasts[584] < spell_latency then
 				windower.chat.input('/ma "Sheep Song" <t>')
-			elseif spell_recasts[598] < spell_latency then
-				windower.chat.input('/ma "Soporific" <t>')
 			elseif spell_recasts[605] < spell_latency then
 				windower.chat.input('/ma "Geist Wall" <t>')
 			elseif spell_recasts[575] < spell_latency then
@@ -302,25 +300,6 @@ function job_self_command(commandArgs, eventArgs)
 				windower.chat.input('/ja "Berserk" <me>')
 			elseif not check_auto_tank_ws() then
 				if not state.AutoTankMode.value then add_to_chat(123,'All Enmity Warrior Job Abilities on cooldown.') end
-			end
-			
-		elseif player.sub_job == 'DNC' then
-			local abil_recasts = windower.ffxi.get_ability_recasts()
-			local under3FMs = not buffactive['Finishing Move 3'] and not buffactive['Finishing Move 4'] and not buffactive['Finishing Move 5']
-        
-			if under3FMs then
-				if abil_recasts[220] < latency then
-				send_command('@input /ja "'..state.Steps.value..'" <t>')
-				return
-				end
-			elseif abil_recasts[221] < latency then
-				windower.chat.input('/ja "Animated Flourish" <t>')
-				return
-			elseif abil_recasts[220] < latency and not buffactive['Finishing Move 5'] then
-				send_command('@input /ja "'..state.Steps.value..'" <t>')
-				return
-			elseif not check_auto_tank_ws() then
-				if not state.AutoTankMode.value then add_to_chat(123,'Dancer job abilities not needed.') end
 			end
 		end
 
