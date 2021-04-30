@@ -141,11 +141,12 @@ function update_job_states()
 
     local info = {}
     local orig = {}
-    local spc = '    '
+    local spc = '\n'
 
     -- Define labels for each modal state
     local labels = {
 		Weapons = "Weapons",
+		HasteLevel = "Haste Level",					 
         OffenseMode = "Offense",
 		RangedMode = "Ranged",
         DefenseMode = "Defense",

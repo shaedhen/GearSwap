@@ -106,7 +106,7 @@ function init_include()
 	state.CastingMode         = M{['description'] = 'Casting Mode'}
 	state.IdleMode            = M{['description'] = 'Idle Mode'}
 	state.RestingMode         = M{['description'] = 'Resting Mode'}
-
+	state.HasteLevel          = M{['description'] = 'Haste Level', 'None', 'Low', 'Mid', 'High','Max'}
 	state.DefenseMode         = M{['description'] = 'Defense Mode', 'None', 'Physical', 'Magical', 'Resist'}
 	state.PhysicalDefenseMode = M{['description'] = 'Physical Defense Mode', 'PDT'}
 	state.MagicalDefenseMode  = M{['description'] = 'Magical Defense Mode', 'MDT'}
