@@ -62,7 +62,7 @@ function job_setup()
     state.Buff.Seigan = buffactive.Seigan or false
 	state.Stance = M{['description']='Stance','Hasso','Seigan','None'}
 	
-	autows = 'Dimidation'
+	autows = 'Dimidiation'
 	autofood = 'Miso Ramen'
 	
 	update_melee_groups()
