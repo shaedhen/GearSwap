@@ -237,7 +237,6 @@ function job_self_command(commandArgs, eventArgs)
 		if player.target.type ~= "MONSTER" then
 			add_to_chat(123,'Abort: You are not targeting a monster.')
 			return
-	
 		elseif player.sub_job == 'BLU' then
 			local spell_recasts = windower.ffxi.get_spell_recasts()
 					
@@ -251,8 +250,6 @@ function job_self_command(commandArgs, eventArgs)
 				windower.chat.input('/ma "Stinking Gas" <t>')
 			elseif spell_recasts[592] < spell_latency then
 				windower.chat.input('/ma "Blank Gaze" <t>')
-			elseif not check_auto_tank_ws() then
-				if not state.AutoTankMode.value then add_to_chat(123,'All Enmity Blue Magic on cooldown.') end
 			end
 			
 		elseif player.sub_job == 'DRK' then
@@ -277,8 +274,6 @@ function job_self_command(commandArgs, eventArgs)
 				windower.chat.input('/ja "Weapon Bash" <t>')
 			elseif abil_recasts[86] < latency then
 				windower.chat.input('/ja "Arcane Circle" <me>')
-			elseif not check_auto_tank_ws() then
-				if not state.AutoTankMode.value then add_to_chat(123,'All Enmity Dark Knight abillities on cooldown.') end
 			end
 
 		elseif player.sub_job == 'WAR' then
@@ -298,8 +293,6 @@ function job_self_command(commandArgs, eventArgs)
 				windower.chat.input('/ja "Aggressor" <me>')
 			elseif abil_recasts[1] < latency then
 				windower.chat.input('/ja "Berserk" <me>')
-			elseif not check_auto_tank_ws() then
-				if not state.AutoTankMode.value then add_to_chat(123,'All Enmity Warrior Job Abilities on cooldown.') end
 			end
 		end
 
@@ -341,6 +334,7 @@ function job_tick()
 	if check_offensive_ja() then return true end								 
 	if state.AutoTankMode.value and player.in_combat and player.target.type == "MONSTER" and not moving then
 		if check_flash_foil() then return true end
+		check_auto_tank_ws()
 		windower.send_command('gs c SubJobEnmity')
 		tickdelay = os.clock() + 1.5
 		return true
