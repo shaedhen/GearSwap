@@ -61,12 +61,13 @@ function job_setup()
     state.Buff.Hasso = buffactive.Hasso or false
     state.Buff.Seigan = buffactive.Seigan or false
 	state.Stance = M{['description']='Stance','Hasso','Seigan','None'}
-	
+	state.AutoEffusionMode = M(false, 'Auto Effusion Mode')
+
 	autows = 'Dimidiation'
 	autofood = 'Miso Ramen'
 	
 	update_melee_groups()
-	init_job_states({"Capacity","AutoRuneMode","AutoTrustMode","AutoTankMode","AutoWSMode","AutoShadowMode","AutoFoodMode","AutoStunMode","AutoDefenseMode",}
+	init_job_states({"Capacity","AutoRuneMode","AutoEffusionMode","AutoTrustMode","AutoTankMode","AutoWSMode","AutoShadowMode","AutoFoodMode","AutoStunMode","AutoDefenseMode",}
 	,{"AutoBuffMode","Weapons","OffenseMode","WeaponskillMode","Stance","IdleMode","Passive","RuneElement","PhysicalDefenseMode","MagicalDefenseMode","ResistDefenseMode","TreasureMode",})
 end
 
@@ -394,8 +395,7 @@ function check_hasso()
 end
 
 function check_offensive_ja()
-	if  player.in_combat then
-		
+	if state.AutoEffusionMode.value and player.status == 'Engaged' then		
 		local abil_recasts = windower.ffxi.get_ability_recasts()		
 		if abil_recasts[119] < latency and buffactive[state.RuneElement.value] > 2 then
 			windower.chat.input('/ja "Rayke" <t>')

@@ -189,6 +189,7 @@ function update_job_states()
 		CompensatorMode = "Compensator",
 		DrainSwapWeaponMode = "Drain Swap",
 		AutoRuneMode = "Auto Rune: "..state.RuneElement.value.."",
+		AutoEffusionMode = "Auto Effusion",
 		AutoSambaMode = "Auto Samba: "..state.AutoSambaMode.value.."",
 		PhysicalDefenseMode = "Physical Defense",
 		MagicalDefenseMode = "Magical Defense",
