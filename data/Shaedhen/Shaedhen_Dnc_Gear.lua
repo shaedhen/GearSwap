@@ -15,7 +15,7 @@ function user_job_setup()
     gear.DNC_AF_Body		=	{ name	=	"Maxixi Casaque +2"}
     gear.DNC_AF_Hands		=	{ name	=	"Maxixi Bangles +2"}
     gear.DNC_AF_Legs		=	{ name	=	"Maxixi Tights +2"}
-    gear.DNC_AF_Feet		=	{ name	=	"Maxixi Toeshoes"}
+    gear.DNC_AF_Feet		=	{ name	=	"Maxixi Toeshoes +1"}
     --Horos
     gear.DNC_RELIC_Head		=	{ name	=	"Horos Tiara +1"}
     gear.DNC_RELIC_Body		=	{ name	=	"Horos Casaque +2"}
