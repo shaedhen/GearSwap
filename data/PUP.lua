@@ -90,7 +90,7 @@ function job_setup()
 
 	update_pet_mode()
 	update_melee_groups()
-	init_job_states({"Capacity","AutoPuppetMode","PetWSGear","AutoRepairMode","AutoRuneMode","AutoTrustMode","AutoWSMode","AutoShadowMode","AutoFoodMode","AutoStunMode","AutoDefenseMode",},{"AutoBuffMode","AutoSambaMode","Weapons","OffenseMode","WeaponskillMode","IdleMode","Passive","RuneElement","TreasureMode",})
+	init_job_states()
 end
 
 -------------------------------------------------------------------------------------------------------------------
@@ -112,22 +112,7 @@ function job_precast(spell, spellMap, eventArgs)
 end
 
 function job_post_precast(spell, spellMap, eventArgs)
-	if spell.type == 'WeaponSkill' then
-		local WSset = standardize_set(get_precast_set(spell, spellMap))
-		local wsacc = check_ws_acc()
-		
-		if (WSset.ear1 == "Moonshade Earring" or WSset.ear2 == "Moonshade Earring") then
-			-- Replace Moonshade Earring if we're at cap TP
-			if get_effective_player_tp(spell, WSset) > 3200 then
-				if wsacc:contains('Acc') and not buffactive['Sneak Attack'] and sets.AccMaxTP then
-					equip(sets.AccMaxTP[spell.english] or sets.AccMaxTP)
-				elseif sets.MaxTP then
-					equip(sets.MaxTP[spell.english] or sets.MaxTP)
-				else
-				end
-			end
-		end
-	end
+  checkMoonshadeBonus(spell,spellMap,eventArgs)
 end
 
 -- Called when pet is about to perform an action

@@ -153,11 +153,11 @@ function job_setup()
 	state.PactSpamMode = M(false, 'Pact Spam Mode')
 	state.AutoFavor = M(true, 'Auto Favor')
 	state.AutoConvert = M(true, 'Auto Convert')
-	
+	state.AutoBuffBP = M(false, 'A-Buff BP')
 	autows = 'Spirit Taker'
 	autofood = 'Akamochi'
 	
-	init_job_states({"Capacity","AutoRuneMode","AutoTrustMode","AutoNukeMode","PactSpamMode","AutoWSMode","AutoShadowMode","AutoFoodMode","AutoStunMode","AutoDefenseMode"},{"AutoBuffMode","Weapons","OffenseMode","WeaponskillMode","IdleMode","Passive","RuneElement","ElementalMode","CastingMode","TreasureMode",})
+	init_job_states()
 end
 
 -------------------------------------------------------------------------------------------------------------------
@@ -192,10 +192,10 @@ function job_filter_precast(spell, spellMap, eventArgs)
 		if player.tp > 999 and available_ws:contains(190) then
 			add_to_chat(122,'Not enough MP to Pact while using Conduit, using Myrkr!')
 			windower.chat.input('/ws Myrkr <me>')
-		elseif player.sub_job == 'SCH' and buffactive['Sublimation: Complete'] then
+		elseif player.sub_job == 'SCH' and not state.Buff['SJ Restriction'] and buffactive['Sublimation: Complete'] then
 			add_to_chat(122,'Not enough MP to Pact while using Conduit, using Sublimation!')
 			windower.chat.input('/ja Sublimation <me>')	
-		elseif player.sub_job == 'RDM' and abil_recasts[49] < latency and player.mp > 0 and player.hp > 400 and state.AutoConvert.value then
+		elseif player.sub_job == 'RDM' and not state.Buff['SJ Restriction'] and abil_recasts[49] < latency and player.mp > 0 and player.hp > 400 and state.AutoConvert.value then
 			add_to_chat(122,'Not enough MP to Pact while using Conduit, Converting!')
 			eventArgs.cancel = true
 			windower.chat.input('/ja Convert <me>')
@@ -215,16 +215,7 @@ function job_precast(spell, spellMap, eventArgs)
 end
 
 function job_post_precast(spell, spellMap, eventArgs)
-	if spell.type == 'WeaponSkill' then
-		local WSset = standardize_set(get_precast_set(spell, spellMap))
-		
-		if (WSset.ear1 == "Moonshade Earring" or WSset.ear2 == "Moonshade Earring") then
-			-- Replace Moonshade Earring if we're at cap TP
-			if sets.MaxTP and get_effective_player_tp(spell, WSset) > 3200 then
-				equip(sets.MaxTP[spell.english] or sets.MaxTP)
-			end
-		end
-	end
+  checkMoonshadeBonus(spell,spellMap,eventArgs)
 end
 
 function job_midcast(spell, spellMap, eventArgs)
@@ -780,6 +771,7 @@ function job_tick()
 	if check_favor() then return true end
 	if check_buff() then return true end
 	if check_buffup() then return true end
+	if check_auto_BP_buff() then return true end
 	return false
 end
 
@@ -873,6 +865,94 @@ function handle_elemental(cmdParams)
     else
         add_to_chat(123,'Unrecognized elemental command.')
     end
+end
+function check_auto_BP_buff()
+local abil_recasts = windower.ffxi.get_ability_recasts()
+if state.AutoBuffBP.value and abil_recasts[174] < latency and player.mpp > 20 then
+	if not buffactive['Warcry'] then
+		if not pet.isvalid then
+			windower.chat.input('/ma Ifrit <me>')
+			return true
+		end
+		if pet.name == 'Ifrit' then
+		windower.chat.input('/pet "Crimson Howl" <me>')
+		windower.chat.input:schedule(4,'/ja Release <me>')
+		else
+		windower.chat.input('/ja Release <me>')		
+		end
+	elseif not buffactive['Haste'] then
+		if not pet.isvalid then
+			windower.chat.input('/ma Garuda <me>')
+			return true
+		end
+		if pet.name == 'Garuda' then
+		windower.chat.input('/pet "Hastega II" <me>')
+		windower.chat.input:schedule(4,'/ja Release <me>')
+				else
+		windower.chat.input('/ja Release <me>')		
+		end
+	elseif not buffactive['CHR Boost'] and not buffactive['STR Boost'] then 
+		if not pet.isvalid then
+			windower.chat.input('/ma Fenrir <me>')
+			return true
+		end
+		if pet.name == 'Fenrir' then
+		windower.chat.input('/pet "Ecliptic Growl" <me>')
+		windower.chat.input:schedule(4,'/ja Release <me>')
+				else
+		windower.chat.input('/ja Release <me>')		
+		end
+	elseif not buffactive['TP Bonus'] then
+		if not pet.isvalid then
+			windower.chat.input('/ma Shiva <me>')
+			return true
+		end
+		if pet.name == 'Shiva' then
+		windower.chat.input('/pet "Crystal Blessing" <me>')
+		windower.chat.input:schedule(4,'/ja Release <me>')
+				else
+		windower.chat.input('/ja Release <me>')		
+		end
+--	elseif not buffactive['Shock Spikes'] then
+--		if not pet.isvalid then
+--			windower.chat.input('/ma Ramuh <me>')
+--			return true
+--		end
+--		if pet.name == 'Ramuh' then
+--		windower.chat.input('/pet "Lightning Armor" <me>')
+--		windower.chat.input:schedule(4,'/ja Release <me>')
+--				else
+--		windower.chat.input('/ja Release <me>')		
+--		end
+	elseif not buffactive['Curing Conduit'] then
+		if not pet.isvalid then
+			windower.chat.input('/ma Leviathan <me>')
+			return true
+		end
+		if pet.name == 'Leviathan' then
+		windower.chat.input('/pet "Soothing Current" <me>')
+		windower.chat.input:schedule(4,'/ja Release <me>')
+				else
+		windower.chat.input('/ja Release <me>')		
+		end
+	elseif not buffactive['Phalanx'] then
+		if not pet.isvalid then
+			windower.chat.input('/ma Diabolos <me>')
+			return true
+		end
+		if pet.name == 'Diabolos' then
+		windower.chat.input('/pet "Noctoshield" <me>')
+		--windower.chat.input:schedule(4,'/ja Release <me>')
+				else
+		windower.chat.input('/ja Release <me>')		
+		end
+	end
+	
+	if not pet.isvalid then
+    windower.chat.input('/ma Diabolos <me>')  -- change here for another pt when idle
+    return true
+  end
+end
 end
 
 function check_buff()

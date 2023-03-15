@@ -79,7 +79,7 @@ function job_setup()
 
     define_roll_values()
 	
-	init_job_states({"Capacity","AutoRuneMode","AutoTrustMode","AutoWSMode","AutoShadowMode","AutoFoodMode","RngHelper","AutoStunMode","AutoDefenseMode","LuzafRing",},{"AutoBuffMode","AutoSambaMode","Weapons","OffenseMode","RangedMode","WeaponskillMode","ElementalMode","IdleMode","Passive","RuneElement","CompensatorMode","TreasureMode",})
+	init_job_states()
 end
 
 
@@ -124,7 +124,7 @@ function job_precast(spell, spellMap, eventArgs)
 		end
     end
 	
-    if spell.action_type == 'Ranged Attack' or spell.type == 'CorsairShot' or spell.name == 'Shadowbind' or (spell.type == 'WeaponSkill' and spell.skill == 'Marksmanship') then
+    if spell.action_type == 'Ranged Attack' or spell.name == 'Shadowbind' or (spell.type == 'WeaponSkill' and spell.skill == 'Marksmanship') then
         do_bullet_checks(spell, spellMap, eventArgs)
     end
 end
@@ -209,43 +209,55 @@ function job_update(cmdParams, eventArgs)
 end
 
 function job_post_precast(spell, spellMap, eventArgs)
-	if spell.type == 'WeaponSkill' then
-		local WSset = standardize_set(get_precast_set(spell, spellMap))
-		local wsacc = check_ws_acc()
-		
-		if (WSset.ear1 == "Moonshade Earring" or WSset.ear2 == "Moonshade Earring") then
-			-- Replace Moonshade Earring if we're at cap TP
-			if get_effective_player_tp(spell, WSset) > 3200 then
-				if data.weaponskills.elemental:contains(spell.english) then
-					if wsacc:contains('Acc') and sets.MagicalAccMaxTP then
-						equip(sets.MagicalAccMaxTP[spell.english] or sets.MagicalAccMaxTP)
-					elseif sets.MagicalMaxTP then
-						equip(sets.MagicalMaxTP[spell.english] or sets.MagicalMaxTP)
-					else
-					end
-				elseif spell.skill == 26 then
-					if wsacc:contains('Acc') and sets.RangedAccMaxTP then
-						equip(sets.RangedAccMaxTP[spell.english] or sets.RangedAccMaxTP)
-					elseif sets.RangedMaxTP then
-						equip(sets.RangedMaxTP[spell.english] or sets.RangedMaxTP)
-					else
-					end
-				else
-					if wsacc:contains('Acc') and not buffactive['Sneak Attack'] and sets.AccMaxTP then
-						equip(sets.AccMaxTP[spell.english] or sets.AccMaxTP)
-					elseif sets.MaxTP then
-						equip(sets.MaxTP[spell.english] or sets.MaxTP)
-					else
-					end
-				end
-			end
-		end
-	elseif spell.type == 'CorsairShot' and not (spell.english == 'Light Shot' or spell.english == 'Dark Shot') then
+  checkMoonshadeBonus(spell,spellMap,eventArgs)
+  
+  if spell.type == 'CorsairShot' and not (spell.english == 'Light Shot' or spell.english == 'Dark Shot') then
 		if (state.WeaponskillMode.value == "Proc" or state.CastingMode.value == "Proc") and sets.precast.CorsairShot.Proc then
 			equip(sets.precast.CorsairShot.Proc)
 		elseif state.CastingMode.value == 'Fodder' and sets.precast.CorsairShot.Damage then
 			equip(sets.precast.CorsairShot.Damage)
+			
+			local distance = spell.target.distance - spell.target.model_size
+			local single_obi_intensity = 0
+			local orpheus_intensity = 0
+			local hachirin_intensity = 0
+
+			if item_available("Orpheus's Sash") then
+				orpheus_intensity = (16 - (distance <= 1 and 1 or distance >= 15 and 15 or distance))
+			end
+			
+			if item_available(data.elements.obi_of[spell.element]) then
+				if spell.element == world.weather_element then
+					single_obi_intensity = single_obi_intensity + data.weather_bonus_potency[world.weather_intensity]
+				end
+				if spell.element == world.day_element then
+					single_obi_intensity = single_obi_intensity + 10
+				end
+			end
+			
+			if item_available('Hachirin-no-Obi') then
+				if spell.element == world.weather_element then
+					hachirin_intensity = hachirin_intensity + data.weather_bonus_potency[world.weather_intensity]
+				elseif spell.element == data.elements.weak_to[world.weather_element] then
+					hachirin_intensity = hachirin_intensity - data.weather_bonus_potency[world.weather_intensity]
+				end
+				if spell.element == world.day_element then
+					hachirin_intensity = hachirin_intensity + 10
+				elseif spell.element == data.elements.weak_to[world.day_element] then
+					hachirin_intensity = hachirin_intensity - 10
+				end
+			end
+			
+			if single_obi_intensity >= hachirin_intensity and single_obi_intensity >= orpheus_intensity and single_obi_intensity >= 5 then
+				equip({waist=data.elements.obi_of[spell.element]})
+			elseif hachirin_intensity >= orpheus_intensity and hachirin_intensity >= 5 then
+				equip({waist="Hachirin-no-Obi"})
+			elseif orpheus_intensity >= 5 then
+				equip({waist="Orpheus's Sash"})
+			end
+			
 		end
+		
 	elseif spell.action_type == 'Ranged Attack' then
 		if buffactive.Flurry then
 			if sets.precast.RA.Flurry and lastflurry == 1 then

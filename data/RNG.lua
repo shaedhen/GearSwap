@@ -107,7 +107,7 @@ function job_setup()
 						['MagicAccUnlimited'] ="Hauksbok Bolt"}
 	}
 	
-	init_job_states({"Capacity","AutoRuneMode","AutoTrustMode","AutoWSMode","AutoShadowMode","AutoFoodMode","RngHelper","AutoStunMode","AutoDefenseMode",},{"AutoBuffMode","AutoSambaMode","Weapons","OffenseMode","RangedMode","WeaponskillMode","IdleMode","Passive","RuneElement","TreasureMode",})
+	init_job_states()
 end
 
 -------------------------------------------------------------------------------------------------------------------
@@ -135,42 +135,13 @@ function job_precast(spell, spellMap, eventArgs)
 end
 
 function job_post_precast(spell, spellMap, eventArgs)
-	if spell.type == 'WeaponSkill' then
+	checkMoonshadeBonus(spell,spellMap,eventArgs)
+  if spell.type == 'WeaponSkill' then
 		if not (spell.skill == 'Marksmanship' or spell.skill == 'Archery') and WeaponType[player.equipment.range] == 'Bow' and item_available('Hauksbok Arrow') then
 			equip({ammo="Hauksbok Arrow"})
 		end
-	
-		local WSset = standardize_set(get_precast_set(spell, spellMap))
-		local wsacc = check_ws_acc()
-		
-		if (WSset.ear1 == "Moonshade Earring" or WSset.ear2 == "Moonshade Earring") then
-			-- Replace Moonshade Earring if we're at cap TP
-			if get_effective_player_tp(spell, WSset) > 3200 then
-				if data.weaponskills.elemental:contains(spell.english) then
-					if wsacc:contains('Acc') and sets.MagicalAccMaxTP then
-						equip(sets.MagicalAccMaxTP[spell.english] or sets.MagicalAccMaxTP)
-					elseif sets.MagicalMaxTP then
-						equip(sets.MagicalMaxTP[spell.english] or sets.MagicalMaxTP)
-					else
-					end
-				elseif S{25,26}:contains(spell.skill) then
-					if wsacc:contains('Acc') and sets.RangedAccMaxTP then
-						equip(sets.RangedAccMaxTP[spell.english] or sets.RangedAccMaxTP)
-					elseif sets.RangedMaxTP then
-						equip(sets.RangedMaxTP[spell.english] or sets.RangedMaxTP)
-					else
-					end
-				else
-					if wsacc:contains('Acc') and not buffactive['Sneak Attack'] and sets.AccMaxTP then
-						equip(sets.AccMaxTP[spell.english] or sets.AccMaxTP)
-					elseif sets.MaxTP then
-						equip(sets.MaxTP[spell.english] or sets.MaxTP)
-					else
-					end
-				end
-			end
-		end
-	elseif spell.action_type == 'Ranged Attack' then
+	end
+  if spell.action_type == 'Ranged Attack' then
 		if buffactive.Flurry then
 			if lastflurry == 1 then
 				if sets.precast.RA[state.Weapons.value] and sets.precast.RA[state.Weapons.value].Flurry then
@@ -235,7 +206,7 @@ function job_post_midcast(spell, spellMap, eventArgs)
 						equip(sets.buff['Double Shot'][state.RangedMode.value])
 					end
 				elseif sets.buff['Double Shot'].AM then
-					equip(sets.buff['Double Shot'])
+					equip(sets.buff['Double Shot'].AM)
 				else
 					equip(sets.buff['Double Shot'])
 				end

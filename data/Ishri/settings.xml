@@ -1,0 +1,23 @@
+<?xml version="1.1" ?>
+<settings>
+    <global>
+	<modes>
+        <pos>
+            <x>350</x>
+            <y>550</y>
+         </pos>
+	</modes>
+	<modeoptions>
+        <pos>
+            <x>350</x>
+            <y>550</y>
+         </pos>
+	</modeoptions>
+	<toggles>
+        <pos>
+            <x>350</x>
+            <y>550</y>
+         </pos>
+	</toggles>
+    </global>
+</settings>

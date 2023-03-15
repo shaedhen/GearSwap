@@ -67,7 +67,7 @@ function job_setup()
 	autofood = 'Soy Ramen'
 
 	update_melee_groups()
-	init_job_states({"Capacity","AutoRuneMode","AutoTrustMode","AutoWSMode","AutoShadowMode","AutoFoodMode","AutoStunMode","AutoDefenseMode",},{"AutoBuffMode","AutoSambaMode","Weapons","OffenseMode","WeaponskillMode","Stance","IdleMode","Passive","RuneElement","TreasureMode",})
+	init_job_states()
 end
 
 -------------------------------------------------------------------------------------------------------------------
@@ -281,48 +281,6 @@ function update_melee_groups()
 	end	
 end
 
-function check_hasso()
-	if not (state.Stance.value == 'None' or state.Buff.Hasso or state.Buff.Seigan) and player.in_combat then
-		
-		local abil_recasts = windower.ffxi.get_ability_recasts()
-		
-		if state.Stance.value == 'Hasso' and abil_recasts[138] < latency then
-			windower.chat.input('/ja "Hasso" <me>')
-			tickdelay = os.clock() + 1.1
-			return true
-		elseif state.Stance.value == 'Seigan' and abil_recasts[139] < latency then
-			windower.chat.input('/ja "Seigan" <me>')
-			tickdelay = os.clock() + 1.1
-			return true
-		else
-			return false
-		end
-	end
-
-	return false
-end
-
 function check_buff()
-	if state.AutoBuffMode.value ~= 'Off' and player.in_combat then
-		
-		local abil_recasts = windower.ffxi.get_ability_recasts()
-
-		if player.sub_job == 'DRK' and not buffactive['Last Resort'] and abil_recasts[87] < latency then
-			windower.chat.input('/ja "Last Resort" <me>')
-			tickdelay = os.clock() + 1.1
-			return true
-		elseif player.sub_job == 'WAR' and not buffactive.Berserk and abil_recasts[1] < latency then
-			windower.chat.input('/ja "Berserk" <me>')
-			tickdelay = os.clock() + 1.1
-			return true
-		elseif player.sub_job == 'WAR' and not buffactive.Aggressor and abil_recasts[4] < latency then
-			windower.chat.input('/ja "Aggressor" <me>')
-			tickdelay = os.clock() + 1.1
-			return true
-		else
-			return false
-		end
-	end
-		
-	return false
+	return check_melee_sub_buffs()
 end

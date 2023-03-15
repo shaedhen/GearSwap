@@ -79,7 +79,7 @@ function user_setup()
     DW = false
     update_combat_form()
     determine_haste_group()
-end					 			 					 
+end	
 
 -- Setup vars that are user-independent.  state.Buff vars initialized here will automatically be tracked.
 function job_setup()
@@ -121,8 +121,7 @@ function job_setup()
 	step_feet_reduction = calculate_step_feet_reduction()
 	
     update_melee_groups()
-	init_job_states({"Capacity","AutoWSMode","AutoShadowMode","AutoFoodMode","AutoStunMode","AutoDefenseMode",}
-	,{"AutoBuffMode","AutoSambaMode","Weapons","HasteLevel","OffenseMode","WeaponskillMode","IdleMode","DanceStance","Passive","TreasureMode",})
+	init_job_states()
 end
 
 -------------------------------------------------------------------------------------------------------------------
@@ -157,13 +156,13 @@ function job_precast(spell, spellMap, eventArgs)
 			windower.chat.input:schedule(1,'/ws "'..spell.english..'" '..spell.target.raw..'')
 			tickdelay = os.clock() + 1.25
 			return
-		elseif player.sub_job == 'SAM' and player.tp > 1850 and abil_recasts[140] < latency then
+		elseif player.sub_job == 'SAM' and not state.Buff['SJ Restriction'] and player.tp > 1850 and abil_recasts[140] < latency then
 			eventArgs.cancel = true
 			windower.chat.input('/ja "Sekkanoki" <me>')
 			windower.chat.input:schedule(1,'/ws "'..spell.english..'" '..spell.target.raw..'')
 			tickdelay = os.clock() + 1.25
 			return
-		elseif player.sub_job == 'SAM' and abil_recasts[134] < latency then
+		elseif player.sub_job == 'SAM' and not state.Buff['SJ Restriction'] and abil_recasts[134] < latency then
 			eventArgs.cancel = true
 			windower.chat.input('/ja "Meditate" <me>')
 			windower.chat.input:schedule(1,'/ws "'..spell.english..'" '..spell.target.raw..'')
@@ -182,29 +181,9 @@ function job_precast(spell, spellMap, eventArgs)
 end
 
 function job_post_precast(spell, spellMap, eventArgs)
-	if spell.type == 'WeaponSkill' then
-		local WSset = standardize_set(get_precast_set(spell, spellMap))
-		local wsacc = check_ws_acc()
-		
-		if (WSset.ear1 == "Moonshade Earring" or WSset.ear2 == "Moonshade Earring") then
-			-- Replace Moonshade Earring if we're at cap TP
-			if get_effective_player_tp(spell, WSset) > 3200 then
-				if wsacc:contains('Acc') and not buffactive['Sneak Attack'] and sets.AccMaxTP then
-					equip(sets.AccMaxTP[spell.english] or sets.AccMaxTP)
-				elseif sets.MaxTP then
-					equip(sets.MaxTP[spell.english] or sets.MaxTP)
-				else
-				end
-			end
-		end
---[[
-		if state.Buff['Building Flourish'] and sets.buff['Building Flourish'] then
-			equip(sets.buff['Building Flourish'])
-		end
-]]
-        if state.Buff['Climactic Flourish'] and sets.buff['Climactic Flourish'] then
-            equip(sets.buff['Climactic Flourish'])
-        end
+  checkMoonshadeBonus(spell,spellMap,eventArgs)
+  if state.Buff['Climactic Flourish'] and sets.buff['Climactic Flourish'] then
+    equip(sets.buff['Climactic Flourish'])
 	end
 end
 
@@ -215,7 +194,7 @@ function job_midcast(spell, action, spellMap, eventArgs)
 			add_to_chat(123,"Locking Ammo slot for RA!")
 			return
 		end
-end												
+end	
 -- Return true if we handled the aftercast work.  Otherwise it will fall back
 -- to the general aftercast() code in Mote-Include.
 function job_aftercast(spell, spellMap, eventArgs)
@@ -230,11 +209,11 @@ function job_aftercast(spell, spellMap, eventArgs)
 			state.CurrentStep:cycle()
 		end
     end
-			if spell.action_type == 'Ranged Attack' then
+	if spell.action_type == 'Ranged Attack' then
 			enable('ammo')
 			add_to_chat(123,"Re-enabling Ammo slot after RA!")
 			return
-		end										  
+		end	
 end
 
 -------------------------------------------------------------------------------------------------------------------
@@ -316,8 +295,7 @@ function job_handle_equipping_gear(playerStatus, eventArgs)
     update_combat_form()
     determine_haste_group()
 end
--------GEARINFO DW HASTE----END----------									 
--- Called by the default 'update' self-command.
+-------GEARINFO DW HASTE----END----------	-- Called by the default 'update' self-command.
 function job_update(cmdParams, eventArgs)
     update_melee_groups()
 end
@@ -443,21 +421,9 @@ function check_buff()
 			return true
 		end
 		
-		if player.in_combat then
-			if player.sub_job == 'WAR' and not buffactive.Berserk and abil_recasts[1] < latency then
-				windower.chat.input('/ja "Berserk" <me>')
-				tickdelay = os.clock() + 1.1
-				return true
-			elseif player.sub_job == 'WAR' and not buffactive.Aggressor and abil_recasts[4] < latency then
-				windower.chat.input('/ja "Aggressor" <me>')
-				tickdelay = os.clock() + 1.1
-				return true
-			else
-				return false
-			end
-		end
+		
 	end
-	return false
+	return check_melee_sub_buffs()
 end
 
 function check_dance()

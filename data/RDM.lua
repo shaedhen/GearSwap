@@ -69,7 +69,7 @@ function job_setup()
 	enspell = ''
 	
 	update_melee_groups()
-	init_job_states({"Capacity","AutoRuneMode","AutoTrustMode","AutoNukeMode","AutoWSMode","AutoShadowMode","AutoFoodMode","AutoStunMode","AutoDefenseMode",},{"AutoBuffMode","AutoSambaMode","Weapons","OffenseMode","WeaponskillMode","IdleMode","Passive","RuneElement","RecoverMode","ElementalMode","CastingMode","TreasureMode",})
+	init_job_states()
 end
 
 -------------------------------------------------------------------------------------------------------------------
@@ -117,22 +117,7 @@ function job_precast(spell, spellMap, eventArgs)
 end
 
 function job_post_precast(spell, spellMap, eventArgs)
-	if spell.type == 'WeaponSkill' then
-		local WSset = standardize_set(get_precast_set(spell, spellMap))
-		local wsacc = check_ws_acc()
-		
-		if (WSset.ear1 == "Moonshade Earring" or WSset.ear2 == "Moonshade Earring") then
-			-- Replace Moonshade Earring if we're at cap TP
-			if get_effective_player_tp(spell, WSset) > 3200 then
-				if wsacc:contains('Acc') and not buffactive['Sneak Attack'] and sets.AccMaxTP then
-					equip(sets.AccMaxTP[spell.english] or sets.AccMaxTP)
-				elseif sets.MaxTP then
-					equip(sets.MaxTP[spell.english] or sets.MaxTP)
-				else
-				end
-			end
-		end
-	end
+	checkMoonshadeBonus(spell,spellMap,eventArgs)
 end
 
 -- Run after the default midcast() is done.
@@ -202,6 +187,7 @@ function job_post_midcast(spell, spellMap, eventArgs)
 	
 		if buffactive.Composure and spell.target.type == 'PLAYER' then
 			equip(sets.buff.ComposureOther)
+			return
 		end
 
 		if spell.english == 'Phalanx II' and spell.target.type =='SELF' and sets.Self_Phalanx then
@@ -307,14 +293,44 @@ function job_customize_melee_set(meleeSet)
 			meleeSet = set_combine(meleeSet, sets.element.enspell[enspell_element])
 		end
 
-		local hachirin_avail = item_available('Hachirin-no-Obi')
-		if hachirin_avail and enspell_element == world.weather_element and world.weather_intensity == 2 then
-			meleeSet = set_combine(meleeSet, {waist="Hachirin-no-Obi"})
-		elseif item_available("Orpheus's Sash") then
-			meleeSet = set_combine(meleeSet, {waist="Orpheus's Sash"})
-		elseif hachirin_avail and enspell_element == world.weather_element or enspell_element == world.day_element then
-			meleeSet = set_combine(meleeSet, {waist="Hachirin-no-Obi"})
+		local single_obi_intensity = 0
+		local orpheus_intensity = 0
+		local hachirin_intensity = 0
+
+		if item_available("Orpheus's Sash") then
+			orpheus_intensity = 15
 		end
+
+		if item_available(data.elements.obi_of[enspell_element]) then
+			if enspell_element == world.weather_element then
+				single_obi_intensity = single_obi_intensity + data.weather_bonus_potency[world.weather_intensity]
+			end
+			if enspell_element == world.day_element then
+				single_obi_intensity = single_obi_intensity + 10
+			end
+		end
+		
+		if item_available('Hachirin-no-Obi') then
+			if enspell_element == world.weather_element then
+				hachirin_intensity = hachirin_intensity + data.weather_bonus_potency[world.weather_intensity]
+			elseif enspell_element == data.elements.weak_to[world.weather_element] then
+				hachirin_intensity = hachirin_intensity - data.weather_bonus_potency[world.weather_intensity]
+			end
+			if enspell_element == world.day_element then
+				hachirin_intensity = hachirin_intensity + 10
+			elseif enspell_element == data.elements.weak_to[world.day_element] then
+				hachirin_intensity = hachirin_intensity - 10
+			end
+		end
+	
+		if single_obi_intensity >= hachirin_intensity and single_obi_intensity >= orpheus_intensity and single_obi_intensity >= 5 then
+			meleeSet = set_combine(meleeSet, {waist=data.elements.obi_of[enspell_element]})
+		elseif hachirin_intensity >= orpheus_intensity and hachirin_intensity >= 5 then
+			meleeSet = set_combine(meleeSet, {waist="Hachirin-no-Obi"})
+		elseif orpheus_intensity >= 5 then
+			meleeSet = set_combine(meleeSet, {waist="Orpheus's Sash"})
+		end
+
 	end
 
     return meleeSet
@@ -486,35 +502,9 @@ function handle_elemental(cmdParams)
 end
 
 function job_tick()
-	if check_arts() then return true end
 	if check_buff() then return true end
 	if check_buffup() then return true end
 	return false
-end
-
-function check_arts()	
-	if buffup ~= '' or (not data.areas.cities:contains(world.area) and ((state.AutoArts.value and player.in_combat) or state.AutoBuffMode.value ~= 'Off')) then
-
- 		local abil_recasts = windower.ffxi.get_ability_recasts()	
-
- 		if not buffactive.Composure then	
-			local abil_recasts = windower.ffxi.get_ability_recasts()	
-			if abil_recasts[50] < latency then	
-				tickdelay = os.clock() + 1.1
-				windower.chat.input('/ja "Composure" <me>')	
-				return true	
-			end	
-		end	
-
- 		if player.sub_job == 'SCH' and not arts_active() and abil_recasts[228] < latency then	
-			send_command('@input /ja "Light Arts" <me>')	
-			tickdelay = os.clock() + 1.1
-			return true	
-		end	
-
- 	end	
-
- 	return false	
 end
 
 function check_buff()
@@ -652,11 +642,24 @@ buff_spell_lists = {
 		{Name='Gain-INT',		Buff='INT Boost',		SpellID=490,	Reapply=false},
 		{Name='Temper II',		Buff='Multi Strikes',	SpellID=895,	Reapply=false},
 		{Name='Regen II',		Buff='Regen',			SpellID=110,	Reapply=false},
-		--{Name='Enaero',			Buff='Enaero',			SpellID=102,	Reapply=false},
-		{Name='Enthunder',		Buff='Enthunder',		SpellID=104,	Reapply=false},
+		{Name='Enaero',			Buff='Enaero',			SpellID=102,	Reapply=false},
 		{Name='Stoneskin',		Buff='Stoneskin',		SpellID=54,		Reapply=false},
 		{Name='Shell V',		Buff='Shell',			SpellID=52,		Reapply=false},
 		{Name='Protect V',		Buff='Protect',			SpellID=47,		Reapply=false},
+	},
+	
+	Tolba = {
+		{Name='Refresh III',	Buff='Refresh',			SpellID=894,	Reapply=false},
+		{Name='Haste II',		Buff='Haste',			SpellID=511,	Reapply=false},
+		{Name='Phalanx',		Buff='Phalanx',			SpellID=106,	Reapply=false},
+		{Name='Gain-STR',		Buff='STR Boost',		SpellID=486,	Reapply=false},
+		{Name='Temper II',		Buff='Multi Strikes',	SpellID=895,	Reapply=false},
+		{Name='Regen II',		Buff='Regen',			SpellID=110,	Reapply=false},
+		{Name='Enblizzard',		Buff='Enblizzard',		SpellID=104,	Reapply=false},
+		{Name='Stoneskin',		Buff='Stoneskin',		SpellID=54,		Reapply=false},
+		{Name='Shell V',		Buff='Shell',			SpellID=52,		Reapply=false},
+		{Name='Protect V',		Buff='Protect',			SpellID=47,		Reapply=false},
+		{Name='Barwater',		Buff='Barwater',		SpellID=65,		Reapply=false},
 	},
 	
 	HybridCleave = {

@@ -56,6 +56,7 @@ function job_setup()
     state.Buff['Aftermath: Lv.3'] = buffactive['Aftermath: Lv.3'] or false
     state.Buff['Hundred Fists'] = buffactive['Hundred Fists'] or false
 	state.Buff['Impetus'] = buffactive['Impetus'] or false
+	state.Buff['Footwork'] = buffactive['Footwork'] or false
 	state.Buff['Boost'] = buffactive['Boost'] or false
 	
 	state.AutoBoost = M(false, 'Auto Boost Mode')
@@ -66,7 +67,7 @@ function job_setup()
     info.impetus_hit_count = 0
     --windower.raw_register_event('action', on_action_for_impetus)
 	update_melee_groups()
-	init_job_states({"Capacity","AutoRuneMode","AutoTrustMode","AutoWSMode","AutoShadowMode","AutoFoodMode","AutoStunMode","AutoDefenseMode",},{"AutoBuffMode","AutoSambaMode","Weapons","OffenseMode","WeaponskillMode","IdleMode","Passive","RuneElement","TreasureMode",})
+	init_job_states()
 end
 
 -------------------------------------------------------------------------------------------------------------------
@@ -104,21 +105,8 @@ end
 
 -- Run after the general precast() is done.
 function job_post_precast(spell, spellMap, eventArgs)
+  checkMoonshadeBonus(spell,spellMap,eventArgs)
 	if spell.type == 'WeaponSkill' then
-		local WSset = standardize_set(get_precast_set(spell, spellMap))
-		local wsacc = check_ws_acc()
-		
-		if (WSset.ear1 == "Moonshade Earring" or WSset.ear2 == "Moonshade Earring") then
-			-- Replace Moonshade Earring if we're at cap TP
-			if get_effective_player_tp(spell, WSset) > 3200 then
-				if wsacc:contains('Acc') and not buffactive['Sneak Attack'] and sets.AccMaxTP then
-					equip(sets.AccMaxTP[spell.english] or sets.AccMaxTP)
-				elseif sets.MaxTP then
-					equip(sets.MaxTP[spell.english] or sets.MaxTP)
-				else
-				end
-			end
-		end
 		
         if state.Buff['Impetus'] and (spell.english == "Ascetic's Fury" or spell.english == "Victory Smite") then
 			if sets.buff.ImpetusWS then
@@ -156,14 +144,14 @@ end
 -- Modify the default melee set after it was constructed.
 function job_customize_melee_set(meleeSet)
 	
-	if state.OffenseMode.value ~= 'FullAcc' then
+
 		if state.Buff['Impetus'] then
 			meleeSet = set_combine(meleeSet, sets.buff.Impetus)
 		end
 		if buffactive.Footwork then
 			meleeSet = set_combine(meleeSet, sets.buff.Footwork)
 		end
-	end
+
 	
 	if state.Buff['Boost'] then
 		meleeSet = set_combine(meleeSet, sets.buff.Boost)
@@ -289,19 +277,8 @@ function check_buff()
 			windower.chat.input('/ja "Focus" <me>')
 			tickdelay = os.clock() + 1.1
 			return true
-		elseif player.sub_job == 'WAR' then
-			if not buffactive.Berserk and abil_recasts[1] < latency then
-				windower.chat.input('/ja "Berserk" <me>')
-				tickdelay = os.clock() + 1.1
-				return true
-			elseif not (buffactive.Aggressor or buffactive.Focus) and abil_recasts[4] < latency then
-				windower.chat.input('/ja "Aggressor" <me>')
-				tickdelay = os.clock() + 1.1
-				return true
-			else
-				return false
-			end
 		end
+    return check_melee_sub_buffs()
 	end
 
 	return false

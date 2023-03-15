@@ -74,7 +74,7 @@ end
 function job_setup()
 
     state.ExtraSongsMode = M{['description']='Extra Songs','None','Dummy','DummyLock','FullLength','FullLengthLock'}
-
+	state.WeaponsSongMode = M{'Never','300','1000','Always'}
 	state.Buff['Aftermath: Lv.3'] = buffactive['Aftermath: Lv.3'] or false
     state.Buff['Pianissimo'] = buffactive['Pianissimo'] or false
 	state.Buff['Nightingale'] = buffactive['Nightingale'] or false
@@ -86,7 +86,7 @@ function job_setup()
 	state.AutoSongMode = M(false, 'Auto Song Mode')
 
 	update_melee_groups()
-	init_job_states({"Capacity","AutoRuneMode","AutoTrustMode","AutoNukeMode","AutoWSMode","AutoShadowMode","AutoFoodMode","AutoStunMode","AutoDefenseMode","AutoSongMode",},{"AutoBuffMode","AutoSambaMode","Weapons","OffenseMode","WeaponskillMode","IdleMode","Passive","RuneElement","ExtraSongsMode","CastingMode","TreasureMode",})
+	init_job_states()
 end
 
 -------------------------------------------------------------------------------------------------------------------
@@ -98,7 +98,17 @@ end
 -- Set eventArgs.handled to true if we don't want any automatic target handling to be done.
 
 function job_filtered_action(spell, eventArgs)
-
+	if spell.type == 'WeaponSkill' then
+		local available_ws = S(windower.ffxi.get_abilities().weapon_skills)
+		-- WS 112 is Double Thrust, meaning a Spear is equipped.
+		if available_ws:contains(32) then
+            if spell.english == "Rudra's Storm" then
+				windower.chat.input('/ws "Savage Blade" '..spell.target.raw)
+                cancel_spell()
+				eventArgs.cancel = true
+            end
+        end
+	end
 end
 
 function job_pretarget(spell, spellMap, eventArgs)
@@ -174,8 +184,8 @@ function job_post_precast(spell, spellMap, eventArgs)
 					equip(sets.midcast[spell.english])
 				end
 			elseif sets.midcast[get_spell_map(spell, default_spell_map)] then
-				if sets.midcast[get_spell_map(spell, default_spell_map)][state.CastingMode.Value]
-					then equip(sets.midcast[get_spell_map(spell, default_spell_map)][state.CastingMode.Value])
+				if sets.midcast[get_spell_map(spell, default_spell_map)][state.CastingMode.Value]then 
+					equip(sets.midcast[get_spell_map(spell, default_spell_map)][state.CastingMode.Value])
 				else
 					equip(sets.midcast[get_spell_map(spell, default_spell_map)])
 				end
@@ -186,22 +196,11 @@ function job_post_precast(spell, spellMap, eventArgs)
 			end
 		
 		end
-
-	elseif spell.type == 'WeaponSkill' then
-		local WSset = standardize_set(get_precast_set(spell, spellMap))
-		local wsacc = check_ws_acc()
-		
-		if (WSset.ear1 == "Moonshade Earring" or WSset.ear2 == "Moonshade Earring") then
-			-- Replace Moonshade Earring if we're at cap TP
-			if get_effective_player_tp(spell, WSset) > 3200 then
-				if wsacc:contains('Acc') and not buffactive['Sneak Attack'] and sets.AccMaxTP then
-					equip(sets.AccMaxTP[spell.english] or sets.AccMaxTP)
-				elseif sets.MaxTP then
-					equip(sets.MaxTP[spell.english] or sets.MaxTP)
-				else
-				end
-			end
-		end
+  end
+    checkMoonshadeBonus(spell,spellMap,eventArgs)
+	if  state.WeaponsSongMode.value ~= 'Never' and (state.WeaponsSongMode.value == 'Always' or tonumber(state.WeaponsSongMode.value) > player.tp) then
+				enable('main')
+				enable('sub')
 	end
 end
 
@@ -221,15 +220,15 @@ function job_post_midcast(spell, spellMap, eventArgs)
 					equip(sets.midcast[spellMap])
 				end
 			end
-			
-			if can_dual_wield and sets.midcast.SongDebuff.DW then
-				equip(sets.midcast.SongDebuff.DW)
-			end
-		else
-			if can_dual_wield and sets.midcast.SongEffect.DW then
-				equip(sets.midcast.SongEffect.DW)
-			end
-		end
+	end
+--			if can_dual_wield and sets.midcast.SongDebuff.DW then
+--				equip(sets.midcast.SongDebuff.DW)
+--			end
+--		else
+--			if can_dual_wield and sets.midcast.SongEffect.DW then
+--				equip(sets.midcast.SongEffect.DW)
+--			end
+--		end
 		
 		if state.ExtraSongsMode.value:contains('FullLength') then
             equip(sets.midcast.Daurdabla)
@@ -266,8 +265,21 @@ function job_post_midcast(spell, spellMap, eventArgs)
     end
 end
 
+
 -- Set eventArgs.handled to true if we don't want automatic gear equipping to be done.
 function job_aftercast(spell, spellMap, eventArgs)
+	if spell.type == 'BardSong' and not spell.interrupted then
+		if state.WeaponsSongMode.value ~= 'Never' then
+			if sets.weapons[state.Weapons.value] and sets.weapons[state.Weapons.value].main then
+				equip({main=sets.weapons[state.Weapons.value].main})
+				disable('main')
+			end
+			if sets.weapons[state.Weapons.value] and sets.weapons[state.Weapons.value].sub then
+				equip({sub=sets.weapons[state.Weapons.value].sub})
+				disable('sub')
+			end
+		end
+	end
 	if spell.skill == 'Elemental Magic' and state.MagicBurstMode.value == 'Single' then
 		state.MagicBurstMode:reset()
 		if state.DisplayMode.value then update_job_states()	end

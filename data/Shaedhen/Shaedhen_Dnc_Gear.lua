@@ -7,29 +7,29 @@ function user_job_setup()
     state.PhysicalDefenseMode:options('PDT')
 	state.MagicalDefenseMode:options('MDT')
 	state.ResistDefenseMode:options('MEVA')
-	state.Weapons:options('Tauret','LowBuff')
+	state.Weapons:options('None','Aeneas','AeneasAcc','Tauret','TauretTaming','LowBuff','Shield','DualAE')
 
 	----DNC	
 	--Maxixi
 	gear.DNC_AF_Head		=	{ name	=	"Maxixi Tiara +2"}
     gear.DNC_AF_Body		=	{ name	=	"Maxixi Casaque +2"}
-    gear.DNC_AF_Hands		=	{ name	=	"Maxixi Bangles +2"}
+    gear.DNC_AF_Hands		=	{ name	=	"Maxixi Bangles +3"}
     gear.DNC_AF_Legs		=	{ name	=	"Maxixi Tights +2"}
-    gear.DNC_AF_Feet		=	{ name	=	"Maxixi Toeshoes +1"}
+    gear.DNC_AF_Feet		=	{ name	=	"Maxixi Toe Shoes +2"}
     --Horos
-    gear.DNC_RELIC_Head		=	{ name	=	"Horos Tiara +1"}
-    gear.DNC_RELIC_Body		=	{ name	=	"Horos Casaque +2"}
-    gear.DNC_RELIC_Hands 	=	{ name	=	"Horos Bangles +1"}
+    gear.DNC_RELIC_Head		=	{ name	=	"Horos Tiara +3"}
+    gear.DNC_RELIC_Body		=	{ name	=	"Horos Casaque +3"}
+    gear.DNC_RELIC_Hands 	=	{ name	=	"Horos Bangles +3"}
     gear.DNC_RELIC_Legs		=	{ name	=	"Horos Tights +3"}
-    gear.DNC_RELIC_Feet		=	{ name	=	"Horos Toe Shoes +2"}
+    gear.DNC_RELIC_Feet		=	{ name	=	"Horos Toe Shoes +3"}
     --Maculele
-    gear.DNC_EMPY_Head		=	{ name	=	"Maculele Tiara"}
-    gear.DNC_EMPY_Body		=	{ name	=	"Maculele Casaque"}
-    gear.DNC_EMPY_Hands		=	{ name	=	"Maculele Bangles"}
-    gear.DNC_EMPY_Legs		=	{ name	=	"Maculele Tights"}
-    gear.DNC_EMPY_Feet		=	{ name	=	"Maculele Toe Shoes"}
+    gear.DNC_EMPY_Head		=	{ name	=	"Maculele Tiara +3"}
+    gear.DNC_EMPY_Body		=	{ name	=	"Maculele Casaque +2"}
+    gear.DNC_EMPY_Hands		=	{ name	=	"Maculele Bangles +2"}
+    gear.DNC_EMPY_Legs		=	{ name	=	"Maculele Tights +2"}
+    gear.DNC_EMPY_Feet		=	{ name	=	"Maculele Toe Shoes +2"}
 	
-	gear.DNC_TP_STP_Cape = 	{ name	=	"Senuna's Mantle", augments={'DEX+20','Accuracy+20 Attack+20','"Dbl.Atk."+10',}} --*
+	gear.DNC_TP_STP_Cape = 	{ name="Senuna's Mantle", augments={'DEX+20','Accuracy+20 Attack+20','Accuracy+5','"Dbl.Atk."+10','Damage taken-5%',}} --*
 	gear.DNC_WS1_Cape = 	{ name	=	"Senuna's Mantle", augments={'DEX+20','Accuracy+20 Attack+20','Weapon skill damage +10%',}} --*
 
 	
@@ -38,12 +38,6 @@ function user_job_setup()
 --	send_command('bind ^!@` gs c toggle usealtstep')
 --	send_command('bind ^@` gs c cycle mainstep')
 --	send_command('bind !@` gs c cycle altstep')
---   send_command('bind ^` input /ja "Saber Dance" <me>')
---    send_command('bind !` input /ja "Fan Dance" <me>')
---	send_command('bind ^\\\\ input /ja "Chocobo Jig II" <me>')
---	send_command('bind !\\\\ input /ja "Spectral Jig" <me>')
---	send_command('bind !backspace input /ja "Reverse Flourish" <me>')
---	send_command('bind ^backspace input /ja "No Foot Rise" <me>')
 	send_command('bind %~` gs c cycle SkillchainMode')
 	send_command('bind ^1 gs c cycle DanceStance')
 	
@@ -59,9 +53,13 @@ function init_gear_sets()
 	sets.TreasureHunter = set_combine(sets.TreasureHunter, {})
 			
 	-- Weapons sets
-	sets.weapons.Tauret 	= {main="Tauret"	,sub="Taming Sari"}
+	sets.weapons.Aeneas 	= {main="Aeneas"	,sub="Fusetto +2"}
+	sets.weapons.AeneasAcc 	= {main="Aeneas"	,sub="Gleti's Knife"}
+	sets.weapons.Tauret 	= {main="Tauret"	,sub="Gleti's Knife"}
+	sets.weapons.TauretTaming 	= {main="Tauret"	,sub="Taming Sari"}
 	sets.weapons.LowBuff 	= {main="Tauret"	,sub="Blurred Knife +1"}
-	
+	sets.weapons.Shield 	= {main="Aeneas"	,sub="Airy Buckler"}
+	sets.weapons.DualAE 	= {main="Aeneas"	,sub="Tauret"}
     -- Precast Sets
     
     -- Precast sets to enhance JAs
@@ -110,7 +108,7 @@ function init_gear_sets()
 		ear2	=	"Digni. Earring",
         body	=	gear.DNC_AF_Body,
 		hands	=	gear.DNC_AF_Hands,
-		ring1	=	"Chirich Ring",
+		ring1	=	"Chirich Ring +1",
 		ring2	=	"Ilabrat Ring",
         back	=	gear.DNC_TP_STP_Cape,
 		waist	=	"Kentarch Belt +1",
@@ -175,10 +173,10 @@ function init_gear_sets()
 	}
 
     sets.precast.Flourish2 = {}
-    sets.precast.Flourish2['Reverse Flourish'] = {hands=gear.DNC_EMPY_Hands,	back	=	"Toetapper Mantle"} --hands	=	"Charis Bangles +2"
+    sets.precast.Flourish2['Reverse Flourish'] = {hands=gear.DNC_EMPY_Hands,	back	=	"Toetapper Mantle"} 
 
     sets.precast.Flourish3 = {}
-    sets.precast.Flourish3['Striking Flourish'] = {body=gear.DNC_EMPY_Body	} --body	=	"Charis Casaque +2"
+    sets.precast.Flourish3['Striking Flourish'] = {body=gear.DNC_EMPY_Body	}
     sets.precast.Flourish3['Climactic Flourish'] = {}
 
     -- Fast cast sets for spells
@@ -205,85 +203,56 @@ function init_gear_sets()
     sets.precast.WS = 
 	{
 		ammo	=	"Charis Feather",
-        head	=	gear.Herc_WSD_head,
+        head	=	"Nyame Helm",
 		neck	=	"Etoile Gorget",
 		ear1	=	"Moonshade Earring",
 		ear2	=	"Sherida Earring",
-        body	=	gear.Herc_WSD_body,
-		hands	=	"Meg. Gloves +2",
+        body	=	"Nyame Mail",
+		hands	=	"Nyame Gauntlets",
 		ring1	=	"Ilabrat Ring",
-		ring2	=	"Karieyh Ring",
+		ring2	=	"Regal Ring",
         back	=	gear.DNC_WS1_Cape,
 		waist	=	"Grunfeld Rope",
 		legs	=	gear.DNC_RELIC_Legs,
-		feet	=	gear.Meghanada_Feet
+		feet	=	"Nyame Sollerets"
 	}
-
-	sets.precast.WS.Acc = 
-	set_combine(sets.precast.WS, 
-		{
-			ammo	=	"Yamarang",
-			ear1	=	"Telos Earring",
-			body	=	"Meg. Cuirie +2",
-			waist	=	"Kentarch Belt +1",
-		}
-	)
-
 
     -- Specific weaponskill sets.  Uses the base set if an appropriate WSMod version isn't found.
     sets.precast.WS["Rudra's Storm"] = 
 	{
 		ammo	=	"Charis Feather",
-        head	=	gear.Herc_WSD_head,
+        head	=	gear.DNC_EMPY_Head,
 		neck	=	"Etoile Gorget",
 		ear1	=	"Moonshade Earring",
-		ear2	=	"Sherida Earring",
-        body	=	gear.Herc_WSD_body,
-		hands	=	"Meg. Gloves +2",
-		ring1	=	"Ilabrat Ring",
-		ring2	=	"Karieyh Ring",
+--		ear2	=	"Odr Earring",
+		ear2	=	"Maculele Earring +1",
+        body	=	"Nyame Mail",
+		hands	=	"Nyame Gauntlets",
+--		ring1	=	"Ilabrat Ring",
+		ring1	=	"Epaminondas's Ring",
+		ring2	=	"Regal Ring",
         back	=	gear.DNC_WS1_Cape,
-		waist	=	"Grunfeld Rope",
-		legs	=	gear.DNC_RELIC_Legs,
-		feet	=	gear.Meghanada_Feet
+		waist	=	"Kentarch Belt +1",
+		legs	=	"Nyame Flanchard",
+		feet	=	"Nyame Sollerets",
 	}
-	
-    sets.precast.WS["Rudra's Storm"].Acc = 
-	set_combine(sets.precast.WS["Rudra's Storm"], 
-		{
-			ammo	=	"Yamarang",
-			ear1	=	"Telos Earring",
-			body	=	"Meg. Cuirie +2",
-			waist	=	"Kentarch Belt +1",
-		}
-	)
 	
     sets.precast.WS["Shark Bite"] = 
 	{
 		ammo	=	"Charis Feather",
-        head	=	gear.Herc_WSD_head,
+        head	=	"Nyame Helm",
 		neck	=	"Etoile Gorget",
 		ear1	=	"Moonshade Earring",
-		ear2	=	"Sherida Earring",
-        body	=	gear.Herc_WSD_body,
-		hands	=	"Meg. Gloves +2",
+		ear2	=	"Odr Earring",
+        body	=	"Nyame Mail",
+		hands	=	"Nyame Gauntlets",
 		ring1	=	"Ilabrat Ring",
-		ring2	=	"Karieyh Ring",
+		ring2	=	"Epaminondas's Ring",
         back	=	gear.DNC_WS1_Cape,
 		waist	=	"Grunfeld Rope",
-		legs	=	gear.DNC_RELIC_Legs,
-		feet	=	gear.Meghanada_Feet
+		legs	=	"Nyame Flanchard",
+		feet	=	"Nyame Sollerets",
 	}
-	
-    sets.precast.WS["Shark Bite"].Acc = 
-	set_combine(sets.precast.WS["Shark Bite"],
-		{
-			ammo	=	"Yamarang",
-			ear1	=	"Telos Earring",
-			body	=	"Meg. Cuirie +2",
-			waist	=	"Kentarch Belt +1",
-		}
-	)
 	
     sets.precast.WS['Evisceration'] = 
 	{
@@ -302,12 +271,6 @@ function init_gear_sets()
 		feet	=	gear.Mummu_Feet
 	}
 	
-    sets.precast.WS['Evisceration'].Acc = 
-	set_combine(sets.precast.WS['Evisceration'],
-		{
-		}
-	)
-	
     sets.precast.WS['Pyrrhic Kleos'] = --TODO
 	{
 		ammo	=	"Charis Feather",
@@ -324,37 +287,29 @@ function init_gear_sets()
 		legs	=	gear.Mummu_Legs,
 		feet	=	gear.Mummu_Feet
 	}
-	
-    sets.precast.WS['Pyrrhic Kleos'].Acc = 
-	set_combine(sets.precast.WS['Pyrrhic Kleos'],
-		{
-		}
-	)
 
     sets.precast.WS['Aeolian Edge'] = 
 	{
-		ammo	=	"Ghastly tathlum +1",
-        head	=	gear.Mummu_Head,
-		neck	=	"Sanctity Necklace",
-		ear1	=	"Moonshade Earring",
-		ear2	=	"Friomisi Earring",
-        body	=	"Samnuha Coat",
-		hands	=	"Leyline Gloves",
-		ring1	=	"Karieyh Ring",
-		ring2	=	"Shiva Ring +1",
-        back	=	gear.DNC_WS1_Cape,
-		waist	=	"Eschan Stone",
-		legs	=	gear.Herc_Mab_legs,
-		feet	=	gear.Mummu_Feet
+	ammo	=	"Pemphredo Tathlum",
+	head="Nyame Helm",
+    body="Nyame Mail",
+    hands="Nyame Gauntlets",
+    legs="Nyame Flanchard",
+    feet="Nyame Sollerets",
+    neck="Sanctity Necklace",
+    ear1="Moonshade Earring",
+    ear2="Friomisi Earring",
+    ring1="Metamorph Ring +1",
+    ring2="Shiva Ring +1",
+    back=gear.DNC_WS1_Cape,
+    waist="Eschan Stone",
 	}
-
-    sets.precast.WS['Aeolian Edge'].TH = set_combine(sets.precast.WS['Aeolian Edge'], sets.TreasureHunter)
 
 	-- Swap to these on Moonshade using WS if at 3000 TP
 	sets.MaxTP 		= {ear1	=	"Ishvara Earring"}
 	sets.AccMaxTP 	= {ear1	=	"Ishvara Earring"}
 	
-    sets.Skillchain = {hands= gear.DNC_EMPY_Hands} --hands	=	"Charis Bangles +2"
+    sets.Skillchain = {hands= gear.DNC_EMPY_Hands} 
     
     
     -- Midcast Sets
@@ -390,75 +345,22 @@ function init_gear_sets()
 
     sets.idle = 
 	{
-		ammo	=	"Staunch Tathlum",
+		ammo	=	"Staunch Tathlum +1",
         head	=	"Malignance Chapeau",
 		neck	=	"Warder's Charm +1",
 		ear1	=	"Etiolation Earring",
 		ear2	=	"Hearty Earring",
         body	=	"Malignance Tabard",
-		hands	=	gear.Meghanada_Hands,
+		hands	=	"Gleti's Gauntlets",
 		ring1	=	"Defending Ring",
 		ring2	=	"Purity Ring",
-        back	=	"Moonbeam Cape",
-		waist	=	"Carrier's Sash",
+        back	=	gear.DNC_TP_STP_Cape,
+		waist	=	"Engraved Belt",
 		legs	=	"Malignance Tights",
-		feet	=	gear.Meghanada_Feet
+		feet	=	gear.DNC_EMPY_feet
 	}
 		
     sets.idle.Sphere = set_combine(sets.idle, {body	=	"Mekosu. Harness"})
-    
-    -- Defense sets
-
-    sets.defense.PDT = 
-	{
-		ammo	=	"Staunch Tathlum",
-        head	=	"Malignance Chapeau",
-		neck	=	"Loricate Torque +1",
-		ear1	=	"Etiolation Earring",
-		ear2	=	"Odnowa Earring",
-        body	=	"Malignance Tabard",
-		hands	=	gear.Meghanada_Hands,
-		ring1	=	"Defending Ring",
-		ring2	=	"Gelatinous Ring",
-        back	=	"Moonbeam Cape",
-		waist	=	"Carrier's Sash",
-		legs	=	"Malignance Tights",
-		feet	=	gear.Meghanada_Feet
-	}
-
-    sets.defense.MDT = 
-	{
-		ammo	=	"Staunch Tathlum",
-        head	=	"Malignance Chapeau",
-		neck	=	"Loricate Torque +1",
-		ear1	=	"Etiolation Earring",
-		ear2	=	"Eabani Earring",
-        body	=	"Malignance Tabard",
-		hands	=	"Floral Gauntlets",
-		ring1	=	"Defending Ring",
-		ring2	=	"Fortified Ring",
-        back	=	"Engulfer Cape +1",
-		waist	=	"Carrier's Sash",
-		legs	=	"Malignance Tights",
-		feet	=	gear.Meghanada_Feet -- to change
-	}
-		
-	sets.defense.MEVA = 
-	{
-		ammo	=	"Yamarang",
-        head	=	"Malignance Chapeau",
-		neck	=	"Loricate Torque +1",
-		ear1	=	"Hearty Earring",
-		ear2	=	"Eabani Earring",
-        body	=	"Malignance Tabard",
-		hands	=	"Floral Gauntlets",
-		ring1	=	"Defending Ring",
-		ring2	=	"Fortified Ring",
-        back	=	"Engulfer Cape +1",
-		waist	=	"Carrier's Sash",
-		legs	=	"Malignance Tights",
-		feet	=	gear.Meghanada_Feet -- to change
-	}
 
     sets.Kiting = {feet	=	"Skd. Jambeaux +1"}
 
@@ -489,12 +391,12 @@ function init_gear_sets()
 		ear2	=	"Sherida Earring",
         body	=	"Malignance Tabard",
 		hands	=	"Adhemar Wrist. +1",
-		ring1	=	"Petrov Ring",
-		ring2	=	"Chirich Ring",
+		ring1	=	"Gere Ring",
+		ring2	=	"Chirich Ring +1",
         back	=	gear.DNC_TP_STP_Cape,
 		waist	=	"Sailfi Belt +1",
 		legs	=	"Samnuha Tights",
-		feet	=	gear.Herc_trip_feet
+		feet	=	gear.DNC_EMPY_Feet
 	}
 		
     sets.engaged.DT =  set_combine(sets.engaged.DW, sets.DefensiveMali)      
@@ -508,12 +410,12 @@ function init_gear_sets()
 		ear2	=	"Sherida Earring",
         body	=	"Malignance Tabard",
 		hands	=	"Adhemar Wrist. +1",
-		ring1	=	"Petrov Ring",
-		ring2	=	"Chirich Ring",
+		ring1	=	"Gere Ring",
+		ring2	=	"Chirich Ring +1",
         back	=	gear.DNC_TP_STP_Cape,
 		waist	=	"Kentarch Belt +1",
 		legs	=	"Malignance Tights",
-		feet	=	gear.Herc_trip_feet
+		feet	=	gear.DNC_EMPY_Feet
 	}
 		
 	sets.engaged.Acc.DT = set_combine(sets.engaged.Acc, sets.DefensiveMali)
@@ -527,12 +429,12 @@ function init_gear_sets()
 		ear2	=	"Suppanomimi",
 		body	=	"Adhemar Jacket +1",
 		hands	=	"Adhemar Wrist. +1",
-		ring1	=	"Chirich Ring",
-		ring2	=	"Petrov Ring",
+		ring1	=	"Chirich Ring +1",
+		ring2	=	"Gere Ring",
 		back	=	gear.DNC_TP_STP_Cape,
-		waist	=	"Sailfi Belt +1",
+		waist	=	"Reiki Yotai",
 		legs	=	"Samnuha Tights",		
-		feet	=	gear.DNC_RELIC_Feet
+		feet	=	gear.DNC_EMPY_Feet
 	}
 	-----Haste & Dual Wield-----
 	sets.engaged.DW.LowHaste = 
@@ -544,12 +446,12 @@ function init_gear_sets()
 		ear2	=	"Suppanomimi",
 		body	=	"Adhemar Jacket +1",
 		hands	=	"Adhemar Wrist. +1",
-		ring1	=	"Chirich Ring",
-		ring2	=	"Petrov Ring",
+		ring1	=	"Chirich Ring +1",
+		ring2	=	"Gere Ring",
 		back	=	gear.DNC_TP_STP_Cape,
-		waist	=	"Sailfi Belt +1",
+		waist	=	"Reiki Yotai",
 		legs	=	"Samnuha Tights",		
-		feet	=	gear.DNC_RELIC_Feet
+		feet	=	gear.DNC_EMPY_Feet
 	}
 	
 	sets.engaged.DW.MidHaste = 
@@ -561,12 +463,12 @@ function init_gear_sets()
 		ear2	=	"Suppanomimi",
 		body	=	"Adhemar Jacket +1",
 		hands	=	"Adhemar Wrist. +1",
-		ring1	=	"Chirich Ring",
-		ring2	=	"Petrov Ring",
+		ring1	=	"Chirich Ring +1",
+		ring2	=	"Gere Ring",
 		back	=	gear.DNC_TP_STP_Cape,
-		waist	=	"Sailfi Belt +1",
+		waist	=	"Reiki Yotai",
 		legs	=	"Samnuha Tights",		
-		feet	=	gear.DNC_RELIC_Feet
+		feet	=	gear.DNC_EMPY_Feet
 	}
 		
 	sets.engaged.DW.HighHaste = 
@@ -578,12 +480,12 @@ function init_gear_sets()
 		ear2	=	"Telos Earring",
 		body	=	"Adhemar Jacket +1",
 		hands	=	"Adhemar Wrist. +1",
-		ring1	=	"Chirich Ring",
-		ring2	=	"Petrov Ring",
+		ring1	=	"Chirich Ring +1",
+		ring2	=	"Gere Ring",
 		back	=	gear.DNC_TP_STP_Cape,
 		waist	=	"Sailfi Belt +1",
 		legs	=	"Samnuha Tights",		
-		feet	=	gear.DNC_RELIC_Feet
+		feet	=	gear.DNC_EMPY_Feet
 	}    
 	
 	sets.engaged.DW.MaxHaste = 
@@ -595,12 +497,12 @@ function init_gear_sets()
 		ear2	=	"Telos Earring",
 		body	=	gear.DNC_RELIC_Body,
 		hands	=	"Adhemar Wrist. +1",
-		ring1	=	"Chirich Ring",
-		ring2	=	"Petrov Ring",
+		ring1	=	"Chirich Ring +1",
+		ring2	=	"Gere Ring",
 		back	=	gear.DNC_TP_STP_Cape,
 		waist	=	"Sailfi Belt +1",
 		legs	=	"Samnuha Tights",		
-		feet	=	gear.DNC_RELIC_Feet
+		feet	=	gear.DNC_EMPY_Feet
 	}    
 	-----------------------
     sets.engaged.DW.Acc = 
@@ -608,7 +510,7 @@ function init_gear_sets()
 		{
 			head	=	"Malignance Chapeau",
 			ear2	=	"Telos Earring",
-			ring1	=	"Chirich Ring",
+			ring1	=	"Chirich Ring +1",
 			waist	=	"Kentarch Belt +1",
 			legs	=	"Malignance Tights"		
 		}
@@ -619,7 +521,7 @@ function init_gear_sets()
 		{
 			head	=	"Malignance Chapeau",
 			ear2	=	"Telos Earring",
-			ring1	=	"Chirich Ring",
+			ring1	=	"Chirich Ring +1",
 			waist	=	"Kentarch Belt +1",
 			legs	=	"Malignance Tights"		
 		}
@@ -630,7 +532,7 @@ function init_gear_sets()
 		{
 			head	=	"Malignance Chapeau",
 			ear2	=	"Telos Earring",
-			ring1	=	"Chirich Ring",
+			ring1	=	"Chirich Ring +1",
 			waist	=	"Kentarch Belt +1",
 			legs	=	"Malignance Tights"		
 		}
@@ -641,7 +543,7 @@ function init_gear_sets()
 		{
 			head	=	"Malignance Chapeau",
 			ear2	=	"Telos Earring",
-			ring1	=	"Chirich Ring",
+			ring1	=	"Chirich Ring +1",
 			waist	=	"Kentarch Belt +1",
 			legs	=	"Malignance Tights"		
 		}
@@ -652,7 +554,7 @@ function init_gear_sets()
 		{
 			head	=	"Malignance Chapeau",
 			ear2	=	"Telos Earring",
-			ring1	=	"Chirich Ring",
+			ring1	=	"Chirich Ring +1",
 			waist	=	"Kentarch Belt +1",
 			legs	=	"Malignance Tights"		
 		}
@@ -661,22 +563,38 @@ function init_gear_sets()
     sets.engaged.DW.DT =  set_combine(sets.engaged.DW, sets.DefensiveMali)      
     sets.engaged.DW.Acc.DT = set_combine(sets.engaged.DW.Acc, sets.DefensiveMali)
 	
-	sets.engaged.DW.DT.LowHaste =  set_combine(sets.engaged.DW.LowHaste, sets.DefensiveMali)      
-    sets.engaged.DW.Acc.DT.LowHaste = set_combine(sets.engaged.DW.Acc.LowHaste, sets.DefensiveMali)
+	sets.engaged.DW.DT.LowHaste =  set_combine(sets.engaged.DW.LowHaste, sets.DefensiveMali,		{
+			waist	=	"Reiki Yotai",	hands = "Gleti's Gauntlets", feet = gear.DNC_EMPY_feet,ear2	=	"Odnowa Earring +1"
+		})      
+    sets.engaged.DW.Acc.DT.LowHaste = set_combine(sets.engaged.DW.Acc.LowHaste, sets.DefensiveMali,		{
+			waist	=	"Reiki Yotai",	hands = "Gleti's Gauntlets", feet = gear.DNC_EMPY_feet,ear2	=	"Odnowa Earring +1"
+		})
 	
-	sets.engaged.DW.DT.MidHaste =  set_combine(sets.engaged.DW.MidHaste, sets.DefensiveMali)      
-    sets.engaged.DW.Acc.DT.MidHaste = set_combine(sets.engaged.DW.Acc.MidHaste, sets.DefensiveMali)
+	sets.engaged.DW.DT.MidHaste =  set_combine(sets.engaged.DW.MidHaste, sets.DefensiveMali,		{
+			waist	=	"Reiki Yotai",	hands = "Gleti's Gauntlets", feet = gear.DNC_EMPY_feet,ear2	=	"Odnowa Earring +1"
+		})      
+    sets.engaged.DW.Acc.DT.MidHaste = set_combine(sets.engaged.DW.Acc.MidHaste, sets.DefensiveMali,		{
+			waist	=	"Reiki Yotai",	hands = "Gleti's Gauntlets", feet = gear.DNC_EMPY_feet,ear2	=	"Odnowa Earring +1"
+		})
 	
-	sets.engaged.DW.DT.HighHaste =  set_combine(sets.engaged.DW.HighHaste, sets.DefensiveMali)      
-    sets.engaged.DW.Acc.DT.HighHaste = set_combine(sets.engaged.DW.Acc.HighHaste, sets.DefensiveMali)
+	sets.engaged.DW.DT.HighHaste =  set_combine(sets.engaged.DW.HighHaste, sets.DefensiveMali,		{
+			waist	=	"Reiki Yotai",	hands = "Gleti's Gauntlets", feet = gear.DNC_EMPY_feet
+		})      
+    sets.engaged.DW.Acc.DT.HighHaste = set_combine(sets.engaged.DW.Acc.HighHaste, sets.DefensiveMali,		{
+			waist	=	"Reiki Yotai",	hands = "Gleti's Gauntlets", feet = gear.DNC_EMPY_feet
+		})
 	
-	sets.engaged.DW.DT.MaxHaste =  set_combine(sets.engaged.DW.MaxHaste, sets.DefensiveMali)      
-    sets.engaged.DW.Acc.DT.MaxHaste = set_combine(sets.engaged.DW.Acc.MaxHaste, sets.DefensiveMali)
+	sets.engaged.DW.DT.MaxHaste =  set_combine(sets.engaged.DW.MaxHaste, sets.DefensiveMali,		{
+			waist	=	"Reiki Yotai",	hands = "Gleti's Gauntlets", feet = gear.DNC_EMPY_feet
+		})      
+    sets.engaged.DW.Acc.DT.MaxHaste = set_combine(sets.engaged.DW.Acc.MaxHaste, sets.DefensiveMali,		{
+			waist	=	"Reiki Yotai",	hands = "Gleti's Gauntlets", feet = gear.DNC_EMPY_feet
+		})
 
 
     -- Buff sets: Gear that needs to be worn to actively enhance a current player buff.
     sets.buff['Saber Dance'] = {legs=gear.DNC_RELIC_Legs} 
-    sets.buff['Climactic Flourish'] = {ammo	=	"Charis Feather",head	=gear.DNC_EMPY_Head,body	=	"Meg. Cuirie +2"}
+    sets.buff['Climactic Flourish'] = {ammo	=	"Charis Feather",head	=gear.DNC_EMPY_Head}
 	sets.buff.Doom = set_combine(sets.buff.Doom, {})
 	sets.buff.Sleep = {head	=	"Frenzy Sallet"}
 end
@@ -685,14 +603,14 @@ end
 function select_default_macro_book()
     -- Default macro set/book
     if player.sub_job == 'WAR' then
-        set_macro_page(10, 9)
+        set_macro_page(2, 1)
     elseif player.sub_job == 'NIN' then
-        set_macro_page(1, 9)
+        set_macro_page(2, 1)
     elseif player.sub_job == 'SAM' then
-        set_macro_page(9, 9)
+        set_macro_page(2, 1)
     elseif player.sub_job == 'THF' then
-        set_macro_page(8, 9)
+        set_macro_page(2, 1)
     else
-        set_macro_page(10, 9)
+        set_macro_page(2, 1)
     end
 end

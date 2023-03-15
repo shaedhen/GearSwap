@@ -229,7 +229,7 @@ function job_setup()
     }
 
 	update_melee_groups()
-	init_job_states({"Capacity","AutoRuneMode","AutoTrustMode","AutoWSMode","AutoShadowMode","AutoFoodMode","AutoNukeMode","AutoStunMode","AutoDefenseMode",},{"AutoBuffMode","AutoSambaMode","Weapons","OffenseMode","WeaponskillMode","IdleMode","Passive","RuneElement","LearningMode","CastingMode","TreasureMode"})
+	init_job_states()
 end
 
 -------------------------------------------------------------------------------------------------------------------
@@ -281,7 +281,8 @@ function job_filter_precast(spell, spellMap, eventArgs)
 		if (state.AutoUnbridled.value or buffup ~= '' or state.AutoBuffMode.value ~= 'Off') and (windower.ffxi.get_ability_recasts()[81] < latency and (windower.ffxi.get_spell_recasts()[spell.recast_id]/60) < spell_latency) then
 			eventArgs.cancel = true
 			windower.chat.input('/ja "Unbridled Learning" <me>')
-			windower.chat.input:schedule(1,'/ma "'..spell.english..'" '..spell.target.raw..'')
+			windower.chat.input:schedule(1,'/ja Diffusion <me>')
+			windower.chat.input:schedule(3,'/ma "'..spell.english..'" '..spell.target.raw..'')
 			return
 		else
 			eventArgs.cancel = true
@@ -292,13 +293,6 @@ end
 	
 function job_precast(spell, spellMap, eventArgs)
 	if spell.action_type == 'Magic' then
-		if spellMap == 'Cure' or spellMap == 'Curaga' or (spell.skill == 'Blue Magic' and spellMap == 'Healing') then
-			gear.default.obi_back = gear.obi_cure_back
-			gear.default.obi_waist = gear.obi_cure_waist
-		else
-			gear.default.obi_back = gear.obi_nuke_back
-			gear.default.obi_waist = gear.obi_nuke_waist
-		end
         if state.CastingMode.value == 'Proc' then
             classes.CustomClass = 'Proc'
 		end
@@ -306,24 +300,8 @@ function job_precast(spell, spellMap, eventArgs)
 end
 
 function job_post_precast(spell, spellMap, eventArgs)
+  checkMoonshadeBonus(spell,spellMap,eventArgs)
 
-	if spell.type == 'WeaponSkill' then
-		local WSset = standardize_set(get_precast_set(spell, spellMap))
-		local wsacc = check_ws_acc()
-		
-		if (WSset.ear1 == "Moonshade Earring" or WSset.ear2 == "Moonshade Earring") then
-			-- Replace Moonshade Earring if we're at cap TP
-			if get_effective_player_tp(spell, WSset) > 3200 then
-				if wsacc:contains('Acc') and not buffactive['Sneak Attack'] and sets.AccMaxTP then
-					equip(sets.AccMaxTP[spell.english] or sets.AccMaxTP)
-				elseif sets.MaxTP then
-					equip(sets.MaxTP[spell.english] or sets.MaxTP)
-				else
-				end
-			end
-		end
-
-	end
 
     -- If in learning mode, keep on gear intended to help with that, regardless of action.
 	if state.LearningMode.value then
@@ -336,24 +314,30 @@ end
 function job_post_midcast(spell, spellMap, eventArgs)
     -- Add enhancement gear for Chain Affinity, etc.
     if not eventArgs.handled and spell.skill == 'Blue Magic' then
-        for buff,active in pairs(state.Buff) do
-            if active and sets.buff[buff] then
-                equip(sets.buff[buff])
-            end
-        end
-		
         if spellMap == 'Healing' then
-			if spell.element == 'None' and sets.NonElementalCure then
-				equip(sets.NonElementalCure)
+			if (state.Weapons.value == 'None' or state.UnlockWeapons.value) and sets.midcast['Blue Magic'].UnlockedHealing then
+				equip(sets.midcast['Blue Magic'].UnlockedHealing)
 			end
-		
-			if spell.target.type == 'SELF' and sets.Self_Healing and not aoe_blue_magic_healing:contains(spell.english) then
-				equip(sets.Self_Healing)
+			
+			if spell.target.type == 'SELF' then
+				if aoe_blue_magic_healing:contains(spell.english) then
+					if (state.Weapons.value == 'None' or state.UnlockWeapons.value) and sets.midcast['Blue Magic'].UnlockedAoEHealing then
+						equip(sets.midcast['Blue Magic'].UnlockedAoEHealing)
+					elseif sets.midcast['Blue Magic'].AoEHealing then
+						equip(sets.midcast['Blue Magic'].AoEHealing)
+					end
+				elseif sets.Self_Healing then
+					equip(sets.Self_Healing)
+				end
+			end
+			
+			if spell.element ~= 'None' and (spell.element == world.weather_element or spell.element == world.day_element) and item_available('Hachirin-no-Obi') then
+				equip({waist="Hachirin-no-Obi"})
 			end
 				
 		elseif spellMap:contains('Magical') then
 			if state.MagicBurstMode.value ~= 'Off' and (state.Buff['Burst Affinity'] or state.Buff['Azure Lore']) then
-					equip(sets.MagicBurst)
+				equip(sets.MagicBurst)
 			end
 			if spell.element == world.weather_element or spell.element == world.day_element then
 				if state.CastingMode.value == 'Fodder' then
@@ -377,6 +361,12 @@ function job_post_midcast(spell, spellMap, eventArgs)
 			if state.TreasureMode.value == "Tag" then equip(sets.TreasureHunter) end
 
 		end
+		
+        for buff,active in pairs(state.Buff) do
+            if active and sets.buff[buff] then
+                equip(sets.buff[buff])
+            end
+        end
 
     elseif spell.skill == 'Elemental Magic' and default_spell_map ~= 'ElementalEnfeeble' then
         if state.MagicBurstMode.value ~= 'Off' then equip(sets.MagicBurst) end
@@ -488,7 +478,7 @@ function job_tick()
 end
 
 function check_arts()
-	if (player.sub_job == 'SCH' and not arts_active()) and (buffup ~= '' or (not data.areas.cities:contains(world.area) and ((state.AutoArts.value and player.in_combat) or state.AutoBuffMode.value ~= 'Off'))) then
+	if (player.sub_job == 'SCH' and not (state.Buff['SJ Restriction'] or arts_active())) and (buffup ~= '' or (not data.areas.cities:contains(world.area) and ((state.AutoArts.value and player.in_combat) or state.AutoBuffMode.value ~= 'Off'))) then
 	
 		local abil_recasts = windower.ffxi.get_ability_recasts()
 
@@ -528,7 +518,8 @@ function check_buff()
 					return true
 				end
 			end
-		end
+		end		
+		return check_melee_sub_buffs()		
 	else
 		return false
 	end

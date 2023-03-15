@@ -92,7 +92,7 @@ function job_setup()
 	autows = 'Realmrazer'
 	autofood = 'Pear Crepe'
 	
-	init_job_states({"Capacity","AutoRuneMode","AutoTrustMode","AutoNukeMode","AutoWSMode","AutoShadowMode","AutoFoodMode","AutoStunMode","AutoDefenseMode",},{"AutoBuffMode","Weapons","OffenseMode","WeaponskillMode","IdleMode","Passive","RuneElement","RecoverMode","ElementalMode","CastingMode","TreasureMode",})
+	init_job_states()
 end
 
 -------------------------------------------------------------------------------------------------------------------
@@ -139,16 +139,8 @@ function job_post_precast(spell, spellMap, eventArgs)
 		if arts_active() and sets.precast.FC.Arts then
 			equip(sets.precast.FC.Arts)
 		end
-	elseif spell.type == 'WeaponSkill' then
-		local WSset = standardize_set(get_precast_set(spell, spellMap))
-		
-		if (WSset.ear1 == "Moonshade Earring" or WSset.ear2 == "Moonshade Earring") then
-			-- Replace Moonshade Earring if we're at cap TP
-			if sets.MaxTP and get_effective_player_tp(spell, WSset) > 3200 then
-				equip(sets.MaxTP[spell.english] or sets.MaxTP)
-			end
-		end
 	end
+ checkMoonshadeBonus(spell,spellMap,eventArgs)
 end
 
 -- Run after the general midcast() is done.
@@ -168,7 +160,13 @@ function job_post_midcast(spell, spellMap, eventArgs)
 		equip(sets.buff['Dark Arts'])
     elseif spell.skill == 'Elemental Magic' and spell.english ~= 'Impact' then
 		if state.MagicBurstMode.value ~= 'Off' then
-			if state.CastingMode.value:contains('Resistant') and sets.ResistantMagicBurst then
+			if spell.english:endswith('Helix') or spell.english:endswith('Helix II') then
+				if state.CastingMode.value:contains('Resistant') and sets.ResistantHelixBurst then
+					equip(sets.ResistantHelixBurst)
+				elseif sets.HelixBurst then
+					equip(sets.HelixBurst)
+				end
+			elseif state.CastingMode.value:contains('Resistant') and sets.ResistantMagicBurst then
 				equip(sets.ResistantMagicBurst)
 			else
 				equip(sets.MagicBurst)
@@ -948,25 +946,8 @@ end
 -- Gets the current number of available stratagems based on the recast remaining
 -- and the level of the sch.
 function job_tick()
-	if check_arts() then return true end
 	if check_buff() then return true end
 	if check_buffup() then return true end
-	return false
-end
-
-function check_arts()
-	if not arts_active() and (buffup ~= '' or (not data.areas.cities:contains(world.area) and ((state.AutoArts.value and player.in_combat) or state.AutoBuffMode.value ~= 'Off'))) then
-	
-		local abil_recasts = windower.ffxi.get_ability_recasts()
-
-		if abil_recasts[232] < latency then
-			windower.chat.input('/ja "Dark Arts" <me>')
-			tickdelay = os.clock() + 1.1
-			return true
-		end
-
-	end
-	
 	return false
 end
 

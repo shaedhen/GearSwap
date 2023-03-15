@@ -80,7 +80,7 @@ function job_setup()
     indi_timer = ''
     indi_duration = 180
 
-	init_job_states({"Capacity","AutoRuneMode","AutoTrustMode","AutoNukeMode","AutoWSMode","AutoShadowMode","AutoFoodMode","AutoStunMode","AutoDefenseMode"},{"AutoBuffMode","Weapons","OffenseMode","WeaponskillMode","IdleMode","Passive","RuneElement","RecoverMode","ElementalMode","CastingMode","TreasureMode",})
+	init_job_states()
 end
 
 -------------------------------------------------------------------------------------------------------------------
@@ -168,16 +168,7 @@ function job_precast(spell, spellMap, eventArgs)
 end
 
 function job_post_precast(spell, spellMap, eventArgs)
-	if spell.type == 'WeaponSkill' then
-		local WSset = standardize_set(get_precast_set(spell, spellMap))
-
-		if (WSset.ear1 == "Moonshade Earring" or WSset.ear2 == "Moonshade Earring") then
-			-- Replace Moonshade Earring if we're at cap TP
-			if sets.MaxTP and get_effective_player_tp(spell, WSset) > 3200 then
-				equip(sets.MaxTP[spell.english] or sets.MaxTP)
-			end
-		end
-	end
+  checkMoonshadeBonus(spell,spellMap,eventArgs)
 end
 
 function job_post_midcast(spell, spellMap, eventArgs)
@@ -230,9 +221,25 @@ function job_post_midcast(spell, spellMap, eventArgs)
 				disable('head')
 				blazelocked = true
 			end
-		elseif state.Buff.Entrust and spell.english:startswith('Indi-') then
-			if sets.midcast.Geomancy.main == 'Idris' and item_available('Solstice') then
-				equip({main="Solstice"})
+			
+			if can_dual_wield and sets.midcast.Geomancy.DW then
+				equip(sets.midcast.Geomancy.DW)
+			end
+		elseif spell.english:startswith('Indi-') then
+			if sets.midcast.Geomancy.Indi then
+				if can_dual_wield and sets.midcast.Geomancy.Indi.DW then
+					equip(sets.midcast.Geomancy.Indi.DW)
+				else
+					equip(sets.midcast.Geomancy.Indi)
+				end
+			end
+			
+			if state.Buff.Entrust and sets.buff.Entrust then
+				if can_dual_wield and sets.buff.Entrust.DW then
+					equip(sets.buff.Entrust.DW)
+				else
+					equip(sets.buff.Entrust)
+				end
 			end
 		end
     end
@@ -546,11 +553,12 @@ function job_tick()
 end
 
 function check_geo()
+local abil_recasts = windower.ffxi.get_ability_recasts()
 	if state.AutoBuffMode.value ~= 'Off' and not data.areas.cities:contains(world.area) then
 		if not pet.isvalid then
 			used_ecliptic = false
 		end
-		local abil_recasts = windower.ffxi.get_ability_recasts()
+		
 		if autoindi ~= 'None' and ((not player.indi) or last_indi ~= autoindi) then
 			windower.chat.input('/ma "Indi-'..autoindi..'" <me>')
 			tickdelay = os.clock() + 2.1
@@ -566,7 +574,7 @@ function check_geo()
 				tickdelay = os.clock() + 1.1
 				return true
 			elseif state.AutoGeoAbilities.value and abil_recasts[244] < latency and not used_ecliptic and not buffactive.Bolster then
-				windower.chat.input('/ja "Ecliptic Attrition" <me>;')
+				windower.chat.input('/ja "Lasting Emanation" <me>;')
 				used_ecliptic = true
 				return true
 			else
@@ -584,6 +592,20 @@ function check_geo()
 			end
 		end
 	end
+	if pet.isvalid then
+			local pet = windower.ffxi.get_mob_by_target("pet")
+			if pet.distance:sqrt() > 50 then --If pet is greater than detectable.
+				windower.chat.input('/ja "Full Circle" <me>')
+				tickdelay = os.clock() + 1.1
+				return true
+			elseif state.AutoGeoAbilities.value and abil_recasts[244] < latency and not used_ecliptic and not buffactive.Bolster then
+				windower.chat.input('/ja "Lasting Emanation" <me>;')
+				used_ecliptic = true
+				return true
+			else
+				return false
+			end
+	end		
 	return false
 end
 

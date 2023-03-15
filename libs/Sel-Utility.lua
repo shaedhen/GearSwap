@@ -119,87 +119,6 @@ do
     end
 end
 
--- Some mythics have special durations for level 1 and 2 aftermaths
-local special_aftermath_mythics = S{'Tizona', 'Kenkonken', 'Murgleis', 'Yagrush', 'Carnwenhan', 'Nirvana', 'Tupsimati', 'Idris'}
-
--- Call from job_precast() to setup aftermath information for custom timers.
-function custom_aftermath_timers_precast(spell)
-    if spell.type == 'WeaponSkill' then
-        info.aftermath = {}
-        
-        local relic_ws = data.weaponskills.relic[player.equipment.main] or data.weaponskills.relic[player.equipment.range]
-        local mythic_ws = data.weaponskills.mythic[player.equipment.main] or data.weaponskills.mythic[player.equipment.range]
-        local empy_ws = data.weaponskills.empyrean[player.equipment.main] or data.weaponskills.empyrean[player.equipment.range]
-        
-        if not relic_ws and not mythic_ws and not empy_ws then
-            return
-        end
-
-        info.aftermath.weaponskill = spell.english
-        info.aftermath.duration = 0
-        
-        info.aftermath.level = math.floor(player.tp / 1000)
-        if info.aftermath.level == 0 then
-            info.aftermath.level = 1
-        end
-        
-        if spell.english == relic_ws then
-            info.aftermath.duration = math.floor(0.2 * player.tp)
-            if info.aftermath.duration < 20 then
-                info.aftermath.duration = 20
-            end
-        elseif spell.english == empy_ws then
-            -- nothing can overwrite lvl 3
-            if buffactive['Aftermath: Lv.3'] then
-                return
-            end
-            -- only lvl 3 can overwrite lvl 2
-            if info.aftermath.level ~= 3 and buffactive['Aftermath: Lv.2'] then
-                return
-            end
-            
-            -- duration is based on aftermath level
-            info.aftermath.duration = 30 * info.aftermath.level
-        elseif spell.english == mythic_ws then
-            -- nothing can overwrite lvl 3
-            if buffactive['Aftermath: Lv.3'] then
-                return
-            end
-            -- only lvl 3 can overwrite lvl 2
-            if info.aftermath.level ~= 3 and buffactive['Aftermath: Lv.2'] then
-                return
-            end
-
-            -- Assume mythic is lvl 80 or higher, for duration
-                        
-            if info.aftermath.level == 1 then
-                info.aftermath.duration = (special_aftermath_mythics:contains(player.equipment.main) and 270) or 90
-            elseif info.aftermath.level == 2 then
-                info.aftermath.duration = (special_aftermath_mythics:contains(player.equipment.main) and 270) or 120
-            else
-                info.aftermath.duration = 180
-            end
-        end
-    end
-end
-
-
--- Call from job_aftercast() to create the custom aftermath timer.
-function custom_aftermath_timers_aftercast(spell)
-    if not spell.interrupted and spell.type == 'WeaponSkill' and
-       info.aftermath and info.aftermath.weaponskill == spell.english and info.aftermath.duration > 0 then
-
-        local aftermath_name = 'Aftermath: Lv.'..tostring(info.aftermath.level)
-        send_command('timers d "Aftermath: Lv.1"')
-        send_command('timers d "Aftermath: Lv.2"')
-        send_command('timers d "Aftermath: Lv.3"')
-        send_command('timers c "'..aftermath_name..'" '..tostring(info.aftermath.duration)..' down abilities/00027.png')
-
-        info.aftermath = {}
-    end
-end
-
-
 -------------------------------------------------------------------------------------------------------------------
 -- Utility functions for changing spells and target types in an automatic manner.
 -------------------------------------------------------------------------------------------------------------------
@@ -471,72 +390,68 @@ end
 -- Elemental gear utility functions.
 -------------------------------------------------------------------------------------------------------------------
 
--- General handler function to set all the elemental gear for an action.
-function set_elemental_gear(spell, spellMap)
-	--No longer needed because of Fotia.
-    --set_elemental_gorget_belt(spell)
-    set_elemental_obi_cape_ring(spell, spellMap)
-    --set_elemental_staff(spell, spellMap)
-end
-
-
---[[ Set the name field of the predefined gear vars for gorgets and belts, for the specified weaponskill. No longer needed because of Fotia.
-function set_elemental_gorget_belt(spell)
-    if spell.type ~= 'WeaponSkill' then
-        return
-    end
-
-    -- Get the union of all the skillchain elements for the weaponskill
-    local weaponskill_elements = S{}:
-        union(skillchain_elements[spell.skillchain_a]):
-        union(skillchain_elements[spell.skillchain_b]):
-        union(skillchain_elements[spell.skillchain_c])
-    
-    gear.ElementalGorget.name = get_elemental_item_name("gorget", weaponskill_elements) or gear.default.weaponskill_neck  or ""
-    gear.ElementalBelt.name   = get_elemental_item_name("belt", weaponskill_elements)   or gear.default.weaponskill_waist or ""
-end
-]]--
-
 -- Function to get an appropriate obi/cape/ring for the current action.
 function set_elemental_obi_cape_ring(spell, spellMap)
     if spell.element == 'None' then
         return
     end
 
-	if spell.element == world.weather_element or spell.element == world.day_element then
+	--[[
+	if spell.element == world.weather_element or spell.element == world.day_element and item_available("Twilight Cape") then
 		gear.ElementalCape.name = "Twilight Cape"
-		gear.ElementalObi.name = "Hachirin-no-Obi"
 	else
-		gear.ElementalObi.name = gear.default.obi_waist
 		gear.ElementalCape.name = gear.default.obi_back
 	end
+	]]
+	if spell.english:endswith('helix') or spell.english:endswith('helix II') then
+		if item_available("Orpheus's Sash") then
+			local distance = spell.target.distance - spell.target.model_size
+			local orpheus_intensity = (16 - (distance <= 1 and 1 or distance >= 15 and 15 or distance))
+				if orpheus_intensity > 5 then
+					equip({waist="Orpheus's Sash"})
+				end
+			end
+	elseif is_nuke(spell, spellMap) then
+		local distance = spell.target.distance - spell.target.model_size
+		local single_obi_intensity = 0
+		local orpheus_intensity = 0
+		local hachirin_intensity = 0
 
-	if is_nuke(spell, spellMap) then
-		local orpheus_avail = item_available("Orpheus's Sash")
-		if spell.english:endswith('helix') then
-			if orpheus_avail and spell.target.distance < 13 then
-				gear.ElementalObi.name = "Orpheus's Sash"
-			end
-		else
-			local hachirin_avail = item_available('Hachirin-no-Obi')
-			if hachirin_avail and spell.element == world.weather_element and world.weather_intensity == 2 then
-				gear.ElementalObi.name = "Hachirin-no-Obi"
-			elseif orpheus_avail and spell.target.distance < 3 then
-				gear.ElementalObi.name = "Orpheus's Sash"
-			elseif hachirin_avail and spell.element == world.weather_element and spell.element == world.day_element then
-				gear.ElementalObi.name = "Hachirin-no-Obi"
-			elseif orpheus_avail and spell.target.distance < 8 then
-				gear.ElementalObi.name = "Orpheus's Sash"
-			elseif hachirin_avail and (spell.element == world.weather_element or spell.element == world.day_element) then
-				gear.ElementalObi.name = "Hachirin-no-Obi"
-			elseif orpheus_avail and spell.target.distance < 13 then
-				gear.ElementalObi.name = "Orpheus's Sash"
-			else
-				gear.ElementalObi.name = gear.default.obi_waist
-			end
+		if item_available("Orpheus's Sash") then
+			orpheus_intensity = (16 - (distance <= 1 and 1 or distance >= 15 and 15 or distance))
 		end
 		
-		if spell.element == world.day_element and spell.english ~= 'Impact' and not spell.skill == 'Divine Magic' then
+		if item_available(data.elements.obi_of[spell.element]) then
+			if spell.element == world.weather_element then
+				single_obi_intensity = single_obi_intensity + data.weather_bonus_potency[world.weather_intensity]
+			end
+			if spell.element == world.day_element then
+				single_obi_intensity = single_obi_intensity + 10
+			end
+		end
+
+		if item_available('Hachirin-no-Obi') then
+			if spell.element == world.weather_element then
+				hachirin_intensity = hachirin_intensity + data.weather_bonus_potency[world.weather_intensity]
+			elseif spell.element == data.elements.weak_to[world.weather_element] then
+				hachirin_intensity = hachirin_intensity - data.weather_bonus_potency[world.weather_intensity]
+			end
+			if spell.element == world.day_element then
+				hachirin_intensity = hachirin_intensity + 10
+			elseif spell.element == data.elements.weak_to[world.day_element] then
+				hachirin_intensity = hachirin_intensity - 10
+			end
+		end
+
+		if hachirin_intensity >= single_obi_intensity and hachirin_intensity >= orpheus_intensity and hachirin_intensity >= 5 then
+			equip({waist="Hachirin-no-Obi"})
+		elseif single_obi_intensity >= orpheus_intensity and single_obi_intensity >= 5 then
+			equip({waist=data.elements.obi_of[spell.element]})
+		elseif orpheus_intensity >= 5 then
+			equip({waist="Orpheus's Sash"})
+		end
+	
+		if spell.element == world.day_element and spell.english ~= 'Impact' and not spell.skill == 'Divine Magic' and item_available("Zodiac Ring") then
 			gear.ElementalRing.name = "Zodiac Ring"
 		else
 			gear.ElementalRing.name = gear.default.obi_ring
@@ -913,7 +828,8 @@ end
 -- Variables it sets: classes.Daytime, and classes.DuskToDawn.  They are set to true
 
 function item_available(item)
-	if player.inventory[item] or player.wardrobe[item] or player.wardrobe2[item] or player.wardrobe3[item] or player.wardrobe4[item] or player.satchel[item] then
+	if player.inventory[item] or player.wardrobe[item] or player.wardrobe2[item] or player.wardrobe3[item] or player.wardrobe4[item] 
+	or player.wardrobe5[item] or player.wardrobe6[item] or player.wardrobe7[item] or player.wardrobe8[item] or player.satchel[item] then
 		return true
 	else
 		return false
@@ -921,7 +837,9 @@ function item_available(item)
 end
 
 function item_owned(item)
-	if player.inventory[item] or player.wardrobe[item] or player.wardrobe2[item] or player.wardrobe3[item] or player.wardrobe4[item] or player.safe[item] or player.safe2[item] or player.storage[item] or player.locker[item] or player.satchel[item] or player.sack[item] or player.case[item] then
+	if player.inventory[item] or player.wardrobe[item] or player.wardrobe2[item] or player.wardrobe3[item] or player.wardrobe4[item]
+or player.wardrobe5[item] or player.wardrobe6[item] or player.wardrobe7[item] or player.wardrobe8[item]
+	or player.safe[item] or player.safe2[item] or player.storage[item] or player.locker[item] or player.satchel[item] or player.sack[item] or player.case[item] then
 		return true
 	else
 		return false
@@ -1011,7 +929,7 @@ function check_midaction(spell, spellMap, eventArgs)
 	if os.clock() < next_cast and not state.RngHelper.value then
 		if eventArgs and not (spell.type:startswith('BloodPact') and state.Buff["Astral Conduit"]) then
 			eventArgs.cancel = true
-			if delayed_cast == '' then
+			if delayed_cast == '' and state.MiniQueue.value then
 				windower.send_command:schedule((next_cast - os.clock()),'gs c delayedcast')
 			end
 			delayed_cast = spell.english
@@ -1598,47 +1516,75 @@ function check_doomed()
 	return false
 end
 
-function check_ws()
-	if state.AutoWSMode.value and not state.RngHelper.value and player.status == 'Engaged' and player.target.type == "MONSTER" and player.tp > 999 and not silent_check_amnesia() and player.target and not (player.target.distance > (19.7 + player.target.model_size)) then
+function close_ws()
+  tickdelay = os.clock() + 2.8
+  return true
+end  
 
-	local available_ws = S(windower.ffxi.get_abilities().weapon_skills)
+function check_ws()
+	if state.AutoWSMode.value and not state.RngHelper.value and player.status == 'Engaged' and player.target and player.target.type == "MONSTER" and player.tp > 999 and not      silent_check_amnesia() and not (player.target.distance > (19.7 + player.target.model_size)) then
+
+    local available_ws = S(windower.ffxi.get_abilities().weapon_skills)
 		
-		if player.hpp < 41 and state.AutoWSRestore.value and available_ws:contains(47) and player.target.distance < (3.2 + player.target.model_size) then
-			windower.chat.input('/ws "Sanguine Blade" <t>')
-			tickdelay = os.clock() + 2.8
-			return true
-		elseif player.hpp < 41 and state.AutoWSRestore.value and available_ws:contains(105) and player.target.distance < (3.2 + player.target.model_size) then
-			windower.chat.input('/ws "Catastrophe" <t>')
-			tickdelay = os.clock() + 2.8
-			return true
-		elseif player.mpp < 31 and state.AutoWSRestore.value and available_ws:contains(109) and player.target.distance < (3.2 + player.target.model_size) then
-			windower.chat.input('/ws "Entropy" <t>')
-			tickdelay = os.clock() + 2.8
-			return true
-		elseif player.mpp < 31 and state.AutoWSRestore.value and available_ws:contains(171) and player.target.distance < (3.2 + player.target.model_size) then
-			windower.chat.input('/ws "Mystic Boon" <t>')
-			tickdelay = os.clock() + 2.8
-			return true
-		elseif player.target.distance > (3.2 + player.target.model_size) and not data.weaponskills.ranged:contains(autows) then
+    if player.target.distance > (3.2 + player.target.model_size) and not data.weaponskills.ranged:contains(autows) then
 			return false
-		elseif data.equipment.relic_weapons:contains(player.equipment.main) and state.MaintainAftermath.value and (not buffactive['Aftermath']) then
-			windower.chat.input('/ws "'..data.weaponskills.relic[player.equipment.main]..'" <t>')
-			tickdelay = os.clock() + 2.8
-			return true
-		elseif (buffactive['Aftermath: Lv.3'] or not state.MaintainAftermath.value or not data.equipment.mythic_weapons:contains(player.equipment.main)) and player.tp >= autowstp then
-			windower.chat.input('/ws "'..autows..'" <t>')
-			tickdelay = os.clock() + 2.8
-			return true
-		elseif player.tp == 3000 then
-			windower.chat.input('/ws "'..data.weaponskills.mythic[player.equipment.main]..'" <t>')
-			tickdelay = os.clock() + 2.8
-			return true
-		else
-			return false
+    end
+    
+    if state.AutoWSRestore.value then
+      if player.hpp < 41 then
+        if available_ws:contains(47) then
+          windower.chat.input('/ws "Sanguine Blade" <t>')
+          return close_ws()
+        elseif available_ws:contains(105) then
+          windower.chat.input('/ws "Catastrophe" <t>')
+          return close_ws()
+        end
+      elseif player.mpp < 31 then
+        if available_ws:contains(109) then
+          windower.chat.input('/ws "Entropy" <t>')
+          return close_ws()
+        elseif available_ws:contains(171) then
+          windower.chat.input('/ws "Mystic Boon" <t>')
+          return close_ws()
+        end
+      end  
+    end    
+    local isRelic = data.equipment.relic_weapons:contains(player.equipment.main)
+    local isMythic = data.equipment.mythic_weapons:contains(player.equipment.main)
+    local isEmpy = data.equipment.empyrean_weapons:contains(player.equipment.main)
+    local isAeonic = data.equipment.aeonic_weapons:contains(player.equipment.main)
+    
+		if  buffactive['Aftermath: Lv.3'] then
+		if player.tp >= autowstp or player.tp == 3000 then
+      windower.chat.input('/ws "'..autows..'" <t>')
+      return close_ws()
 		end
-	else
-		return false
-	end
+		end
+	
+	if state.MaintainAftermath.value and (not buffactive['Aftermath: Lv.3']) then
+      if player.tp < 3000 and (isRelic or isMythic or isEmpy or isAeonic)  then
+        return false
+      end
+      if isRelic then
+        windower.chat.input('/ws "'..data.weaponskills.relic[player.equipment.main]..'" <t>')
+        return close_ws()
+      elseif isMythic then
+        windower.chat.input('/ws "'..data.weaponskills.mythic[player.equipment.main]..'" <t>')
+        return close_ws()
+      elseif isEmpy then
+        windower.chat.input('/ws "'..data.weaponskills.empyrean[player.equipment.main]..'" <t>')
+        return close_ws()
+      elseif isAeonic then
+        windower.chat.input('/ws "'..data.weaponskills.aeonic[player.equipment.main]..'" <t>')
+        return close_ws()
+      end             
+    end
+    if player.tp >= autowstp or player.tp == 3000 then
+      windower.chat.input('/ws "'..autows..'" <t>')
+      return close_ws()
+    end
+    return false
+  end  
 end
 
 function have_trust(trustname)
@@ -1670,7 +1616,7 @@ function is_party_member(playerid)
 end
 
 function get_usable_item(name)--returns time that you can use the item again
-	for _,n in pairs({"inventory","wardrobe","wardrobe2","wardrobe3","wardrobe4","satchel"}) do
+	for _,n in pairs({"inventory","wardrobe","wardrobe2","wardrobe3","wardrobe4","wardrobe5","wardrobe6","wardrobe7","wardrobe8","satchel"}) do
         for _,v in pairs(gearswap.items[n]) do
             if type(v) == "table" and v.id ~= 0 and res.items[v.id].english:lower() == name:lower() then
                 return extdata.decode(v)
@@ -1997,11 +1943,11 @@ end
 
 function is_nuke(spell, spellMap)
 	if (
-		(spell.skill == 'Elemental Magic' and spellMap ~= 'ElementalEnfeeble') or
+		(spell.skill == 'Elemental Magic' and spellMap ~= 'ElementalEnfeeble' and spell.english ~= 'Impact') or
 	    (player.main_job == 'BLU' and spell.skill == 'Blue Magic' and spellMap and spellMap:contains('Magical')) or
 		(player.main_job == 'NIN' and spell.skill == 'Ninjutsu' and spellMap and spellMap:contains('ElementalNinjutsu')) or
-		spell.english == 'Comet' or spell.english == 'Meteor' or spell.english == 'Impact' or spell.english == 'Death' or
-		spell.english:startswith('Banish') or spell.english:startswith('Drain')
+		spell.english == 'Comet' or spell.english == 'Meteor' or spell.english == 'Death' or spell.english:startswith('Banish')
+		or spell.english:startswith('Drain') or spell.english:startswith('Aspir')
 		) then
 		
 		return true
@@ -2017,9 +1963,12 @@ function ammo_left()
 	local Wardrobe2Ammo = ((player.wardrobe2[player.equipment.ammo] or {}).count or 0)
 	local Wardrobe3Ammo = ((player.wardrobe3[player.equipment.ammo] or {}).count or 0)
 	local Wardrobe4Ammo = ((player.wardrobe4[player.equipment.ammo] or {}).count or 0)
-		
+	local Wardrobe5Ammo = ((player.wardrobe5[player.equipment.ammo] or {}).count or 0)
+  local Wardrobe6Ammo = ((player.wardrobe6[player.equipment.ammo] or {}).count or 0)
+  local Wardrobe7Ammo = ((player.wardrobe7[player.equipment.ammo] or {}).count or 0)
+  local Wardrobe8Ammo = ((player.wardrobe8[player.equipment.ammo] or {}).count or 0)
 	local AmmoLeft = InventoryAmmo + WardrobeAmmo + Wardrobe2Ammo + Wardrobe3Ammo + Wardrobe4Ammo 
-		
+                    + Wardrobe5Ammo + Wardrobe6Ammo + Wardrobe7Ammo + Wardrobe8Ammo
 	return AmmoLeft	
 end
 
@@ -2124,29 +2073,42 @@ function face_target()
 end
 
 function check_ammo()
- 
 	if state.AutoAmmoMode.value and player.equipment.range and not player.in_combat and not world.in_mog_house and not useItem then
-		local ammo_to_stock
-		if type(ammostock) == 'table' and ammostock[data.equipment.rema_ranged_weapons_ammo[player.equipment.range]] then
-			ammo_to_stock = ammostock[data.equipment.rema_ranged_weapons_ammo[player.equipment.range]]
+		if type(ammostock) == 'table' then
+			for ammo, ammo_count in pairs(ammostock) do
+				if count_total_ammo(ammo) < ammo_count then
+					if item_available(data.equipment.rema_ammo_pouch_of[ammo]) then
+						if ((get_usable_item(data.equipment.rema_ammo_pouch_of[ammo]).next_use_time) + 18000 - os.time()) < 10 then
+							add_to_chat(217, "You're low on " .. ammo .. ", using " .. data.equipment.rema_ammo_pouch_of[ammo] .. ".")
+							useItem = true
+							useItemName = data.equipment.rema_ammo_pouch_of[ammo]
+							useItemSlot = 'waist'
+							return true
+						end
+					elseif data.equipment.rema_ammo_weapon_of[ammo] == player.equipment.range and get_usable_item(player.equipment.range).usable then
+						windower.chat.input("/item '".. player.equipment.range .."' <me>")
+						add_to_chat(217,"You're low on ".. ammo ..", using ".. player.equipment.range ..".")
+						tickdelay = os.clock() + 5
+						return true
+					end
+				end
+			end
 		else
-			ammo_to_stock = ammostock
-		end
-	
-		if data.equipment.rema_ranged_weapons:contains(player.equipment.range) and count_total_ammo(data.equipment.rema_ranged_weapons_ammo[player.equipment.range]) < ammo_to_stock then
-			if get_usable_item(player.equipment.range).usable then
-				windower.chat.input("/item '"..player.equipment.range.."' <me>")
-				add_to_chat(217,"You're low on "..data.equipment.rema_ranged_weapons_ammo[player.equipment.range]..", using "..player.equipment.range..".")
-				tickdelay = os.clock() + 2
-				return true
-			elseif item_available(data.equipment.rema_ranged_weapons_ammo_pouch[player.equipment.range]) then
-				if ((get_usable_item(data.equipment.rema_ranged_weapons_ammo_pouch[player.equipment.range]).next_use_time) + 18000 -os.time()) < 10 then
-					add_to_chat(217,"You're low on "..data.equipment.rema_ranged_weapons_ammo[player.equipment.range]..", using "..data.equipment.rema_ranged_weapons_ammo_pouch[player.equipment.range]..".")
-					useItem = true
-					useItemName = data.equipment.rema_ranged_weapons_ammo_pouch[player.equipment.range]
-					useItemSlot = 'waist'
+			if data.equipment.rema_ranged_weapons:contains(player.equipment.range) and count_total_ammo(data.equipment.rema_ranged_weapons_ammo[player.equipment.range]) < ammostock then
+				if get_usable_item(player.equipment.range).usable then
+					windower.chat.input("/item '"..player.equipment.range.."' <me>")
+					add_to_chat(217,"You're low on "..data.equipment.rema_ranged_weapons_ammo[player.equipment.range]..", using "..player.equipment.range..".")
+					tickdelay = os.clock() + 5
 					return true
-				end				
+				elseif item_available(data.equipment.rema_ranged_weapons_ammo_pouch[player.equipment.range]) then
+					if ((get_usable_item(data.equipment.rema_ranged_weapons_ammo_pouch[player.equipment.range]).next_use_time) + 18000 -os.time()) < 10 then
+						add_to_chat(217,"You're low on "..data.equipment.rema_ranged_weapons_ammo[player.equipment.range]..", using "..data.equipment.rema_ranged_weapons_ammo_pouch[player.equipment.range]..".")
+						useItem = true
+						useItemName = data.equipment.rema_ranged_weapons_ammo_pouch[player.equipment.range]
+						useItemSlot = 'waist'
+						return true
+					end
+				end
 			end
 		end
 	end
@@ -2204,7 +2166,7 @@ function check_rune()
 		elseif player.main_job == 'RUN' and abil_recasts[120] < latency and player.hpp < 65 then
 			windower.chat.input('/ja "Battuta" <me>')
 			tickdelay = os.clock() + 1.8
-			return true		  						
+			return true	
 			
 		elseif not buffactive['Pflug'] and abil_recasts[59] < latency then
 			windower.chat.input('/ja "Pflug" <me>')
@@ -2227,7 +2189,7 @@ function check_rune()
 				elseif player.hpp < 50 and abil_recasts[117] < latency then
 					windower.chat.input('/ja "Liement" <me>')
 					tickdelay = os.clock() + 2.5
-					return true												  								 																			   											 									
+					return true	
 				end
 			end
 		elseif not (buffactive['Vallation'] or buffactive['Valiance']) then
@@ -2251,10 +2213,10 @@ function check_ws_acc()
 end
 
 function is_dual_wielding()
-	if ((player.equipment.main and not (player.equipment.sub == 'empty' or player.equipment.sub:contains('Grip') or player.equipment.sub:contains('Strap') or res.items[item_name_to_id(player.equipment.sub)].shield_size))) then
-		return true
-	else
-		return false
+	if player.equipment.main and player.equipment.sub and player.equipment.sub ~= 'empty' then
+		if data.skills.one_handed_combat:contains(res.items[item_name_to_id(player.equipment.sub)].skill) then
+			return true
+		end
 	end
 end
 
@@ -2293,7 +2255,13 @@ function update_combat_form()
 end
 
 function item_name_to_id(name)
-    return (player.inventory[name] or player.wardrobe[name] or player.wardrobe2[name] or player.wardrobe3[name] or player.wardrobe4[name] or {id=nil}).id
+	if name == nil or name == 'empty' then
+		return 22299
+	else
+	return (player.inventory[name] or player.wardrobe[name] or player.wardrobe2[name] or player.wardrobe3[name] 
+	or player.wardrobe4[name] or player.wardrobe5[name] or player.wardrobe6[name] or player.wardrobe7[name] 
+	or player.wardrobe8[name] or {id=nil}).id
+	end
 end
 
 function get_item_table(item)
@@ -2388,9 +2356,6 @@ windower.raw_register_event('outgoing chunk',function(id,data,modified,is_inject
 			if sets.Kiting and not (player.status == 'Event' or (os.clock() < (next_cast + 1)) or pet_midaction() or (os.clock() < (petWillAct + 2))) then
 				send_command('gs c forceequip')
 			end
-			if state.RngHelper.value then
-				send_command('gs rh clear')
-			end
 			if buffup~= '' then
 				buffup = ''
 				add_to_chat(123,'Buffup cancelled due to movement.')
@@ -2446,6 +2411,41 @@ function get_effective_player_tp(spell, WSset)
 	return effective_tp
 end
 
+function checkMoonshadeBonus(spell,spellMap,eventArgs)
+	if spell.type == 'WeaponSkill' then
+		local WSset = standardize_set(get_precast_set(spell, spellMap))
+		local wsacc = check_ws_acc()
+		
+		if (WSset.ear1 == "Moonshade Earring" or WSset.ear2 == "Moonshade Earring") then
+			-- Replace Moonshade Earring if we're at cap TP
+			if get_effective_player_tp(spell, WSset) > 3200 then
+				if data.weaponskills.elemental:contains(spell.english) then
+					if wsacc:contains('Acc') and sets.MagicalAccMaxTP then
+						equip(sets.MagicalAccMaxTP[spell.english] or sets.MagicalAccMaxTP)
+					elseif sets.MagicalMaxTP then
+						equip(sets.MagicalMaxTP[spell.english] or sets.MagicalMaxTP)
+					else
+					end
+				elseif spell.skill == 26 then
+					if wsacc:contains('Acc') and sets.RangedAccMaxTP then
+						equip(sets.RangedAccMaxTP[spell.english] or sets.RangedAccMaxTP)
+					elseif sets.RangedMaxTP then
+						equip(sets.RangedMaxTP[spell.english] or sets.RangedMaxTP)
+					else
+					end
+				else
+					if wsacc:contains('Acc') and not buffactive['Sneak Attack'] and sets.AccMaxTP then
+						equip(sets.AccMaxTP[spell.english] or sets.AccMaxTP)
+					elseif sets.MaxTP then
+						equip(sets.MaxTP[spell.english] or sets.MaxTP)
+					else
+					end
+				end
+			end
+		end
+	end
+end
+
 function standardize_set(set)
 	local standardized_set = {}
 	
@@ -2459,11 +2459,11 @@ function standardize_set(set)
 		end
     end
 
-	standardized_set.ear1 = standardized_set.ear1 or standardized_set.left_ear or standardized_set.lear or nil
-	standardized_set.ear2 = standardized_set.ear2 or standardized_set.right_ear or standardized_set.rear or nil
-	standardized_set.ring1 = standardized_set.ring1 or standardized_set.left_ring or standardized_set.lring or nil
-	standardized_set.ring2 = standardized_set.ring2 or standardized_set.right_ring or standardized_set.rring or nil
-	standardized_set.range = standardized_set.range or standardized_set.ranged or nil
+	standardized_set.ear1 = standardized_set.ear1 or standardized_set.left_ear or standardized_set.lear or ''
+	standardized_set.ear2 = standardized_set.ear2 or standardized_set.right_ear or standardized_set.rear or ''
+	standardized_set.ring1 = standardized_set.ring1 or standardized_set.left_ring or standardized_set.lring or ''
+	standardized_set.ring2 = standardized_set.ring2 or standardized_set.right_ring or standardized_set.rring or ''
+	standardized_set.range = standardized_set.range or standardized_set.ranged or ''
 	
 	return standardized_set
 end
@@ -2624,4 +2624,180 @@ end
 
 function get_fuzzy_name(name)
 	return name:lower():gsub("%s", ""):gsub("%p", "")
+end
+
+function check_hasso()
+if (player.sub_job == 'SAM' or player.job == 'SAM') and player.status == 'Engaged' and not (state.Stance.value == 'None' or state.Buff.Hasso or state.Buff.Seigan or state.Buff['SJ Restriction'] or main_weapon_is_one_handed() or silent_check_amnesia()) then
+		
+		local abil_recasts = windower.ffxi.get_ability_recasts()
+		
+		if state.Stance.value == 'Hasso' and abil_recasts[138] < latency then
+			windower.chat.input('/ja "Hasso" <me>')
+			tickdelay = os.clock() + 1.1
+			return true
+		elseif state.Stance.value == 'Seigan' and abil_recasts[139] < latency then
+			windower.chat.input('/ja "Seigan" <me>')
+			tickdelay = os.clock() + 1.1
+			return true
+		end
+	
+	end		
+	return false
+end
+
+function check_melee_sub_buffs()
+  if state.AutoBuffMode.value ~= 'Off' and player.in_combat then
+		
+		local abil_recasts = windower.ffxi.get_ability_recasts()
+
+		if state.Buff['SJ Restriction'] then
+			return false
+		end
+    if player.sub_job == 'DRK' and not buffactive['Last Resort'] and abil_recasts[87] < latency then
+			windower.chat.input('/ja "Last Resort" <me>')
+			tickdelay = os.clock() + 1.1
+			return true
+		elseif player.sub_job == 'WAR' and not buffactive.Berserk and abil_recasts[1] < latency then
+			windower.chat.input('/ja "Berserk" <me>')
+			tickdelay = os.clock() + 1.1
+			return true
+		elseif player.sub_job == 'WAR' and not buffactive.Aggressor and abil_recasts[4] < latency then
+			windower.chat.input('/ja "Aggressor" <me>')
+			tickdelay = os.clock() + 1.1
+			return true
+		else
+			return false
+		end
+	end
+		
+	return false
+  
+end  
+
+function get_general_states()
+return {"AutoBuffMode","Weapons","HybridMode","OffenseMode","WeaponskillMode","IdleMode","Passive","TreasureMode",}
+end
+
+function get_general_toggles()
+return {"Capacity","AutoTrustMode","AutoWSMode","AutoFoodMode","AutoDefenseMode",}
+end
+
+function get_specific_states_by_job()
+	local s_b_j =
+	{
+		['WAR'] = {},
+		['MNK'] = {},
+		['WHM'] = {"ElementalMode","CastingMode",},
+		['BLM'] = {"ElementalMode","CastingMode","RecoverMode",},
+		['RDM'] = {"ElementalMode","CastingMode","RecoverMode",},
+		['THF'] = {},
+		['PLD'] = {"PhysicalDefenseMode","MagicalDefenseMode","ResistDefenseMode",},
+		['DRK'] = {"ElementalMode","CastingMode","DrainSwapWeaponMode"},
+		['BST'] = {"PetMode","JugMode","RewardMode"},
+		['BRD'] = {"ExtraSongsMode","WeaponsSongMode"},
+		['RNG'] = {"RangedMode",},
+		['SMN'] = {},
+		['SAM'] = {"Stance"},
+		['NIN'] = {"ElementalMode","CastingMode","Stance"},
+		['DRG'] = {},
+		['BLU'] = {"LearningMode","AutoUnbridled"},
+		['COR'] = {"RangedMode","CompensatorMode",},
+		['PUP'] = {"PetMode","AutoManeuvers"},
+		['DNC'] = {"AutoSambaMode","DanceStance"},
+		['SCH'] = {"ElementalMode","CastingMode","RecoverMode",},
+		['GEO'] = {"ElementalMode","CastingMode","RecoverMode",},
+		['RUN'] = {"PhysicalDefenseMode","MagicalDefenseMode","ResistDefenseMode","RuneElement"}
+	}
+	
+	return s_b_j[player.main_job]
+end
+
+function get_specific_states_by_sjob()
+	local s_b_j =
+	{
+		['WAR'] = {},
+		['MNK'] = {},
+		['WHM'] = {"ElementalMode","CastingMode",},
+		['BLM'] = {"ElementalMode","CastingMode",},
+		['RDM'] = {"ElementalMode","CastingMode",},
+		['THF'] = {},
+		['PLD'] = {},
+		['DRK'] = {"ElementalMode","CastingMode",},
+		['BST'] = {},
+		['BRD'] = {},
+		['RNG'] = {},
+		['SMN'] = {},
+		['SAM'] = {"Stance"},
+		['NIN'] = {},
+		['DRG'] = {},
+		['BLU'] = {},
+		['COR'] = {},
+		['PUP'] = {},
+		['DNC'] = {"AutoSambaMode",},
+		['SCH'] = {"ElementalMode","CastingMode",},
+		['GEO'] = {"ElementalMode","CastingMode",},
+		['RUN'] = {"RuneElement"}
+	}
+	
+	return s_b_j[player.sub_job]
+end
+
+function get_specific_toggles_by_job()
+	local t_b_j =
+	{
+		['WAR'] = {},
+		['MNK'] = {"AutoBoost"},
+		['WHM'] = {"AutoCaress","Gambanteinn","BlockLowDevotion",},
+		['BLM'] = {"AutoStunMode","AutoManawell",},
+		['RDM'] = {},
+		['THF'] = {},
+		['PLD'] = {"AutoTankMode","AutoEmblem","AutoCover","AutoMajesty"},
+		['DRK'] = {"AutoStunMode",},
+		['BST'] = {"AutoReadyMode","AutoCallPet","AutoFightMode"},
+		['BRD'] = {"AutoSongMode",},
+		['RNG'] = {"RngHelper","AutoAmmoMode","UseDefaultAmmo"},
+		['SMN'] = {"PactSpamMode","AutoFavor","AutoConvert","AutoBuffBP"},
+		['SAM'] = {},
+		['NIN'] = {"AutoShadowMode","ElementalWheel",},
+		['DRG'] = {"AutoJumpMode","AutoBondMode"},
+		['BLU'] = {},
+		['COR'] = {"LuzafRing","RngHelper",},
+		['PUP'] = {"AutoPuppetMode","PetWSGear","AutoRepairMode","AutoDeployMode","PetEnmityGear","AutoPetMode"},
+		['DNC'] = {},
+		['SCH'] = {},
+		['GEO'] = {"ShowDistance","AutoEntrust","CombatEntrustOnly","AutoGeoAbilities"},
+		['RUN'] = {"AutoTankMode","AutoRuneMode","AutoEffusionMode"}
+	}
+
+	return t_b_j[player.main_job]
+end
+
+function get_specific_toggles_by_sjob()
+	local t_b_j =
+	{
+		['WAR'] = {},
+		['MNK'] = {"AutoBoost"},
+		['WHM'] = {"AutoNukeMode"},
+		['BLM'] = {"AutoNukeMode","AutoStunMode",},
+		['RDM'] = {"AutoNukeMode"},
+		['THF'] = {},
+		['PLD'] = {},
+		['DRK'] = {"AutoStunMode",},
+		['BST'] = {},
+		['BRD'] = {"AutoSongMode",},
+		['RNG'] = {},
+		['SMN'] = {"PactSpamMode",},
+		['SAM'] = {},
+		['NIN'] = {"AutoShadowMode",},
+		['DRG'] = {"AutoJumpMode",},
+		['BLU'] = {},
+		['COR'] = {},
+		['PUP'] = {},
+		['DNC'] = {},
+		['SCH'] = {"AutoNukeMode"},
+		['GEO'] = {"AutoNukeMode"},
+		['RUN'] = {}
+	}
+	
+	return t_b_j[player.sub_job]
 end

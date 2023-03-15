@@ -67,7 +67,7 @@ function job_setup()
 	autofood = 'Miso Ramen'
 	
 	update_melee_groups()
-	init_job_states({"Capacity","AutoRuneMode","AutoTrustMode","AutoTankMode","AutoWSMode","AutoShadowMode","AutoFoodMode","AutoNukeMode","AutoStunMode","AutoDefenseMode"},{"AutoBuffMode","AutoSambaMode","Weapons","OffenseMode","WeaponskillMode","Stance","IdleMode","Passive","RuneElement","PhysicalDefenseMode","MagicalDefenseMode","ResistDefenseMode","CastingMode","TreasureMode",})
+	init_job_states()
 end
 
 -------------------------------------------------------------------------------------------------------------------
@@ -216,14 +216,10 @@ function job_self_command(commandArgs, eventArgs)
 					
 			if spell_recasts[584] < spell_latency then
 				windower.chat.input('/ma "Sheep Song" <t>')
-			elseif spell_recasts[598] < spell_latency then
-				windower.chat.input('/ma "Soporific" <t>')
 			elseif spell_recasts[605] < spell_latency then
 				windower.chat.input('/ma "Geist Wall" <t>')
 			elseif spell_recasts[575] < spell_latency then
 				windower.chat.input('/ma "Jettatura" <t>')
-			elseif spell_recasts[537] < spell_latency then
-				windower.chat.input('/ma "Stinking Gas" <t>')
 			elseif spell_recasts[592] < spell_latency then
 				windower.chat.input('/ma "Blank Gaze" <t>')
 			elseif not check_auto_tank_ws() then
@@ -295,6 +291,8 @@ function job_self_command(commandArgs, eventArgs)
 			elseif not check_auto_tank_ws() then
 				if not state.AutoTankMode.value then add_to_chat(123,'Dancer job abilities not needed.') end
 			end
+		else
+			check_auto_tank_ws()
 		end
 
 	end
@@ -495,27 +493,6 @@ function check_cover(Protectee)
 		windower.chat.input('/ja Cover '..Protectee.name..'')
     end
 end 
-
-function check_hasso()
-	if not (state.Stance.value == 'None' or state.Buff.Hasso or state.Buff.Seigan) and player.sub_job == 'SAM' and player.in_combat and not silent_check_amnesia() then
-		
-		local abil_recasts = windower.ffxi.get_ability_recasts()
-		
-		if state.Stance.value == 'Hasso' and abil_recasts[138] < latency then
-			windower.chat.input('/ja "Hasso" <me>')
-			tickdelay = os.clock() + 1.1
-			return true
-		elseif state.Stance.value == 'Seigan' and abil_recasts[139] < latency then
-			windower.chat.input('/ja "Seigan" <me>')
-			tickdelay = os.clock() + 1.1
-			return true
-		else
-			return false
-		end
-	end
-
-	return false
-end
 
 function check_buff()
 	if state.AutoBuffMode.value ~= 'Off' and not data.areas.cities:contains(world.area) then

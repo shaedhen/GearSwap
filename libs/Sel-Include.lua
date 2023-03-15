@@ -99,6 +99,8 @@ function init_include()
     -- General melee offense/defense modes, allowing for hybrid set builds, as well as idle/resting/weaponskill.
     -- This just defines the vars and sets the descriptions.  List modes with no values automatically
     -- get assigned a 'Normal' default value.
+	state.CraftingMode		  = M{['description'] = 'Crafting Mode','None','Alchemy','Bonecraft','Clothcraft','Cooking','Fishing','Goldsmithing','Leathercraft','Smithing','Woodworking'}
+	state.CraftQuality  	  = M{['description'] = 'Crafting Quality','Normal','HQ','NQ'}
 	state.OffenseMode         = M{['description'] = 'Offense Mode'}
 	state.HybridMode          = M{['description'] = 'Hybrid Mode'}
 	state.RangedMode          = M{['description'] = 'Ranged Mode'}
@@ -121,6 +123,8 @@ function init_include()
 	state.AutoLockstyle	 	  = M(false, 'AutoLockstyle Mode')
 	state.AutoTrustMode 	  = M(false, 'Auto Trust Mode')
 	state.RngHelper		 	  = M(false, 'RngHelper')
+	state.HoverShot		 	  = M(true, 'HoverShot')
+	state.RngHelperQuickDraw  = M(false, 'RngHelperQuickDraw')
 	state.AutoTankMode 		  = M(false, 'Auto Tank Mode')
 	state.AutoAcceptRaiseMode = M(false, 'Auto Accept Raise Mode')
 	state.AutoNukeMode 		  = M(false, 'Auto Nuke Mode')
@@ -146,6 +150,7 @@ function init_include()
 	state.NotifyBuffs		  = M(false, 'Notify Buffs')
 	state.UnlockWeapons		  = M(false, 'Unlock Weapons')
 	state.SelfWarp2Block 	  = M(true, 'Block Warp2 on Self')
+	state.MiniQueue		 	  = M(true, 'MiniQueue')
 
 	state.AutoBuffMode 		  = M{['description'] = 'Auto Buff Mode','Off','Auto','Tank'}
 	state.RuneElement 		  = M{['description'] = 'Rune Element','Ignis','Gelus','Flabra','Tellus','Sulpor','Unda','Lux','Tenebrae'}
@@ -179,6 +184,7 @@ function init_include()
 	state.Buff['Accession'] = buffactive['Accession'] or false
 	state.Buff['Manifestation'] = buffactive['Manifestation'] or false
 	state.Buff['Warcry'] = buffactive['Warcry'] or false
+	state.Buff['SJ Restriction'] = buffactive['SJ Restriction'] or false
 	
     -- Classes describe a 'type' of action.  They are similar to state, but
     -- may have any free-form value, or describe an entire table of mapped values.
@@ -226,6 +232,7 @@ function init_include()
 	petWillAct = 0
 	autonuke = 'Fire'
 	autows = ''
+	autows_list = {}
 	smartws = nil
 	rangedautows = ''
 	autowstp = 1000
@@ -453,10 +460,6 @@ end
 -- Function to perform actions on new targets.
 function target_change(new)
 
-	if state.RngHelper.value then
-		send_command('gs rh clear')
-	end
-
 	local target = windower.ffxi.get_mob_by_target('t')
 	local sub= windower.ffxi.get_mob_by_target('st')
 	if (target ~= nil) and (sub == nil) then
@@ -506,11 +509,13 @@ function default_zone_change(new_id,old_id)
 	state.AutoBuffMode:reset()
 	state.AutoSubMode:reset()
 	state.AutoTrustMode:reset()
-	state.AutoTankMode:reset()
 	state.AutoRuneMode:reset()
 	state.AutoFoodMode:reset()
-	state.AutoWSMode:reset()
 	state.AutoNukeMode:reset()
+	if state.CraftingMode.value ~= 'None' then
+		enable('main','sub','range','ammo','head','neck','lear','rear','body','hands','lring','rring','back','waist','legs','feet')
+		state.CraftingMode:reset()
+	end
 	send_command('gs rh disable')
 	state.RngHelper:reset()
 	useItem = false
@@ -1017,21 +1022,45 @@ function default_post_precast(spell, spellMap, eventArgs)
 			end
 			
 		elseif spell.type == 'WeaponSkill' then
-		
+
 			if state.WeaponskillMode.value ~= 'Proc' and data.weaponskills.elemental:contains(spell.english) then
-				local orpheus_avail = item_available("Orpheus's Sash")
-				local hachirin_avail = item_available('Hachirin-no-Obi')
+				local distance = spell.target.distance - spell.target.model_size
+				local single_obi_intensity = 0
+				local orpheus_intensity = 0
+				local hachirin_intensity = 0
+
+				if item_available("Orpheus's Sash") then
+					orpheus_intensity = (16 - (distance <= 1 and 1 or distance >= 15 and 15 or distance))
+				end
 				
-				if hachirin_avail and spell.element and spell.element == world.weather_element and world.weather_intensity == 2 then
+				if item_available(data.elements.obi_of[spell.element]) then
+					if spell.element == world.weather_element then
+						single_obi_intensity = single_obi_intensity + data.weather_bonus_potency[world.weather_intensity]
+					end
+					if spell.element == world.day_element then
+						single_obi_intensity = single_obi_intensity + 10
+					end
+				end
+				
+				if item_available('Hachirin-no-Obi') then
+					if spell.element == world.weather_element then
+						hachirin_intensity = hachirin_intensity + data.weather_bonus_potency[world.weather_intensity]
+					elseif spell.element == data.elements.weak_to[world.weather_element] then
+						hachirin_intensity = hachirin_intensity - data.weather_bonus_potency[world.weather_intensity]
+					end
+					if spell.element == world.day_element then
+						hachirin_intensity = hachirin_intensity + 10
+					elseif spell.element == data.elements.weak_to[world.day_element] then
+						hachirin_intensity = hachirin_intensity - 10
+					end
+				end
+
+				if single_obi_intensity >= hachirin_intensity and single_obi_intensity >= orpheus_intensity and single_obi_intensity >= 5 then
+					equip({waist=data.elements.obi_of[spell.element]})
+				elseif hachirin_intensity >= orpheus_intensity and hachirin_intensity >= 5 then
 					equip({waist="Hachirin-no-Obi"})
-				elseif orpheus_avail and spell.target.distance < 3 then
+				elseif orpheus_intensity >= 5 then
 					equip({waist="Orpheus's Sash"})
-				elseif hachirin_avail and spell.element and spell.element == world.weather_element and spell.element == world.day_element then
-					equip({waist="Hachirin-no-Obi"})
-				elseif orpheus_avail and spell.target.distance < 8 then
-					equip({waist="Orpheus's Sash"})
-				elseif hachirin_avail and spell.element and (spell.element == world.weather_element or spell.element == world.day_element) then
-					equip({waist="Hachirin-no-Obi"})
 				end
 			end
 
@@ -1118,7 +1147,7 @@ function default_post_midcast(spell, spellMap, eventArgs)
 					end
 					curecheat = false
 				elseif sets.Self_Healing then
-					if sets.Self_Healing.SIRD and state.CastingMode.value:contains('SIRD') and (player.in_combat or being_attacked) and not buffactive['Aquaveil'] then
+					if sets.Self_Healing.SIRD and state.CastingMode.value:contains('SIRD') and (player.in_combat or being_attacked) then
 						equip(sets.Self_Healing.SIRD)
 					else
 						equip(sets.Self_Healing)
@@ -1128,6 +1157,8 @@ function default_post_midcast(spell, spellMap, eventArgs)
 				equip(sets.Self_Refresh)
 			end
 		end
+		
+		set_elemental_obi_cape_ring(spell, spellMap)
 		
 		if state.Capacity.value == true then
 			if set.contains(spell.targets, 'Enemy') then
@@ -1207,10 +1238,6 @@ function default_aftercast(spell, spellMap, eventArgs)
 	if tickdelay < next_cast then tickdelay = next_cast end
 	
 	if not spell.interrupted then
-		if delayed_cast == spell.english then
-			delayed_cast = ''
-			delayed_target = ''
-		end
 		if state.TreasureMode.value ~= 'None' and state.DefenseMode.value == 'None' and spell.target.type == 'MONSTER' and not info.tagged_mobs[spell.target.id] then
 			info.tagged_mobs[spell.target.id] = os.time()
 			if player.target.id == spell.target.id and state.th_gear_is_locked then
@@ -1446,7 +1473,7 @@ end
 -- Function to wrap logic for equipping gear on aftercast, status change, or user update.
 -- @param status : The current or new player status that determines what sort of gear to equip.
 function equip_gear_by_status(playerStatus, petStatus)
-    if _global.debug_mode then add_to_chat(123,'Debug: Equip gear for status ['..tostring(status)..'], HP='..tostring(player.hp)) end
+    if _global.debug_mode then add_to_chat(123,'Debug: Equip gear for status ['..tostring(playerStatus)..'], HP='..tostring(player.hp)) end
 	if player.hp > 0 then
 		playerStatus = playerStatus or player.status or 'Idle'
 		-- If status not defined, treat as idle.
@@ -1799,7 +1826,7 @@ function get_precast_set(spell, spellMap)
     
     if spell.action_type == 'Magic' then
 		if state.CastingMode.current:contains('DT') and not (player.in_combat or being_attacked) then
-		elseif state.CastingMode.current:contains('SIRD') and (buffactive['Aquaveil'] or (not (player.in_combat or being_attacked))) then
+		elseif state.CastingMode.current:contains('SIRD') and not (player.in_combat or being_attacked) then
         elseif equipSet[state.CastingMode.current] then
             equipSet = equipSet[state.CastingMode.current]
             mote_vars.set_breadcrumbs:append(state.CastingMode.current)
@@ -1815,9 +1842,6 @@ function get_precast_set(spell, spellMap)
         equipSet = get_ranged_set(equipSet, spell, spellMap)
     end
 
-    -- Update defintions for element-specific gear that may be used.
-    set_elemental_gear(spell, spellMap)
-    
     -- Return whatever we've constructed.
     return equipSet
 end
@@ -1866,7 +1890,8 @@ function get_midcast_set(spell, spellMap)
     -- After the default checks, do checks for specialized modes (casting mode, etc).
     
     if spell.action_type == 'Magic' then
-        if equipSet[state.CastingMode.current] then
+		if state.CastingMode.current:contains('SIRD') and not (player.in_combat or being_attacked) then
+        elseif equipSet[state.CastingMode.current] then
             equipSet = equipSet[state.CastingMode.current]
             mote_vars.set_breadcrumbs:append(state.CastingMode.current)
         end
@@ -2159,6 +2184,10 @@ function sub_job_change(newSubjob, oldSubjob)
         user_setup()
     end
 	
+    if user_job_setup then
+        user_job_setup()
+    end	
+	
     if extra_user_setup then
         extra_user_setup()
     end
@@ -2166,8 +2195,16 @@ function sub_job_change(newSubjob, oldSubjob)
     if job_sub_job_change then
         job_sub_job_change(newSubjob, oldSubjob)
     end
+
+    if user_sub_job_change then
+        user_sub_job_change(newSubjob, oldSubjob)
+    end
+	
+    if user_job_sub_job_change then
+        user_job_sub_job_change(newSubjob, oldSubjob)
+    end
     
-    send_command('gs c update')
+    handle_update({'auto'})
 end
 
 
@@ -2178,9 +2215,6 @@ function status_change(newStatus, oldStatus)
     mote_vars.set_breadcrumbs:clear()
 
 	if not (newStatus == 'Idle' or newStatus == 'Engaged') then
-		if state.RngHelper.value then
-			send_command('gs rh clear')
-		end
 		
 		if useItem then
 			useItem = false
@@ -2248,7 +2282,7 @@ function state_change(stateField, newValue, oldValue)
 			style_lock = true
 		end
 	
-		if newValue == 'None' or state.UnlockWeapons.value then
+		if newValue == 'None' then
 			enable('main','sub','range','ammo')
 		elseif ((newValue:contains('DW') or newValue:contains('Dual')) and not can_dual_wield) or (newValue:contains('Proc') and state.SkipProcWeapons.value) then
 			local startindex = state.Weapons.index
@@ -2257,10 +2291,12 @@ function state_change(stateField, newValue, oldValue)
 				if startindex == state.Weapons.index then break end
 			end
 			
-			if state.Weapons.value == 'None' then
+			newValue = state.Weapons.value
+			
+			if newValue == 'None' or state.UnlockWeapons.value then
 				enable('main','sub','range','ammo')
 			elseif not state.ReEquip.value then
-				handle_weapons()
+				equip_weaponset(newValue)
 			end
 		elseif sets.weapons[newValue] then
 			if not state.ReEquip.value then equip_weaponset(newValue) end
@@ -2269,9 +2305,12 @@ function state_change(stateField, newValue, oldValue)
 				add_to_chat(123,"sets.weapons."..newValue.." does not exist, resetting weapon state.")
 			end
 			state.Weapons:reset()
-			if sets.weapons[state.Weapons.value] and not state.ReEquip.value then
-				equip_weaponset(state.Weapons.value)
-			end
+			newValue = state.Weapons.value
+			if not state.ReEquip.value then	equip_weaponset(newValue) end
+		end
+		
+		if autows_list[newValue] then
+			autows = autows_list[newValue]
 		end
 	elseif stateField == 'Unlock Weapons' then
 		if newValue == true then
@@ -2285,21 +2324,7 @@ function state_change(stateField, newValue, oldValue)
 		else
 			send_command('gs rh disable')
 		end
-    end
-	
-	if user_job_state_change then
-		user_job_state_change(stateField, newValue, oldValue)
-	end
-	
-	if user_state_change then
-		user_state_change(stateField, newValue, oldValue)
-	end
-	
-	if job_state_change then
-		job_state_change(stateField, newValue, oldValue)
-	end
-	
-	if stateField == 'Rune Element' then
+	elseif stateField == 'Rune Element' then
 		send_command('wait .001;gs c DisplayRune')
 	elseif stateField == 'Elemental Mode' then
 		if player.main_job == 'COR' then
@@ -2309,6 +2334,37 @@ function state_change(stateField, newValue, oldValue)
 		end
 	elseif stateField == 'Capacity' and newValue == 'false' and data.equipment.cprings:contains(player.equipment.left_ring) then
             enable("ring1")
+	elseif stateField == 'Crafting Mode' then
+		enable('main','sub','range','ammo','head','neck','lear','rear','body','hands','lring','rring','back','waist','legs','feet')
+		if newValue == 'None' then
+			handle_update({'auto'})
+		else
+			local craftingset = sets.crafting
+			if sets.crafting[newValue] then
+				craftingset = set_combine(craftingset,sets.crafting[newValue])
+			end
+			
+			if state.CraftQuality.value == 'HQ' and sets.crafting.HQ then
+				craftingset = set_combine(craftingset,sets.crafting.HQ)
+			elseif state.CraftQuality.value == 'NQ' and sets.crafting[newValue] and sets.crafting[newValue].NQ then
+				craftingset = set_combine(craftingset,sets.crafting[newValue].NQ)
+			end
+			
+			equip(craftingset)
+			disable('main','sub','range','ammo','head','neck','lear','rear','body','hands','lring','rring','back','waist','legs','feet')
+		end
+	end
+
+	if user_state_change then
+		user_state_change(stateField, newValue, oldValue)
+	end
+	
+	if job_state_change then
+		job_state_change(stateField, newValue, oldValue)
+	end
+	
+	if user_job_state_change then
+		user_job_state_change(stateField, newValue, oldValue)
 	end
 	
 	if state.DisplayMode.value then update_job_states()	end
@@ -2356,6 +2412,11 @@ function buff_change(buff, gain)
 	elseif buff == "Emporox's Gift" and gain then
 		if player.equipment.left_ring == "Emporox's Ring" then
 			enable("ring1")
+		end
+	elseif buff:endswith('Imagery') then
+		local craft = T(buff:split(' '))
+		if state.CraftingMode:contains(craft[1]) then
+			state.CraftingMode:set(craft[1])
 		end
     end
 

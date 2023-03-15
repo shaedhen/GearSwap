@@ -411,7 +411,11 @@ function handle_weapons(cmdParams)
 		end
 		add_to_chat(123,"Error: A weapons set for ["..weaponSet.."] does not exist.")
 	end
-	
+
+	if autows_list[state.Weapons.value] then
+		autows = autows_list[state.Weapons.value]
+	end
+
 	if state.DisplayMode.value then update_job_states()	end
 end
 
@@ -489,6 +493,8 @@ end
 function handle_delayedcast()
 	if delayed_cast ~= '' and delayed_target ~= '' then
 		windower.send_command(''..delayed_cast..' '..delayed_target..'')
+		delayed_cast = ''
+		delayed_target = ''
 	end
 end
 
@@ -561,7 +567,7 @@ end
 function handle_facemob(cmdParams)
 	local target
 	
-	if cmdParams[1] then
+	if cmdParams and cmdParams[1] then
 		if tonumber(cmdParams[1]) then
 			target = windower.ffxi.get_mob_by_id(tonumber(cmdParams[1]))
 		else

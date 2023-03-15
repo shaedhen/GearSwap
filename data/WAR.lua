@@ -66,7 +66,7 @@ function job_setup()
 	autows = "Ukko's Fury"
 	autofood = 'Soy Ramen'
 	
-	init_job_states({"Capacity","AutoRuneMode","AutoTrustMode","AutoWSMode","AutoShadowMode","AutoFoodMode","AutoStunMode","AutoDefenseMode",},{"AutoBuffMode","AutoSambaMode","Weapons","OffenseMode","WeaponskillMode","Stance","IdleMode","Passive","RuneElement","TreasureMode",})
+	init_job_states()
 end
 	
 -------------------------------------------------------------------------------------------------------------------
@@ -101,6 +101,8 @@ function job_precast(spell, spellMap, eventArgs)
 			windower.chat.input('/ja "Warcry" <me>')
 			windower.chat.input:schedule(1,'/ws "'..spell.english..'" '..spell.target.raw..'')
 			tickdelay = os.clock() + 1.25
+			return
+		elseif state.Buff['SJ Restriction'] then
 			return
 		elseif player.sub_job == 'SAM' and player.tp > 1850 and abil_recasts[140] < latency then
 			eventArgs.cancel = true
@@ -206,9 +208,9 @@ end
 function job_update(cmdParams, eventArgs)
     update_melee_groups()
 	
-	if player.sub_job ~= 'SAM' and state.Stance.value ~= "None" then
-		state.Stance:set("None")
-	end
+--	if player.sub_job ~= 'SAM' and state.Stance.value ~= "None" then
+--		state.Stance:set("None")
+--	end
 end
 
 function job_aftercast(spell, spellMap, eventArgs)
@@ -252,27 +254,6 @@ function update_melee_groups()
 	end
 end
 
-function check_hasso()
-	if not (state.Stance.value == 'None' or state.Buff.Hasso or state.Buff.Seigan) and player.sub_job == 'SAM' and player.in_combat then
-		
-		local abil_recasts = windower.ffxi.get_ability_recasts()
-		
-		if state.Stance.value == 'Hasso' and abil_recasts[138] < latency then
-			windower.chat.input('/ja "Hasso" <me>')
-			tickdelay = os.clock() + 1.1
-			return true
-		elseif state.Stance.value == 'Seigan' and abil_recasts[139] < latency then
-			windower.chat.input('/ja "Seigan" <me>')
-			tickdelay = os.clock() + 1.1
-			return true
-		else
-			return false
-		end
-	end
-
-	return false
-end
-
 function check_buff()
 	if state.AutoBuffMode.value ~= 'Off' and player.in_combat then
 		
@@ -299,7 +280,7 @@ function check_buff()
 			tickdelay = os.clock() + 1.1
 			return true
 		else
-			return false
+			return check_melee_sub_buffs()
 		end
 	end
 		

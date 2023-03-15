@@ -67,7 +67,7 @@ function job_setup()
 	
 	update_melee_groups()
 
-	init_job_states({"Capacity","AutoRuneMode","AutoTrustMode","AutoWSMode","AutoShadowMode","AutoFoodMode","AutoNukeMode","AutoStunMode","AutoDefenseMode",},{"AutoBuffMode","AutoSambaMode","Weapons","OffenseMode","WeaponskillMode","Stance","IdleMode","Passive","RuneElement","DrainSwapWeaponMode","CastingMode","TreasureMode",})
+	init_job_states()
 end
 	
 -------------------------------------------------------------------------------------------------------------------
@@ -107,7 +107,7 @@ function job_aftercast(spell, spellMap, eventArgs)
     if not spell.interrupted then
 		if (spell.english == 'Drain II' or spell.english == 'Drain III') and state.DrainSwapWeaponMode.value ~= 'Never' then
 			if player.equipment.main and sets.DrainWeapon and player.equipment.main == sets.DrainWeapon.main and player.equipment.main ~= sets.weapons[state.Weapons.value].main then
-				handle_weapons()
+				equip_weaponset(state.Weapons.value)
 			end
         elseif state.UseCustomTimers.value and (spell.english == 'Sleep' or spell.english == 'Sleepga') then
             send_command('@timers c "'..spell.english..' ['..spell.target.name..']" 60 down spells/00220.png')
@@ -207,7 +207,7 @@ function job_post_midcast(spell, spellMap, eventArgs)
 			equip(sets.element[spell.element])
 		end
 	elseif spell.skill == 'Dark Magic' then
-		if state.Buff['Nether Void'] and sets.buff['Nether Void'] and spell.english:startswith('Absorb') then
+		if state.Buff['Nether Void'] and sets.buff['Nether Void'] and (spell.english:startswith('Absorb') or spell.english:startswith('Drain')) then
 			equip(sets.buff['Nether Void'])
 		end
 		if state.Buff['Dark Seal'] and sets.buff['Dark Seal'] and (spell.english:startswith('Absorb') or spell.english == 'Dread Spikes' or spell.english == 'Drain II' or spell.english == 'Drain III') then
@@ -256,7 +256,7 @@ function update_melee_groups()
 end
 
 function check_hasso()
-	if not (state.Stance.value == 'None' or state.Buff.Hasso or state.Buff.Seigan) and player.sub_job == 'SAM' and player.in_combat then
+if player.sub_job == 'SAM' and player.status == 'Engaged' and not (state.Stance.value == 'None' or state.Buff.Hasso or state.Buff.Seigan or state.Buff['SJ Restriction'] or main_weapon_is_one_handed() or silent_check_amnesia()) then
 		
 		local abil_recasts = windower.ffxi.get_ability_recasts()
 		
@@ -298,17 +298,8 @@ function check_buff()
 				windower.chat.input('/ja "Scarlet Delirium" <me>')
 				tickdelay = os.clock() + 1.1
 				return true
-			elseif player.sub_job == 'WAR' and not buffactive.Berserk and abil_recasts[1] < latency then
-				windower.chat.input('/ja "Berserk" <me>')
-				tickdelay = os.clock() + 1.1
-				return true
-			elseif player.sub_job == 'WAR' and not buffactive.Aggressor and abil_recasts[4] < latency then
-				windower.chat.input('/ja "Aggressor" <me>')
-				tickdelay = os.clock() + 1.1
-				return true
-			else
-				return false
 			end
+      return check_melee_sub_buffs()
 		end
 	end
 	return false

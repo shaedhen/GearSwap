@@ -73,7 +73,7 @@ function job_setup()
         'Double Claw','Filamented Hold','Spore','Blockhead','Secretion','Fireball','Tail Blow','Plague Breath',
         'Brain Crush','Infrasonics','Needleshot','Chaotic Eye','Blaster','Ripper Fang','Intimidate','Recoil Dive',
         'Water Wall','Snow Cloud','Wild Carrot','Sudden Lunge','Noisome Powder','Wing Slap','Beak Lunge','Suction',
-        'Drainkiss','Acid Mist','TP Drainkiss','Back Heel','Jettatura','Choke Breath','Fantod','Charged Whisker',
+        'Drainkiss','Acid Mist','Back Heel','Jettatura','Choke Breath','Fantod','Charged Whisker',
         'Purulent Ooze','Corrosive Ooze','Tortoise Stomp','Harden Shell','Aqua Breath','Sensilla Blades',
         'Tegmina Buffet','Sweeping Gouge','Zealous Snort','Tickling Tendrils','Pecking Flurry','Pestilent Plume',
 		'Foul Waters','Spider Web','Crossthrash','Venom Shower','Mega Scissors','Fluid Toss',
@@ -159,7 +159,7 @@ function job_setup()
 							['StalwartAngelina']='Disembowel',['SweetCaroline']='Head Butt',['P.CrabFamiliar']='Mega Scissors',
 							['JovialEdwin']='Mega Scissors',['Y.BeetleFamiliar']='Power Attack',['EnergizedSefina']='Power Attack',
 							['LynxFamiliar']='Charged Whisker',['VivaciousGaston']='Charged Whisker',['Hip.Familiar']='Back Heel',['DaringRoland']='Back Heel',
-							['SlimeFamiliar']='Fluid Toss',['SultryPatrice']='Fluid Toss',
+							['SlimeFamiliar']='Fluid Toss',['SultryPatrice']='Fluid Toss',['FatsoFargann']='TP Drainkiss',
 							}
 							
 	ready_moves.aoe = 	   {['DroopyDortwin']='Whirl Claws',['PonderingPeter']='Whirl Claws',['HeraldHenry']='Bubble Shower',['CourierCarrie']='Bubble Shower',
@@ -247,7 +247,7 @@ function job_setup()
 
 	update_pet_groups()
 	update_melee_groups()
-	init_job_states({"Capacity","AutoRuneMode","AutoTrustMode","AutoWSMode","AutoShadowMode","AutoFoodMode","AutoStunMode","AutoDefenseMode","AutoReadyMode",},{"AutoBuffMode","AutoSambaMode","Weapons","OffenseMode","WeaponskillMode","PetMode","IdleMode","Passive","RuneElement","JugMode","RewardMode","TreasureMode",})
+	init_job_states()
 end
 
 -------------------------------------------------------------------------------------------------------------------
@@ -675,8 +675,7 @@ function check_ready()
 end
 
 function get_current_ready_count()
-    local abil_recasts = windower.ffxi.get_ability_recasts()
-    local readyRecast = abil_recasts[102]
+    local readyRecast = windower.ffxi.get_ability_recasts()[102]
 
     local maxCharges = 3
 
@@ -747,11 +746,11 @@ function get_ready_charge_timer()
 		charge_timer = charge_timer - 5
 	end
 	
-	if can_dual_wield and sets.midcast.Pet.ReadyRecastDW.legs and sets.midcast.Pet.ReadyRecastDW.legs == "Desultor Tassets" then
-			charge_timer = charge_timer - 5
-	elseif sets.midcast.Pet.ReadyRecast.legs and sets.midcast.Pet.ReadyRecast.legs == "Desultor Tassets" then
-			charge_timer = charge_timer - 5
-	end
+    if can_dual_wield and sets.midcast.Pet.ReadyRecastDW.legs and (sets.midcast.Pet.ReadyRecastDW.legs == "Desultor Tassets" or sets.midcast.Pet.ReadyRecastDW.legs == "Gleti's Breeches") then
+            charge_timer = charge_timer - 5
+    elseif sets.midcast.Pet.ReadyRecast.legs and (sets.midcast.Pet.ReadyRecast.legs == "Desultor Tassets" or sets.midcast.Pet.ReadyRecast.legs == "Gleti's Breeches") then
+            charge_timer = charge_timer - 5
+    end
 	
 	if charge_timer < 10 then
 		return 10

@@ -75,7 +75,7 @@ function job_setup()
 	autofood = 'Soy Ramen'
 	
 	update_melee_groups()
-	init_job_states({"Capacity","AutoRuneMode","AutoTrustMode","AutoWSMode","AutoShadowMode","AutoFoodMode","AutoStunMode","AutoDefenseMode",},{"AutoBuffMode","AutoSambaMode","Weapons","OffenseMode","WeaponskillMode","IdleMode","Passive","RuneElement","TreasureMode",})
+	init_job_states()
 end
 
 -------------------------------------------------------------------------------------------------------------------
@@ -107,28 +107,13 @@ function job_precast(spell, spellMap, eventArgs)
 end
 
 function job_post_precast(spell, spellMap, eventArgs)
-    
+  checkMoonshadeBonus(spell,spellMap,eventArgs)  
 	if spell.type == 'WeaponSkill' then
 		if (spell.english == 'Aeolian Edge' or spell.english == 'Cyclone') and state.TreasureMode.value ~= 'None' then
 			equip(sets.TreasureHunter)
 			return
 		end
 	
-		local WSset = standardize_set(get_precast_set(spell, spellMap))
-		local wsacc = check_ws_acc()
-		
-		if (WSset.ear1 == "Moonshade Earring" or WSset.ear2 == "Moonshade Earring") then
-			-- Replace Moonshade Earring if we're at cap TP
-			if get_effective_player_tp(spell, WSset) > 3200 then
-				if wsacc:contains('Acc') and not state.Buff['Sneak Attack'] and not state.Buff['Trick Attack'] and sets.AccMaxTP then
-					equip(sets.AccMaxTP[spell.english] or sets.AccMaxTP)
-				elseif sets.MaxTP then
-					equip(sets.MaxTP[spell.english] or sets.MaxTP)
-				else
-				end
-			end
-		end
-
 		if state.AmbushMode.value == true and sets.Ambush then
 			if state.Buff['Sneak Attack'] == false and state.Buff['Trick Attack'] == false then
 				equip(sets.Ambush)
@@ -164,7 +149,7 @@ end
 function job_post_aftercast(spell, spellMap, eventArgs)
     -- If Feint is active, put that gear set on on top of regular gear.
     -- This includes overlaying SATA gear.
-    check_buff('Feint', eventArgs)
+    have_buff('Feint', eventArgs)
 end
 
 -------------------------------------------------------------------------------------------------------------------
@@ -201,8 +186,8 @@ end
 function job_handle_equipping_gear(playerStatus, eventArgs)
     -- Check for SATA when equipping gear.  If either is active, equip
     -- that gear specifically, and block equipping default gear.
-    check_buff('Sneak Attack', eventArgs)
-    check_buff('Trick Attack', eventArgs)
+    have_buff('Sneak Attack', eventArgs)
+    have_buff('Trick Attack', eventArgs)
 end
 
 
@@ -229,7 +214,7 @@ function job_self_command(commandArgs, eventArgs)
 end
 
 function job_tick()
-
+	if check_buff() then return true end
 	return false
 end
 
@@ -283,8 +268,12 @@ end
 -- Utility functions specific to this job.
 -------------------------------------------------------------------------------------------------------------------
 
+function check_buff()
+	return check_melee_sub_buffs()
+end
+
 -- State buff checks that will equip buff gear and mark the event as handled.
-function check_buff(buff_name, eventArgs)
+function have_buff(buff_name, eventArgs)
     if state.Buff[buff_name] then
         equip(sets.buff[buff_name] or {})
         if state.TreasureMode.value == 'SATA' or state.TreasureMode.value == 'Fulltime' then

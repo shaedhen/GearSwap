@@ -1,11 +1,10 @@
 --Gearsets your character will use among multiple jobs.
-sets.BehemothSuit = {body="Behemoth Suit +1",hands=empty,legs=empty,feet=empty}
 sets.Sheltered = {ring2="Sheltered Ring"}
 sets.Capacity = {back="Mecisto. Mantle"}
 
-sets.buff.Doom = {neck="Nicander's Necklace",waist="Gishdubar Sash",ring1="Eshmun's Ring",ring2="Eshmun's Ring"}
+sets.buff.Doom = {waist="Gishdubar Sash"}
 sets.TreasureHunter = {waist="Chaac Belt"}
-sets.DefensiveMali = {neck="Loricate Torque +1",head="Malignance Chapeau",body="Malignance Tabard",legs="Malignance Tights",ring1="Defending Ring"} -- 32% DT
+sets.DefensiveMali = {neck="Loricate Torque +1",head="Malignance Chapeau",body="Malignance Tabard",hands="Malignance Gloves",legs="Malignance Tights",ring1="Defending Ring"} -- 32% DT
 
 
 sets.precast.Item['Hallowed Water'] = {}
@@ -14,18 +13,22 @@ sets.precast.Item['Holy Water'] = {}
 --Augmented items that you'll use among multiple jobs.
 
     -- Augmented Weapons
+	gear.GrioavolrSmn = {name="Grioavolr", augments={'Blood Pact Dmg.+9','Pet: Mag. Acc.+2','Pet: "Mag.Atk.Bns."+15',}}
+	gear.GrioavolrRdm = { name="Grioavolr", augments={'Enfb.mag. skill +16','INT+15','Mag. Acc.+23','"Mag.Atk.Bns."+14','Magic Damage +5',}}
     gear.Colada_ENH = { name="Colada", augments={'Enh. Mag. eff. dur. +3','Mag. Acc.+14','"Mag.Atk.Bns."+15','DMG:+15',}}
     gear.Rubicundity_Dark={ name="Rubicundity", augments={'Mag. Acc.+4','"Mag.Atk.Bns."+5','Dark magic skill +2','"Conserve MP"+3',}}
 	gear.Vampirism={ name="Vampirism", augments={'STR+5','INT+5','DMG:+3',}}
-	gear.Linos_TP={name="Linos", augments={'Accuracy+15','"Store TP"+2','Quadruple Attack +3',}}	
+	gear.Linos_TP={name="Linos", augments={'Accuracy+15','"Store TP"+3','Quadruple Attack +3',}}	
+	gear.Linus_WS= {name="Linos", augments={'Accuracy+16','Weapon skill damage +2%','STR+5 DEX+5',}}
+	gear.Linos_AE= { name="Linos", augments={'"Mag.Atk.Bns."+15','Weapon skill damage +3%','INT+5',}}
 	--JSE--	
 	----RDM
 	--Atrophy
-	gear.RDM_AF_Head		=	{ name="Atrophy Chapeau +2"}
+	gear.RDM_AF_Head		=	{ name="Atrophy Chapeau +3"}
     gear.RDM_AF_Body		=	{ name="Atrophy Tabard +3"}
     gear.RDM_AF_Hands		=	{ name="Atrophy Gloves +3"}
     gear.RDM_AF_Legs		=	{ name="Atrophy Tights +3"}
-    gear.RDM_AF_Feet		=	{ name="Atrophy Boots +2"}
+    gear.RDM_AF_Feet		=	{ name="Atrophy Boots +3"}
     --Vitiation
     gear.RDM_RELIC_Head		=	{ name="Vitiation Chapeau +3"}
     gear.RDM_RELIC_Body		=	{ name="Vitiation Tabard +3"}
@@ -33,11 +36,11 @@ sets.precast.Item['Holy Water'] = {}
     gear.RDM_RELIC_Legs		=	{ name="Vitiation Tights +3"}
     gear.RDM_RELIC_Feet		=	{ name="Vitiation Boots +3"}
     --Lethargy
-    gear.RDM_EMPY_Head		=	{ name="Lethargy Chappel +1"}
-    gear.RDM_EMPY_Body		=	{ name="Lethargy Sayon +1"}
-    gear.RDM_EMPY_Hands		=	{ name="Lethargy Gantherots +1"}
-    gear.RDM_EMPY_Legs		=	{ name="Lethargy Fuseau +1"}
-    gear.RDM_EMPY_Feet		=	{ name="Lethargy Houseaux +1"}
+    gear.RDM_EMPY_Head		=	{ name="Lethargy Chappel +2"}
+    gear.RDM_EMPY_Body		=	{ name="Lethargy Sayon +3"}
+    gear.RDM_EMPY_Hands		=	{ name="Lethargy Gantherots +3"}
+    gear.RDM_EMPY_Legs		=	{ name="Lethargy Fuseau +3"}
+    gear.RDM_EMPY_Feet		=	{ name="Lethargy Houseaux +3"}
 	----COR
 	--Lakshama
 	gear.COR_AF_Head		=	{ name="Laksamana's Hat +2"}
@@ -48,13 +51,13 @@ sets.precast.Item['Holy Water'] = {}
     --Lanun
     gear.COR_RELIC_Head		=	{ name="Lanun Tricorne +3"}
     gear.COR_RELIC_Body		=	{ name="Lanun Frac +3"}
-    gear.COR_RELIC_Hands 	=	{ name="Lanun Gants +2"}
+    gear.COR_RELIC_Hands 	=	{ name="Lanun Gants +3"}
     gear.COR_RELIC_Legs		=	{ name="Lanun Trews +3"}
-    gear.COR_RELIC_Feet		=	{ name="Lanun Bottes +2"}
+    gear.COR_RELIC_Feet		=	{ name="Lanun Bottes +3"}
     --Chasseur
     gear.COR_EMPY_Head		=	{ name="Chasseur's Tricorne +1"}
-    gear.COR_EMPY_Body		=	{ name="Chasseur's Frac +1"}
-    gear.COR_EMPY_Hands		=	{ name="Chasseur's Gants +1"}
+    gear.COR_EMPY_Body		=	{ name="Chasseur's Frac +2"}
+    gear.COR_EMPY_Hands		=	{ name="Chasseur's Gants +2"}
     gear.COR_EMPY_Legs		=	{ name="Chasseur's Culottes +1"}
     gear.COR_EMPY_Feet		=	{ name="Chasseur's Bottes +1"}	
 	----GEO
@@ -63,38 +66,38 @@ sets.precast.Item['Holy Water'] = {}
     gear.GEO_AF_Body		=	{ name="Geomancy Tunic +2"}
     gear.GEO_AF_Hands		=	{ name="Geomancy Mitaines +2"}
     gear.GEO_AF_Legs		=	{ name="Geomancy Pants +2"}
-    gear.GEO_AF_Feet		=	{ name="Geomancy Sandals +2"}
+    gear.GEO_AF_Feet		=	{ name="Geomancy Sandals +3"}
     --Bagua
     gear.GEO_RELIC_Head		=	{ name="Bagua Galero +3"}
     gear.GEO_RELIC_Body		=	{ name="Bagua Tunic +3"}
     gear.GEO_RELIC_Hands 	=	{ name="Bagua Mitaines +3"}
-    gear.GEO_RELIC_Legs		=	{ name="Bagua Pants +1"}
-    gear.GEO_RELIC_Feet		=	{ name="Bagua Sandals +1"}
+    gear.GEO_RELIC_Legs		=	{ name="Bagua Pants +3"}
+    gear.GEO_RELIC_Feet		=	{ name="Bagua Sandals +3"}
     --Azimuth
-    gear.GEO_EMPY_Head		=	{ name="Azimuth Hood +1"}
-    gear.GEO_EMPY_Body		=	{ name="Azimuth Coat +1"}
+    gear.GEO_EMPY_Head		=	{ name="Azimuth Hood +2"}
+    gear.GEO_EMPY_Body		=	{ name="Azimuth Coat +2"}
     gear.GEO_EMPY_Hands		=	{ name="Azimuth Gloves +1"}
     gear.GEO_EMPY_Legs		=	{ name="Azimuth Tights +1"}
-    gear.GEO_EMPY_Feet		=	{ name="Azimuth Gaiters +1"}	
+    gear.GEO_EMPY_Feet		=	{ name="Azimuth Gaiters +2"}	
 	----BRD
 	--Brioso
-	gear.BRD_AF_Head		=	{ name="Brioso Roundlet +2"}
+	gear.BRD_AF_Head		=	{ name="Brioso Roundlet +3"}
     gear.BRD_AF_Body		=	{ name="Brioso Jstcorps +2"}
-    gear.BRD_AF_Hands		=	{ name="Brioso Cuffs +2"}
+    gear.BRD_AF_Hands		=	{ name="Brioso Cuffs +3"}
     gear.BRD_AF_Legs		=	{ name="Brioso Cannions +2"}
-    gear.BRD_AF_Feet		=	{ name="Brioso Slippers +2"}
+    gear.BRD_AF_Feet		=	{ name="Brioso Slippers +3"}
     --Bihu
     gear.BRD_RELIC_Head		=	{ name="Bihu Roundlet +3"}
-    gear.BRD_RELIC_Body		=	{ name="Bihu Jstcorps +3"}
-    gear.BRD_RELIC_Hands 	=	{ name="Bihu Cuffs +1"}
+    gear.BRD_RELIC_Body		=	{ name="Bihu Justaucorps +3"}
+    gear.BRD_RELIC_Hands 	=	{ name="Bihu Cuffs +3"}
     gear.BRD_RELIC_Legs		=	{ name="Bihu Cannions +3"}
     gear.BRD_RELIC_Feet		=	{ name="Bihu Slippers +3"}
     --Fili
-    gear.BRD_EMPY_Head		=	{ name="Fili Calot +1"}
-    gear.BRD_EMPY_Body		=	{ name="Fili Hongreline +1"}
-    gear.BRD_EMPY_Hands		=	{ name="Fili Manchettes +1"}
-    gear.BRD_EMPY_Legs		=	{ name="Fili Rhingrave +1"}
-    gear.BRD_EMPY_Feet		=	{ name="Fili Cothurnes +1"}	
+    gear.BRD_EMPY_Head		=	{ name="Fili Calot +2"}
+    gear.BRD_EMPY_Body		=	{ name="Fili Hongreline +2"}
+    gear.BRD_EMPY_Hands		=	{ name="Fili Manchettes +2"}
+    gear.BRD_EMPY_Legs		=	{ name="Fili Rhingrave +2"}
+    gear.BRD_EMPY_Feet		=	{ name="Fili Cothurnes +3"}	
 	----SCH	
 	--Academic
 	gear.SCH_AF_Head		=	{ name="Academic's Mortarboard +2"}
@@ -103,7 +106,7 @@ sets.precast.Item['Holy Water'] = {}
     gear.SCH_AF_Legs		=	{ name="Academic's Pants +2"}
     gear.SCH_AF_Feet		=	{ name="Academic's Loafers +2"}
     --Pedagogy
-    gear.SCH_RELIC_Head		=	{ name="Pedagogy Mortarboard +2"}
+    gear.SCH_RELIC_Head		=	{ name="Pedagogy Mortarboard +3"}
     gear.SCH_RELIC_Body		=	{ name="Pedagogy Gown +3"}
     gear.SCH_RELIC_Hands 	=	{ name="Pedagogy Bracers +3"}
     gear.SCH_RELIC_Legs		=	{ name="Pedagogy Pants +3"}
@@ -116,23 +119,23 @@ sets.precast.Item['Holy Water'] = {}
     gear.SCH_EMPY_Feet		=	{ name="Arbatel Loafers +1"}	
 		----DNC	
 	--Maxixi
-	gear.DNC_AF_Head		=	{ name="Maxixi Tiara +1"}
+	gear.DNC_AF_Head		=	{ name="Maxixi Tiara +2"}
     gear.DNC_AF_Body		=	{ name="Maxixi Casaque +2"}
-    gear.DNC_AF_Hands		=	{ name="Maxixi Bangles +1"}
+    gear.DNC_AF_Hands		=	{ name="Maxixi Bangles +3"}
     gear.DNC_AF_Legs		=	{ name="Maxixi Tights +2"}
-    gear.DNC_AF_Feet		=	{ name="Maxixi Toeshoes"}
+    gear.DNC_AF_Feet		=	{ name="Maxixi Toeshoes +2"}
     --Horos
-    gear.DNC_RELIC_Head		=	{ name="Horos Tiara +1"}
-    gear.DNC_RELIC_Body		=	{ name="Horos Casaque +1"}
-    gear.DNC_RELIC_Hands 	=	{ name="Horos Bangles +1"}
+    gear.DNC_RELIC_Head		=	{ name="Horos Tiara +3"}
+    gear.DNC_RELIC_Body		=	{ name="Horos Casaque +3"}
+    gear.DNC_RELIC_Hands 	=	{ name="Horos Bangles +3"}
     gear.DNC_RELIC_Legs		=	{ name="Horos Tights +3"}
-    gear.DNC_RELIC_Feet		=	{ name="Horos Toe Shoes +2"}
+    gear.DNC_RELIC_Feet		=	{ name="Horos Toe Shoes +3"}
     --Maculele
-    gear.DNC_EMPY_Head		=	{ name="Maculele Tiara"}
-    gear.DNC_EMPY_Body		=	{ name="Maculele Casaque"}
-    gear.DNC_EMPY_Hands		=	{ name="Maculele Bangles"}
-    gear.DNC_EMPY_Legs		=	{ name="Maculele Tights"}
-    gear.DNC_EMPY_Feet		=	{ name="Maculele Toe Shoes"}	
+    gear.DNC_EMPY_Head		=	{ name="Maculele Tiara +2"}
+    gear.DNC_EMPY_Body		=	{ name="Maculele Casaque +1"}
+    gear.DNC_EMPY_Hands		=	{ name="Maculele Bangles +1"}
+    gear.DNC_EMPY_Legs		=	{ name="Maculele Tights +1"}
+    gear.DNC_EMPY_Feet		=	{ name="Maculele Toe Shoes +2"}	
 	--Ambuscade--
 	
 	-- Ayanmo	
@@ -210,7 +213,7 @@ sets.precast.Item['Holy Water'] = {}
     -- Herculean
 	gear.Herc_WSD_head={ name="Herculean Helm", augments={'Attack+30','Weapon skill damage +4%','AGI+12',}}
 	gear.Herc_WSD_body={ name="Herculean Vest", augments={'Accuracy+23 Attack+23','Weapon skill damage +2%','DEX+12','Accuracy+5',}}
-	gear.Herc_WS_legs={name="Herculean Trousers", augments={'Accuracy+19 Attack+19','Weapon skill damage +2%','STR+9','Accuracy+3',}}
+	gear.Herc_WS_legs={name="Herculean Trousers", augments={'MND+3','AGI+1','Weapon skill damage +6%','Accuracy+16 Attack+16','Mag. Acc.+7 "Mag.Atk.Bns."+7',}}
 	gear.Herc_Mab_legs={name="Herculean Trousers", augments={'AGI+10','Pet: VIT+2','Accuracy+9 Attack+9','Mag. Acc.+17 "Mag.Atk.Bns."+17',}}
 	gear.Herc_trip_hands={name="Herculean Gloves", augments={'Accuracy+9','"Triple Atk."+2','DEX+8','Attack+11',}}
 	gear.Herc_trip_feet={name="Herculean Boots", augments={'Attack+14','"Triple Atk."+4','AGI+10','Accuracy+3',}}
@@ -218,17 +221,18 @@ sets.precast.Item['Holy Water'] = {}
     -- Merlinic
 	gear.Merli_Burst_head={ name="Merlinic Hood", augments={'"Mag.Atk.Bns."+30','Magic burst dmg.+9%',}}
 	gear.Merli_DraAsp_body={name="Merlinic Jubbah", augments={'Mag. Acc.+24 "Mag.Atk.Bns."+24','"Drain" and "Aspir" potency +9','CHR+7','Mag. Acc.+2','"Mag.Atk.Bns."+13',}}
-	gear.Merli_WSD_body={name="Merlinic Jubbah", augments={'Pet: INT+5','AGI+9','Weapon skill damage +5%','Mag. Acc.+3 "Mag.Atk.Bns."+3',}}
-	gear.Merli_Burst_legs={ name="Merlinic Shalwar", augments={'"Mag.Atk.Bns."+30','Magic burst dmg.+2%','INT+1','Mag. Acc.+5',}}
+	gear.Merli_DraAsp_feet={ name="Merlinic Crackows", augments={'"Mag.Atk.Bns."+4','"Drain" and "Aspir" potency +10',}}
+	gear.Merli_BPPhys_hands={ name="Merlinic Dastanas", augments={'Pet: Accuracy+30 Pet: Rng. Acc.+30','Blood Pact Dmg.+9','Pet: INT+7','Pet: Mag. Acc.+6','Pet: "Mag.Atk.Bns."+14',}}
+	gear.Merli_BPMagi_hands={name="Merlinic Dastanas", augments={'Pet: "Mag.Atk.Bns."+24','Blood Pact Dmg.+10','Pet: INT+10','Pet: Mag. Acc.+15',}}
+	gear.Merli_DraAsp_feet={ name="Merlinic Crackows", augments={'"Mag.Atk.Bns."+4','"Drain" and "Aspir" potency +10',}}
 	gear.Merli_DraAsp_feet={ name="Merlinic Crackows", augments={'"Mag.Atk.Bns."+4','"Drain" and "Aspir" potency +10',}}
 	
 	-- Chironic
 	gear.Chiro_DraAsp_head={ name="Chironic Hat", augments={'"Drain" and "Aspir" potency +10','INT+8','Mag. Acc.+11','"Mag.Atk.Bns."+12',}}
-	gear.Chiro_refresh_hands={ name="Chironic Gloves", augments={'MND+5','AGI+2','"Refresh"+1','Mag. Acc.+3 "Mag.Atk.Bns."+3',}}
+	gear.Chiro_refresh_hands={ name="Chironic Gloves", augments={'INT+9','"Refresh"+2','Accuracy+6 Attack+6',}}
 	gear.Chiro_MaAcc_legs={ name="Chironic Hose", augments={'Mag. Acc.+27','"Drain" and "Aspir" potency +9','MND+2','"Mag.Atk.Bns."+11',}}
-	gear.Chiro_refresh_feet={name="Chironic Slippers", augments={'Pet: "Store TP"+7','Crit.hit rate+3','"Refresh"+1','Accuracy+13 Attack+13','Mag. Acc.+3 "Mag.Atk.Bns."+3',}}
-	gear.Chiro_Burst_feet={ name="Chironic Slippers", augments={'STR+2','"Rapid Shot"+6','Magic burst dmg.+15%','Accuracy+10 Attack+10','Mag. Acc.+20 "Mag.Atk.Bns."+20',}}
-
+	gear.Chiro_refresh_feet={name="Chironic Slippers", augments={'INT+8','CHR+5','"Refresh"+2','Mag. Acc.+13 "Mag.Atk.Bns."+13',}}
+	gear.Chiro_Quad_feet={ name="Chironic Slippers", augments={'Pet: STR+2','Pet: Accuracy+11 Pet: Rng. Acc.+11','Quadruple Attack +2','Accuracy+14 Attack+14',}}
 	
 	
     -- Taeon
@@ -244,9 +248,12 @@ sets.precast.Item['Holy Water'] = {}
 	gear.Taeon_PhalWalz_feet = {name="Taeon Boots", augments={'Rng.Acc.+19 Rng.Atk.+19','"Waltz" potency +5%','Phalanx +3',}}
 	
 	-- Telchine
-	gear.Telch_Enh_head={ name="Telchine Cap", augments={'"Cure" potency +3%','Enh. Mag. eff. dur. +8',}}
-	gear.Telch_Refresh_body={ name="Telchine Chas.", augments={'"Fast Cast"+5','"Regen" potency+3',}}
+	gear.Telch_Enh_head={ name="Telchine Cap", augments={'"Cure" potency +3%','Enh. Mag. eff. dur. +10',}}
+	gear.Telch_Regen_body={ name="Telchine Chas.", augments={'"Fast Cast"+5','"Regen" potency+3',}}
+	gear.Telch_Enh_body={ name="Telchine Chas.", augments={'"Conserve MP"+3','Enh. Mag. eff. dur. +10',}}
 	gear.Telch_Enh_legs={ name="Telchine Braconi", augments={'Pet: Accuracy+14 Pet: Rng. Acc.+14','Pet: "Regen"+2','Enh. Mag. eff. dur. +9',}}
+	gear.Telch_Enh_hands={ name="Telchine Gloves", augments={'"Conserve MP"+4','Enh. Mag. eff. dur. +10',}}
+	gear.Telch_Enh_feet={name="Telchine Pigaches", augments={'Mag. Evasion+18','Song spellcasting time -7%','Enh. Mag. eff. dur. +10',}}
 	
 	-- Helios
 	gear.Helio_DraAsp_hands={ name="Helios Gloves", augments={'Mag. Acc.+15 "Mag.Atk.Bns."+15','"Drain" and "Aspir" potency +5','Mag. crit. hit dmg. +7%',}}
@@ -269,20 +276,29 @@ sets.precast.Item['Holy Water'] = {}
 	gear.Psycloth_D_legs={name="Psycloth Lappas", augments={'MP+80','Mag. Acc.+15','"Fast Cast"+7',}}	
 	
     -- Ambuscade Capes
-    gear.COR_WS1_Cape = {name="Camulus's Mantle", augments={'AGI+20','Rng.Acc.+20 Rng.Atk.+20','Weapon skill damage +10%',}} --*
-	gear.COR_WS2_Cape = {name="Camulus's Mantle", augments={'STR+20','Accuracy+20 Attack+20','STR+3','Weapon skill damage +10%',}} --*
+  gear.COR_WS1_Cape = {name="Camulus's Mantle", augments={'AGI+20','Rng.Acc.+20 Rng.Atk.+20','Weapon skill damage +10%',}} --*
+	gear.COR_WS2_Cape = {name="Camulus's Mantle", augments={'STR+23','Accuracy+20 Attack+20','STR+3','Weapon skill damage +10%',}} --*
 	gear.COR_WS3_Cape = {name="Camulus's Mantle", augments={'AGI+20','Mag. Acc+20 /Mag. Dmg.+20','Weapon skill damage +10%',}}
-	gear.COR_TP_Cape = {name="Camulus's Mantle", augments={'DEX+20','Accuracy+20 Attack+20','"Store TP"+10',}} --*
-	gear.BRD_TP_Cape = {name="Intarabus's Cape", augments={'DEX+20','Accuracy+20 Attack+20','"Store TP"+10',}} --*
+	gear.COR_TP_Cape = {name="Camulus's Mantle", augments={'DEX+20','Accuracy+20 Attack+20','"Store TP"+10','Damage taken-5%',}} --*
+	gear.BRD_TP_Cape = {name="Intarabus's Cape", augments={'DEX+20','Accuracy+20 Attack+20','"Store TP"+10','Damage taken-5%',}} --*
 	gear.BRD_FC_Cape = {name="Intarabus's Cape", augments={'CHR+20','Mag. Acc+20 /Mag. Dmg.+20','"Fast Cast"+10',}} --*
-	gear.BRD_WS1_Cape = {name="Sucellos's Cape", augments={'STR+20','Accuracy+20 Attack+20','Weapon skill damage +10%',}} --*
-    gear.RDM_MND_Cape = {name="Sucellos's Cape", augments={'MND+20','Mag. Acc+20 /Mag. Dmg.+20','"Mag.Atk.Bns."+10',}} --*
+	gear.BRD_Idle_Cape = { name="Intarabus's Cape", augments={'HP+60','Eva.+20 /Mag. Eva.+20','Mag. Evasion+10','"Fast Cast"+10','Damage taken-5%',}} --*
+	gear.BRD_WS1_Cape = {name="Intarabus's Cape", augments={'STR+20','Accuracy+20 Attack+20','Weapon skill damage +10%',}} --*
+	gear.RDM_IDLE_Cape = {name="Sucellos's Cape", augments={'HP+60','Eva.+20 /Mag. Eva.+20','Mag. Evasion+10','"Fast Cast"+10','Damage taken-5%',}}
+  gear.RDM_MND_Cape = {name="Sucellos's Cape", augments={'MND+20','Mag. Acc+20 /Mag. Dmg.+20','"Mag.Atk.Bns."+10',}} --*
 	gear.RDM_INT_Cape = {name="Sucellos's Cape", augments={'INT+20','Mag. Acc+20 /Mag. Dmg.+20','INT+5','"Mag.Atk.Bns."+10',}} --*
 	gear.RDM_TP_Cape = {name="Sucellos's Cape", augments={'DEX+20','Accuracy+20 Attack+20','"Store TP"+10','Damage taken-4%',}} --*
-    gear.RDM_WS1_Cape = {name="Sucellos's Cape", augments={'STR+20','Accuracy+20 Attack+20','STR+2','Weapon skill damage +10%',}} --*
+  gear.RDM_WS1_Cape = {name="Sucellos's Cape", augments={'STR+20','Accuracy+20 Attack+20','STR+2','Weapon skill damage +10%',}} --*
 	gear.RDM_WS2_Cape = { name="Sucellos's Cape", augments={'DEX+20','Accuracy+20 Attack+20','DEX+5','Crit.hit rate+10',}} --*
 	gear.RDM_WS3_Cape = { name="Sucellos's Cape", augments={'AGI+20','Rng.Acc.+20 Rng.Atk.+20','Weapon skill damage +10%',}} --*
-	gear.DNC_TP_Cape = { name="Senuna's Mantle", augments={'DEX+20','Accuracy+20 Attack+20','"Dbl.Atk."+10',}} --*
+	gear.RDM_WS4_Cape = {name="Sucellos's Cape", augments={'MND+20','Mag. Acc+20 /Mag. Dmg.+20','MND+10','Weapon skill damage +10%',}}
+	gear.RDM_WS5_Cape = {name="Sucellos's Cape", augments={'INT+20','Mag. Acc+20 /Mag. Dmg.+20','Weapon skill damage +10%',}}
+	gear.DNC_TP_STP_Cape = { name="Senuna's Mantle", augments={'DEX+20','Accuracy+20 Attack+20','Accuracy+5','"Dbl.Atk."+10','Damage taken-5%',}} --*
 	gear.DNC_WS1_Cape = { name="Senuna's Mantle", augments={'DEX+20','Accuracy+20 Attack+20','Weapon skill damage +10%',}} --*
 	gear.THF_TP_Cape = { name="Toutatis's Cape", augments={'DEX+20','Accuracy+20 Attack+20','"Store TP"+10',}} --*
 	gear.THF_WS1_Cape = { name="Toutatis's Cape", augments={'DEX+20','Accuracy+20 Attack+20','Weapon skill damage +10%',}} --*
+	gear.SCH_IDLE_Cape = { name="Lugh's Cape", augments={'HP+60','Eva.+20 /Mag. Eva.+20','Damage taken-5%',}}
+	gear.SCH_INT_Cape = { name="Lugh's Cape", augments={'INT+20','Mag. Acc+20 /Mag. Dmg.+20','"Fast Cast"+10',}}
+	gear.WHM_IDLE_Cape = { name="Alaunus's Cape", augments={'HP+60','Eva.+20 /Mag. Eva.+20','Mag. Evasion+5','"Fast Cast"+10',}}
+	gear.WHM_Cure_Cape = { name="Alaunus's Cape", augments={'MND+20','Eva.+20 /Mag. Eva.+20','Enmity-10',}}
+	gear.WHM_TP_Cape = { name="Alaunus's Cape", augments={'DEX+20','Accuracy+20 Attack+20','Accuracy+5','"Store TP"+10',}}

@@ -69,7 +69,7 @@ function job_setup()
 	state.ElementalMode = M{['description'] = 'Elemental Mode','Fire','Water','Lightning','Earth','Wind','Ice','Light','Dark',}
 	
 	update_melee_groups()
-	init_job_states({"Capacity","AutoRuneMode","AutoTrustMode","AutoWSMode","AutoShadowMode","AutoFoodMode","AutoNukeMode","AutoStunMode","AutoDefenseMode","ElementalWheel",},{"AutoBuffMode","AutoSambaMode","Weapons","OffenseMode","WeaponskillMode","Stance","IdleMode","Passive","RuneElement","ElementalMode","CastingMode","TreasureMode",})
+	init_job_states()
 end
 
 -------------------------------------------------------------------------------------------------------------------
@@ -522,21 +522,7 @@ function check_buff()
 			end
 		end
 		
-		if player.in_combat then
-			local abil_recasts = windower.ffxi.get_ability_recasts()
-
-			if player.sub_job == 'WAR' and not buffactive.Berserk and not is_defensive() and abil_recasts[1] < latency then
-				windower.chat.input('/ja "Berserk" <me>')
-				tickdelay = os.clock() + 1.1
-				return true
-			elseif player.sub_job == 'WAR' and not buffactive.Aggressor and not is_defensive() and abil_recasts[4] < latency then
-				windower.chat.input('/ja "Aggressor" <me>')
-				tickdelay = os.clock() + 1.1
-				return true
-			else
-				return false
-			end
-		end
+		return check_melee_sub_buffs()
 	end
 		
 	return false
@@ -576,7 +562,9 @@ end
 
 buff_spell_lists = {
 	Auto = {	
-		{Name='Migawari: Ichi',Buff='Migawari',SpellID=510,When='Combat'},
+		{Name='Myoshu: Ichi',Buff='Subtle Blow Plus',SpellID=507,When='Combat'},
+		{Name='Kakka: Ichi',Buff='Store TP',SpellID=509,When='Combat'},
+		--{Name='Migawari: Ichi',Buff='Migawari',SpellID=510,When='Combat'},
 	},
 	
 	Default = {

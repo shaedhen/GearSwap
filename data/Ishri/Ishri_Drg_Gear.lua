@@ -1,7 +1,7 @@
 -- Setup vars that are user-dependent.  Can override this function in a sidecar file.
 function user_job_setup()
 	-- Options: Override default values
-    state.OffenseMode:options('Normal','Acc')
+    state.OffenseMode:options('Normal')
     state.WeaponskillMode:options('Match','Normal','Acc')
     state.HybridMode:options('Normal')
     state.PhysicalDefenseMode:options('PDT')
@@ -9,7 +9,7 @@ function user_job_setup()
 	state.ResistDefenseMode:options('MEVA')
 	state.IdleMode:options('Normal', 'PDT')
     state.ExtraMeleeMode = M{['description']='Extra Melee Mode','None'}
-	state.Weapons:options('Trishula')
+	state.Weapons:options('Trishula','Shining','Savage')
 	state.Passive = M{['description'] = 'Passive Mode','None','MP','Twilight'}
 
     select_default_macro_book()
@@ -18,6 +18,27 @@ function user_job_setup()
 	send_command('bind ^f11 gs c cycle MagicalDefenseMode')
 	send_command('bind @f7 gs c toggle AutoJumpMode')
 	send_command('bind @` gs c cycle SkillchainMode')
+	
+	--DRG	
+	--Academic
+	gear.DRG_AF_Head		=	{ name="Vishap Armet +1"}
+    gear.DRG_AF_Body		=	{ name="Vishap Mail +1"}
+    gear.DRG_AF_Hands		=	{ name="Vishap Finger Gauntlets +1"}
+    gear.DRG_AF_Legs		=	{ name="Vishap Brais +1"}
+    gear.DRG_AF_Feet		=	{ name="Vishap Greaves +1"}
+    --Pedagogy
+    gear.DRG_RELIC_Head		=	{ name="Pteroslaver Armet"}
+    gear.DRG_RELIC_Body		=	{ name="Pteroslaver Mail"}
+    gear.DRG_RELIC_Hands 	=	{ name="Pteroslaver Finger Gauntlets"}
+    gear.DRG_RELIC_Legs		=	{ name="Pteroslaver Brais +3"}
+    gear.DRG_RELIC_Feet		=	{ name="Pteroslaver Greaves"}
+    --Peltast
+    gear.DRG_EMPY_Head		=	{ name="Peltast's Mezail"}
+    gear.DRG_EMPY_Body		=	{ name="Peltast's Plackart +2"}
+    gear.DRG_EMPY_Hands		=	{ name="Peltast's Vambraces"}
+    gear.DRG_EMPY_Legs		=	{ name="Peltast's Cuissots"}
+    gear.DRG_EMPY_Feet		=	{ name="Peltast's Schynbalds"}	
+	
 end
 
 -- Define sets and vars used by this job file.
@@ -28,15 +49,15 @@ function init_gear_sets()
 	
 	-- Precast Sets
 	-- Precast sets to enhance JAs
-	sets.precast.JA.Angon = {ammo="Angon"} --hands="Ptero. Fin. G. +1"
+	sets.precast.JA.Angon = {ammo="Angon",hands="Ptero. Fin. G. +1"} --hands="Ptero. Fin. G. +1"
 	sets.precast.JA.Jump = {
     main="Shining One",
     sub="Utu Grip",
     ammo="Focal Orb",
-    head="Flam. Zucchetto +1",
+    head="Flam. Zucchetto +2",
     body="Flamma Korazin +1",
-    hands="Iktomi Dastanas",
-    legs="Sulevia's Cuisses",
+    hands=gear.DRG_AF_Hands,
+    legs=gear.DRG_RELIC_Legs,
     feet="Flam. Gambieras +2",
     neck="Defiant Collar",
     waist="Dynamic Belt +1",
@@ -105,35 +126,26 @@ function init_gear_sets()
 	-- Default set for any weaponskill that isn't any more specifically defined
 	
 	sets.precast.WS = {
-    main="Shining One",
-    sub="Utu Grip",
     ammo="Knobkierrie",
-    head="Sulevia's Mask +1",
-    body="Sulevia's Plate.",
-    hands="Sulev. Gauntlets +1",
-    legs="Sulevia's Cuisses",
-    feet="Sulev. Leggings +2",
-    neck="Sanctity Necklace",
-    waist="Dynamic Belt +1",
-    left_ear="Sherida Earring",
+    head="Gleti's Mask",
+    body="Gleti's Cuirass",
+    hands="Gleti's Gauntlets",
+    legs="Gleti's Breeches",
+    feet="Gleti's Boots",
+    neck="Dragoon's Collar +1",
+    waist="Warwolf Belt",
+    left_ear="Thrud Earring",
     right_ear="Ishvara Earring",
-    left_ring="Petrov Ring",
+    left_ring="Karieyh Ring",
     right_ring="Niqmaddu Ring",
-    back={ name="Brigantia's Mantle", augments={'STR+20','Accuracy+20 Attack+20','Weapon skill damage +10%',}},
+    back={ name="Brigantia's Mantle", augments={'DEX+20','Accuracy+20 Attack+20','"Dbl.Atk."+10',}},
 }
 		
-	sets.precast.WS.Acc = set_combine(sets.precast.WS, {neck="Shulmanu Collar"})
 	
 	-- Specific weaponskill sets.  Uses the base set if an appropriate WSMod version isn't found.
 	sets.precast.WS['Stardiver'] = set_combine(sets.precast.WS, {})
-	sets.precast.WS['Stardiver'].SomeAcc = set_combine(sets.precast.WS.Acc, {})
-	sets.precast.WS['Stardiver'].Acc = set_combine(sets.precast.WS.Acc, {})
-	sets.precast.WS['Stardiver'].Fodder = set_combine(sets.precast.WS.Fodder, {})
 
 	sets.precast.WS['Drakesbane'] = set_combine(sets.precast.WS, {})
-	sets.precast.WS['Drakesbane'].SomeAcc = set_combine(sets.precast.WS.Acc, {})
-	sets.precast.WS['Drakesbane'].Acc = set_combine(sets.precast.WS.Acc, {})
-	sets.precast.WS['Drakesbane'].Fodder = set_combine(sets.precast.WS.Fodder, {})
 
 
 	
@@ -144,13 +156,12 @@ function init_gear_sets()
 
 	-- Idle sets
 	sets.idle = {
-    main="Shining One",
     sub="Utu Grip",
     ammo="Staunch Tathlum",
-    head="Sulevia's Mask +1",
-    body="Sulevia's Plate.",
-    hands="Sulev. Gauntlets +1",
-    legs="Carmine Cuisses",
+    head="Nyame Helm",
+    body="Nyame Mail",
+    hands="Nyame Gauntlets",
+    legs="Carmine Cuisses +1",
     feet="Sulev. Leggings +2",
     neck="Sanctity Necklace",
     waist="Chuq'aba Belt",
@@ -202,6 +213,8 @@ function init_gear_sets()
 	
 	-- Weapons sets
 	sets.weapons.Trishula = {main="Trishula",sub="Utu Grip"}
+	sets.weapons.Shining = {main="Shining One",sub="Utu Grip"}
+	sets.weapons.Savage = {main="Naegling"}
 
 	-- Swap to these on Moonshade using WS if at 3000 TP
 	sets.MaxTP = {ear1="Lugra Earring +1",ear2="Sherida Earring",}
@@ -221,36 +234,21 @@ function init_gear_sets()
 	-- Normal melee group
 
 	sets.engaged = {
-    main="Shining One",
-    sub="Utu Grip",
     ammo="Focal Orb",
-    head="Flam. Zucchetto +1",
-    body="Flamma Korazin +1",
+    head="Hjarrandi Helm",
+    body="Pelt. Plackart +2",
     hands={ name="Acro Gauntlets", augments={'Accuracy+19 Attack+19','"Store TP"+4','DEX+9',}},
-    legs="Sulevia's Cuisses",
+    legs=gear.DRG_RELIC_Legs,
     feet="Flam. Gambieras +2",
-    neck="Defiant Collar",
-    waist="Ioskeha Belt",
+    neck="Anu Torque",
+    waist="Ioskeha Belt +1",
     left_ear="Sherida Earring",
-    right_ear="Steelflash Earring",
+    right_ear="Telos Earring",
     left_ring="Petrov Ring",
     right_ring="Niqmaddu Ring",
     back={ name="Brigantia's Mantle", augments={'DEX+20','Accuracy+20 Attack+20','"Dbl.Atk."+10',}},
 }
 
-	sets.engaged.Acc = {ammo="Aurgelmir Orb +1",
-		head="Flam. Zucchetto +2",neck="Shulmanu Collar",ear1="Digni. Earring",ear2="Telos Earring",
-		body=gear.valorous_wsd_body,hands=gear.valorous_acc_hands,ring1="Ramuh Ring +1",ring2="Niqmaddu Ring",
-		back="Brigantia's Mantle",waist="Ioskeha Belt",legs="Sulev. Cuisses +2",feet="Flam. Gambieras +2"}
-
-    sets.engaged.AM = {}
-	sets.engaged.AM.Acc = {}
-	
-    sets.engaged.PDT = {}
-	sets.engaged.Acc.PDT = {}
-	
-    sets.engaged.AM.PDT = {}
-	sets.engaged.AM.Acc.PDT = {}
 		
 end
 

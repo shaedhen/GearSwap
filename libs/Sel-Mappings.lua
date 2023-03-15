@@ -70,6 +70,9 @@ data.elements.enspells_lookup = {['Enthunder']='Lightning', ['Enstone']='Earth',
 		['Enblizzard II']='Ice', ['Enfire II']='Fire', ['Enwater II']='Water', ['Enlight II']='Light', 
 		['Endark II']='Dark'}
 		
+data.elements.obi_of = {['Fire']='Karin Obi',['Ice']='Hyorin Obi',['Wind']='Furin Obi',['Earth']='Dorin Obi',
+['Lightning']='Rairin Obi',['Water']='Suirin Obi',['Light']='Korin Obi',['Dark']='Anrin Obi'}
+		
 data.elements.ninjutsu_nuke_of = {['Fire']='Katon', ['Ice']='Hyoton', ['Wind']='Huton', ['Earth']='Doton',
         ['Lightning']='Raiton', ['Water']='Suiton', ['Dark']='Kurayami',}
 		
@@ -105,6 +108,7 @@ data.elements.storm_of = {['Light']="Aurorastorm", ['Dark']="Voidstorm", ['Fire'
 data.elements.rune_of = {['Light']='Lux', ['Dark']='Tenebrae', ['Fire']='Ignis', ['Ice']='Gelus', ['Wind']='Flabra',
      ['Earth']='Tellus', ['Lightning']='Sulpor', ['Water']='Unda'}
  
+data.weather_bonus_potency = {[0]=0,[1]=10,[2]=25}
 
 --Exceptions for specific actions, placed here to be easily modifiable.
 cursna_exceptions = S{'Cursna','Accession','Divine Caress','Hallowed Water','Holy Water','Light Arts','Addendum: White'}
@@ -173,13 +177,33 @@ data.weaponskills.empyrean = {
     ["Gandiva"] = "Jishnu's Radiance",
     ["Armageddon"] = "Wildfire"}
 
+data.weaponskills.aeonic = {
+    ["Dojikiri Yasutsuna"] = "Tachi: Shoha",
+    ["Chango"] = "Upheaval",
+    ["Trishula"] = "Stardiver",
+    ["Sequence"] = "Requiescat",
+    ["Aeneas"] = "Exenterator",
+    ["Lionheart"] = "Resolution",
+    ["Godhands"] = "Shijin Spiral",
+    ["Tri-Edge"] = "Ruinator",
+    ["Anguta"] = "Entropy",
+    ["Heishi Shorinken"] = "Blade: Shun",
+    ["Tishtrya"] = "Realmrazer",
+	["Khatvanga"] = "Shattersoul",
+    ["Fail-Not"] = "Apex Arrow",
+    ["Fomalhaut"] = "Last Stand"}
 -- Weaponskills that can be used at range.
 data.weaponskills.ranged = S{"Flaming Arrow","Piercing Arrow","Dulling Arrow","Sidewinder","Arching Arrow",
     "Empyreal Arrow","Refulgent Arrow","Apex Arrow","Namas Arrow","Jishnu's Radiance",
     "Hot Shot","Split Shot","Sniper Shot","Slug Shot","Heavy Shot","Detonator","Last Stand",
     "Coronach","Trueflight","Leaden Salute","Wildfire","Myrkr"}
 
-data.weaponskills.elemental = S{'Wildfire','Leaden Salute','Sanguine Blade','Aeolian Edge','Cataclysm','Trueflight','Tachi: Jinpu','Flash Nova'}
+data.weaponskills.elemental = S{'Wildfire','Leaden Salute','Sanguine Blade','Aeolian Edge','Cataclysm','Trueflight',
+'Tachi: Jinpu','Flash Nova','Tachi: Kagero','Tachi: Koki','Tachi: Goten','Shadow of Death','Infernal Scythe','Dark Harvest',
+'Blade: Teki','Blade: To','Blade: Chi','Blade: Ei','Blade: Yu','Burning Blade','Red Lotus Blade','Shining Blade',
+'Seraph Blade','Gust Slash','Cyclone','Shining Strike','Seraph Strike','Frostbite','Freezebite','Herculean Slash','Gale Axe',
+'Cloudsplitter','Primal Rend','Thunder Thrust','Raiden Thrust','Rock Crusher','Earth Crusher','Starburst','Sunburst',
+'Garland of Bliss','Flaming Arrow','Hot Shot'}
 
 data.weaponskills.statue_ws = {['COR']='Leaden Salute',['RNG']='Trueflight',['RDM']='Sanguine Blade',['BLU']='Sanguine Blade'}
 
@@ -346,6 +370,8 @@ data.equipment.relic_weapons = S{'Spharai','Mandau','Excalibur','Ragnarok','Gutt
 
 data.equipment.aeonic_weapons = S{'Dojikiri Yasutsuna','Chango','Trishula','Sequence','Aeneas','Lionheart',
 	'Godhands','Tri-Edge','Anguta','Heishi Shorinken','Tishtrya', 'Fail-Not','Fomalhaut'}
+data.equipment.empyrean_weapons = S{'Verethragna','Twashtar','Almace', 'Caladbolg','Farsha','Ukonvasara',
+    'Redemption','Rhongomiant','Kannagi','Masamune','Gambanteinn','Hvergelmir','Gandiva','Armageddon'}
 
 --Only tracking 1-handed weapons for offhanding as they're all that's used in meta.
 data.equipment.magian_tp_bonus_melee_weapons = S{'Sphyras','Barracudas +3','Barracudas +2','Centovente','Fusetto +3','Fusetto +2',
@@ -375,6 +401,28 @@ data.equipment.rema_ranged_weapons_ammo_pouch = {
 	['Gastraphetes'] = "Quelling B. Quiver",
 	['Yoichinoyumi'] = "Yoichi's Quiver",
 	['Annihilator'] = 'Era. Bul. Pouch'}
+	
+data.equipment.rema_ammo_weapon_of = {
+	['Chrono Bullet'] = 'Fomalhaut',
+	['Living Bullet'] = 'Death Penalty',
+	['Devastating Bullet'] = 'Armageddon',
+	['Eradicating Bulet'] = 'Annihilator',
+	['Chrono Arrow'] = 'Fail-Not',
+	["Artemis's Arrow"] = 'Gandiva',
+	["Yoichi's Arrow"] = 'Yoichinoyumi',
+	['Quelling Bolt'] = 'Gastraphetes'
+}
+
+data.equipment.rema_ammo_pouch_of = {
+	['Chrono Bullet'] = 'Chr. Bul. Pouch',
+	['Living Bullet'] = 'Liv. Bul. Pouch',
+	['Devastating Bullet'] = 'Dev. Bul. Pouch',
+	['Eradicating Bulet'] = 'Era. Bul. Pouch',
+	['Chrono Arrow'] = 'Chrono Quiver',
+	["Artemis's Arrow"] = "Artemis's Quiver",
+	["Yoichi's Arrow"] = "Yoichi's Quiver",
+	['Quelling Bolt'] = 'Quelling B. Quiver'
+}
 
 data.equipment.cprings = L{"Endorsement Ring","Trizek Ring","Vocation Ring","Capacity Ring","Facility Ring"}
 data.equipment.xprings = L{"Echad Ring","Caliber Ring","Emperor Band","Empress Band","Resolution Ring"}
