@@ -1,7 +1,7 @@
 function user_job_setup()
 	-- Options: Override default values
-    state.OffenseMode:options('Normal','SomeAcc','Acc','FullAcc','Fodder')
-    state.WeaponskillMode:options('Match','Normal','SomeAcc','Acc','FullAcc','Fodder')
+    state.OffenseMode:options('Normal','Acc')
+    state.WeaponskillMode:options('Match','Normal','Acc')
     state.HybridMode:options('Normal')
     state.PhysicalDefenseMode:options('PDT', 'PDTReraise')
     state.MagicalDefenseMode:options('MDT', 'MDTReraise')
@@ -97,10 +97,20 @@ function init_gear_sets()
 						                   
 	-- Weaponskill sets
 	-- Default set for any weaponskill that isn't any more specifically defined
-    sets.precast.WS = {ammo="Knobkierrie",
-		head="Flam. Zucchetto +2",neck="Fotia Gorget",ear1="Lugra Earring +1",ear2="Moonshade Earring",
-		body=gear.valorous_wsd_body,hands="Sulev. Gauntlets +2",ring1="Regal Ring",ring2="Niqmaddu Ring",
-		back="Ankou's Mantle",waist="Fotia Belt",legs="Sulev. Cuisses +2",feet="Flam. Gambieras +2"}
+    sets.precast.WS = {
+    ammo="Knobkierrie",
+    head="Ratri Sallet",
+    body="Ignominy Cuirass +2",
+    hands="Ratri Gadlings",
+    legs="Ratri Cuisses",
+    feet="Sulev. Leggings +2",
+    neck={ name="Abyssal Beads +1", augments={'Path: A',}},
+    waist="Ioskeha Belt +1",
+    left_ear="Lugra Earring",
+    right_ear="Thrud Earring",
+    left_ring="Regal Ring",
+    right_ring="Niqmaddu Ring",
+    back={ name="Ankou's Mantle", augments={'STR+20','Accuracy+20 Attack+20','Weapon skill damage +10%',}},}
 
 	sets.precast.WS.SomeAcc = set_combine(sets.precast.WS, {})
 	sets.precast.WS.Acc = set_combine(sets.precast.WS, {})
@@ -109,28 +119,18 @@ function init_gear_sets()
 
     -- Specific weaponskill sets.  Uses the base set if an appropriate WSMod version isn't found.	
     sets.precast.WS['Catastrophe'] = set_combine(sets.precast.WS, {})
-    sets.precast.WS['Catastrophe'].SomeAcc = set_combine(sets.precast.WS.SomeAcc, {})
+
     sets.precast.WS['Catastrophe'].Acc = set_combine(sets.precast.WS.Acc, {})
-    sets.precast.WS['Catastrophe'].FullAcc = set_combine(sets.precast.WS.FullAcc, {})
-    sets.precast.WS['Catastrophe'].Fodder = set_combine(sets.precast.WS.Fodder, {})
-	
+
     sets.precast.WS['Torcleaver'] = set_combine(sets.precast.WS, {})
-    sets.precast.WS['Torcleaver'].SomeAcc = set_combine(sets.precast.WS.SomeAcc, {})
+
     sets.precast.WS['Torcleaver'].Acc = set_combine(sets.precast.WS.Acc, {})
-    sets.precast.WS['Torcleaver'].FullAcc = set_combine(sets.precast.WS.FullAcc, {})
-    sets.precast.WS['Torcleaver'].Fodder = set_combine(sets.precast.WS.Fodder, {})
 
     sets.precast.WS['Entropy'] = set_combine(sets.precast.WS, {})
-    sets.precast.WS['Entropy'].SomeAcc = set_combine(sets.precast.WS.SomeAcc, {})
     sets.precast.WS['Entropy'].Acc = set_combine(sets.precast.WS.Acc, {})
-    sets.precast.WS['Entropy'].FullAcc = set_combine(sets.precast.WS.FullAcc, {})
-    sets.precast.WS['Entropy'].Fodder = set_combine(sets.precast.WS.Fodder, {})
      
     sets.precast.WS['Resolution'] = set_combine(sets.precast.WS, {})
-    sets.precast.WS['Resolution'].SomeAcc = set_combine(sets.precast.WS.SomeAcc, {})
     sets.precast.WS['Resolution'].Acc = set_combine(sets.precast.WS.Acc, {})
-    sets.precast.WS['Resolution'].FullAcc = set_combine(sets.precast.WS.FullAcc, {})
-    sets.precast.WS['Resolution'].Fodder = set_combine(sets.precast.WS.Fodder, {})     
            
      -- Sets to return to when not performing an action.
            
@@ -188,136 +188,20 @@ function init_gear_sets()
 	sets.buff['Dark Seal'] = {} --head="Fallen's Burgeonet +3"
      
 	-- Engaged sets
-	sets.engaged = {ammo="Aurgelmir Orb +1",
-		head="Flam. Zucchetto +2",neck="Asperity Necklace",ear1="Brutal Earring",ear2="Cessance Earring",
-		body=gear.valorous_wsd_body,hands=gear.valorous_acc_hands,ring1="Petrov Ring",ring2="Niqmaddu Ring",
-		back="Ankou's Mantle",waist="Ioskeha Belt",legs="Sulev. Cuisses +2",feet="Flam. Gambieras +2"}
-    sets.engaged.SomeAcc = {ammo="Aurgelmir Orb +1",
-		head="Flam. Zucchetto +2",neck="Combatant's Torque",ear1="Brutal Earring",ear2="Cessance Earring",
-		body=gear.valorous_wsd_body,hands=gear.valorous_acc_hands,ring1="Flamma Ring",ring2="Niqmaddu Ring",
-		back="Ankou's Mantle",waist="Ioskeha Belt",legs="Sulev. Cuisses +2",feet="Flam. Gambieras +2"}
-	sets.engaged.Acc = {ammo="Aurgelmir Orb +1",
-		head="Flam. Zucchetto +2",neck="Combatant's Torque",ear1="Digni. Earring",ear2="Telos Earring",
-		body=gear.valorous_wsd_body,hands=gear.valorous_acc_hands,ring1="Flamma Ring",ring2="Niqmaddu Ring",
-		back="Ankou's Mantle",waist="Ioskeha Belt",legs="Sulev. Cuisses +2",feet="Flam. Gambieras +2"}
-    sets.engaged.FullAcc = {ammo="Aurgelmir Orb +1",
-		head="Flam. Zucchetto +2",neck="Combatant's Torque",ear1="Mache Earring +1",ear2="Telos Earring",
-		body=gear.valorous_wsd_body,hands=gear.valorous_acc_hands,ring1="Flamma Ring",ring2="Ramuh Ring +1",
-		back="Ankou's Mantle",waist="Ioskeha Belt",legs="Sulev. Cuisses +2",feet="Flam. Gambieras +2"}
-    sets.engaged.Fodder = {ammo="Aurgelmir Orb +1",
-		head="Flam. Zucchetto +2",neck="Asperity Necklace",ear1="Brutal Earring",ear2="Sherida Earring",
-		body=gear.valorous_wsd_body,hands=gear.valorous_acc_hands,ring1="Petrov Ring",ring2="Niqmaddu Ring",
-		back="Ankou's Mantle",waist="Ioskeha Belt",legs="Sulev. Cuisses +2",feet="Flam. Gambieras +2"}
---Example sets:
---[[
-    sets.engaged.Adoulin = {}
-	sets.engaged.SomeAcc.Adoulin = {}
-	sets.engaged.Acc.Adoulin = {}
-	sets.engaged.FullAcc.Adoulin = {}
-	sets.engaged.Fodder.Adoulin = {}
-	
-	sets.engaged.PDT = {}
-	sets.engaged.SomeAcc.PDT = {}
-	sets.engaged.Acc.PDT = {}
-	sets.engaged.FullAcc.PDT = {}
-	sets.engaged.Fodder.PDT = {}
-	
-	sets.engaged.PDT.Adoulin = {}
-	sets.engaged.SomeAcc.PDT.Adoulin = {}
-	sets.engaged.Acc.PDT.Adoulin = {}
-	sets.engaged.FullAcc.PDT.Adoulin = {}
-	sets.engaged.Fodder.PDT.Adoulin = {}
-	
-	sets.engaged.MDT = {}
-	sets.engaged.SomeAcc.MDT = {}
-	sets.engaged.Acc.MDT = {}
-	sets.engaged.FullAcc.MDT = {}
-	sets.engaged.Fodder.MDT = {}
-	
-	sets.engaged.MDT.Adoulin = {}
-	sets.engaged.SomeAcc.MDT.Adoulin = {}
-	sets.engaged.Acc.MDT.Adoulin = {}
-	sets.engaged.FullAcc.MDT.Adoulin = {}
-	sets.engaged.Fodder.MDT.Adoulin = {}
-	
-            -- Variations for TP weapon and (optional) offense/defense modes.  Code will fall back on previous
-            -- sets if more refined versions aren't defined.
-            -- If you create a set with both offense and defense modes, the offense mode should be first.
-            -- EG: sets.engaged.Dagger.Accuracy.Evasion
+	sets.engaged = {    ammo="Focal Orb",
+    head="Hjarrandi Helm",
+    body="Hjarrandi Breast.",
+    hands="Sakpata's Gauntlets",
+    legs="Sakpata's Cuisses",
+    feet="Flam. Gambieras +2",
+    neck={ name="Abyssal Beads +1", augments={'Path: A',}},
+    waist="Ioskeha Belt +1",
+    left_ear="Steelflash Earring",
+    right_ear="Bladeborn Earring",
+    left_ring="Flamma Ring",
+    right_ring="Niqmaddu Ring",
+    back="Lupine Cape"}
 
--- Liberator melee sets
-    sets.engaged.Liberator = {}
-	sets.engaged.Liberator.SomeAcc = {}
-	sets.engaged.Liberator.Acc = {}
-	sets.engaged.Liberator.FullAcc = {}
-	sets.engaged.Liberator.Fodder = {}
-	
-    sets.engaged.Liberator.Adoulin = {}
-	sets.engaged.Liberator.SomeAcc.Adoulin = {}
-	sets.engaged.Liberator.Acc.Adoulin = {}
-	sets.engaged.Liberator.FullAcc.Adoulin = {}
-	sets.engaged.Liberator.Fodder.Adoulin = {}
-	
-    sets.engaged.Liberator.AM = {}
-	sets.engaged.Liberator.SomeAcc.AM = {}
-	sets.engaged.Liberator.Acc.AM = {}
-	sets.engaged.Liberator.FullAcc.AM = {}
-	sets.engaged.Liberator.Fodder.AM = {}
-	
-    sets.engaged.Liberator.Adoulin.AM = {}
-	sets.engaged.Liberator.SomeAcc.Adoulin.AM = {}
-	sets.engaged.Liberator.Acc.Adoulin.AM = {}
-	sets.engaged.Liberator.FullAcc.Adoulin.AM = {}
-	sets.engaged.Liberator.Fodder.Adoulin.AM = {}
-
-	sets.engaged.Liberator.PDT = {}
-	sets.engaged.Liberator.SomeAcc.PDT = {}
-	sets.engaged.Liberator.Acc.PDT = {}
-	sets.engaged.Liberator.FullAcc.PDT = {}
-	sets.engaged.Liberator.Fodder.PDT = {}
-	
-	sets.engaged.Liberator.PDT.Adoulin = {}
-	sets.engaged.Liberator.SomeAcc.PDT.Adoulin = {}
-	sets.engaged.Liberator.Acc.PDT.Adoulin = {}
-	sets.engaged.Liberator.FullAcc.PDT.Adoulin = {}
-	sets.engaged.Liberator.Fodder.PDT.Adoulin = {}
-	
-	sets.engaged.Liberator.PDT.AM = {}
-	sets.engaged.Liberator.SomeAcc.PDT.AM = {}
-	sets.engaged.Liberator.Acc.PDT.AM = {}
-	sets.engaged.Liberator.FullAcc.PDT.AM = {}
-	sets.engaged.Liberator.Fodder.PDT.AM = {}
-	
-	sets.engaged.Liberator.PDT.Adoulin.AM = {}
-	sets.engaged.Liberator.SomeAcc.PDT.Adoulin.AM = {}
-	sets.engaged.Liberator.Acc.PDT.Adoulin.AM = {}
-	sets.engaged.Liberator.FullAcc.PDT.Adoulin.AM = {}
-	sets.engaged.Liberator.Fodder.PDT.Adoulin.AM = {}
-	
-	sets.engaged.Liberator.MDT = {}
-	sets.engaged.Liberator.SomeAcc.MDT = {}
-	sets.engaged.Liberator.Acc.MDT = {}
-	sets.engaged.Liberator.FullAcc.MDT = {}
-	sets.engaged.Liberator.Fodder.MDT = {}
-	
-	sets.engaged.Liberator.MDT.Adoulin = {}
-	sets.engaged.Liberator.SomeAcc.MDT.Adoulin = {}
-	sets.engaged.Liberator.Acc.MDT.Adoulin = {}
-	sets.engaged.Liberator.FullAcc.MDT.Adoulin = {}
-	sets.engaged.Liberator.Fodder.MDT.Adoulin = {}
-	
-	sets.engaged.Liberator.MDT.AM = {}
-	sets.engaged.Liberator.SomeAcc.MDT.AM = {}
-	sets.engaged.Liberator.Acc.MDT.AM = {}
-	sets.engaged.Liberator.FullAcc.MDT.AM = {}
-	sets.engaged.Liberator.Fodder.MDT.AM = {}
-	
-	sets.engaged.Liberator.MDT.Adoulin.AM = {}
-	sets.engaged.Liberator.SomeAcc.MDT.Adoulin.AM = {}
-	sets.engaged.Liberator.Acc.MDT.Adoulin.AM = {}
-	sets.engaged.Liberator.FullAcc.MDT.Adoulin.AM = {}
-	sets.engaged.Liberator.Fodder.MDT.Adoulin.AM = {}
-]]--
 	--Extra Special Sets
 	
 	sets.buff.Souleater = {}

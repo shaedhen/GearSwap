@@ -24,7 +24,7 @@ state.DisplayMode = M(true, 'Display Mode') --Set this to false if you don't wan
 
 --Options for automation.
 state.ReEquip 		  		= M(true, 'ReEquip Mode')		 --Set this to false if you don't want to equip your current Weapon set when you aren't wearing any weapons.
-state.AutoArts 		  		= M(true, 'AutoArts') 		 --Set this to false if you don't want to automatically try to keep up Solace/Arts.
+state.AutoArts 		  		= M(false, 'AutoArts') 		 --Set this to false if you don't want to automatically try to keep up Solace/Arts.
 state.AutoLockstyle	 	    = M(true, 'AutoLockstyle Mode') --Set this to false if you don't want gearswap to automatically lockstyle on load and weapon change.
 state.CancelStoneskin 		= M(true, 'Cancel Stone Skin') --Set this to false if you don't want to automatically cancel stoneskin when you're slept.
 state.SkipProcWeapons 		= M(true, 'Skip Proc Weapons') --Set this to false if you want to display weapon sets fulltime rather than just Aby/Voidwatch.
@@ -48,7 +48,7 @@ send_command('bind @f8 gs c toggle AutoNukeMode') --Turns auto-nuke mode on and 
 send_command('bind ^f8 gs c toggle AutoStunMode') --Turns auto-stun mode off and on.
 send_command('bind !f8 gs c toggle AutoDefenseMode') --Turns auto-defense mode off and on.
 send_command('bind ^@!f8 gs c toggle AutoTrustMode') --Summons trusts automatically.
-send_command('bind @pause gs c cycle AutoBuffMode') --Automatically keeps certain buffs up, job-dependant.
+send_command('bind @f1 gs c cycle AutoBuffMode') --Automatically keeps certain buffs up, job-dependant.
 send_command('bind @scrolllock gs c cycle Passive') --Changes offense settings such as accuracy.
 send_command('bind f9 gs c cycle OffenseMode') --Changes offense settings such as accuracy.
 send_command('bind ^f9 gs c cycle HybridMode') --Changes defense settings for melee such as PDT.
