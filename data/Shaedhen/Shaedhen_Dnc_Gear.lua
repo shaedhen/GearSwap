@@ -2,7 +2,7 @@
 function user_job_setup()
     state.OffenseMode:options('Normal','Acc')
     state.HybridMode:options('Normal','DT')
-    state.WeaponskillMode:options('Normal','Acc')
+    state.WeaponskillMode:options('Normal','Capped')
 	state.IdleMode:options('Normal', 'Sphere')
     state.PhysicalDefenseMode:options('PDT')
 	state.MagicalDefenseMode:options('MDT')
@@ -203,7 +203,7 @@ function init_gear_sets()
     sets.precast.WS = 
 	{
 		ammo	=	"Charis Feather",
-        head	=	"Nyame Helm",
+        head	=	gear.DNC_EMPY_Head,
 		neck	=	"Etoile Gorget",
 		ear1	=	"Moonshade Earring",
 		ear2	=	"Sherida Earring",
@@ -220,15 +220,30 @@ function init_gear_sets()
     -- Specific weaponskill sets.  Uses the base set if an appropriate WSMod version isn't found.
     sets.precast.WS["Rudra's Storm"] = 
 	{
-		ammo	=	"Charis Feather",
+		ammo	=	"Coiste Bodhar",
         head	=	gear.DNC_EMPY_Head,
-		neck	=	"Etoile Gorget",
+		neck	=	"Etoile Gorget +1",
 		ear1	=	"Moonshade Earring",
---		ear2	=	"Odr Earring",
-		ear2	=	"Maculele Earring +1",
+		ear2	=	"Sherida Earring",
         body	=	"Nyame Mail",
 		hands	=	"Nyame Gauntlets",
---		ring1	=	"Ilabrat Ring",
+		ring1	=	"Epaminondas's Ring",
+		ring2	=	"Regal Ring",
+        back	=	gear.DNC_WS1_Cape,
+		waist	=	"Kentarch Belt +1",
+		legs	=	"Nyame Flanchard",
+		feet	=	"Nyame Sollerets",
+	}
+	
+	sets.precast.WS["Rudra's Storm"].Capped = 
+	{
+		ammo	=	"Crepuscular Pebble",
+        head	=	gear.DNC_EMPY_Head,
+		neck	=	"Etoile Gorget +1",
+		ear1	=	"Moonshade Earring",
+		ear2	=	"Maculele Earring +1",
+        body	=	"Gleti's Cuirass",
+		hands	=	gear.DNC_AF_Hands,
 		ring1	=	"Epaminondas's Ring",
 		ring2	=	"Regal Ring",
         back	=	gear.DNC_WS1_Cape,
@@ -256,37 +271,54 @@ function init_gear_sets()
 	
     sets.precast.WS['Evisceration'] = 
 	{
-		ammo	=	"Charis Feather",
-        head	=	"Adhemar Bonnet +1",
+		ammo	=	"Coiste Bodhar",
+        head	=	"Blistering Sallet +1",
 		neck	=	"Fotia Gorget",
 		ear1	=	"Odr Earring",
-		ear2	=	"Sherida Earring",
-        body	=	"Meg. Cuirie +2",
-		hands	=	"Mummu Wrists +2",
-		ring1	=	"Ilabrat Ring",
-		ring2	=	"Mummu Ring",
+		ear2	=	"Moonshade Earring",
+        body	=	"Gleti's Cuirass",
+		hands	=	"Adhemar Wrist. +1",
+		ring1	=	"Gere Ring",
+		ring2	=	"Regal Ring",
         back	=	gear.DNC_WS1_Cape,
 		waist	=	"Fotia Belt",
-		legs	=	gear.Mummu_Legs,
+		legs	=	"Gleti's Breeches",
 		feet	=	gear.Mummu_Feet
 	}
 	
-    sets.precast.WS['Pyrrhic Kleos'] = --TODO
+    sets.precast.WS['Pyrrhic Kleos'] = 
 	{
-		ammo	=	"Charis Feather",
-        head	=	"Adhemar Bonnet +1",
+		ammo	=	"Coiste Bodhar",
+        head	=	gear.DNC_EMPY_Head,
 		neck	=	"Fotia Gorget",
-		ear1	=	"Odr Earring",
+		ear1	=	"Mache Earring +1",
 		ear2	=	"Sherida Earring",
-        body	=	"Meg. Cuirie +2",
-		hands	=	"Mummu Wrists +2",
-		ring1	=	"Ilabrat Ring",
-		ring2	=	"Mummu Ring",
+        body	=	gear.DNC_RELIC_Body,
+		hands	=	"Adhemar Wrist. +1",
+		ring1	=	"Gere Ring",
+		ring2	=	"Regal Ring",
         back	=	gear.DNC_WS1_Cape,
 		waist	=	"Fotia Belt",
-		legs	=	gear.Mummu_Legs,
-		feet	=	gear.Mummu_Feet
+		legs	=	"Nyame Flanchard",
+		feet	=	"Nyame Sollerets"
 	}
+	
+    sets.precast.WS['Pyrrhic Kleos'].Capped = 
+	{
+		ammo	=	"Coiste Bodhar",
+        head	=	gear.DNC_EMPY_Head,
+		neck	=	"Etoile Gorget +1",
+		ear1	=	"Sherida Earring",
+		ear2	=	"Maculele Earring +1",
+        body	=	"Gleti's Cuirass",
+		hands	=	"Adhemar Wrist. +1",
+		ring1	=	"Gere Ring",
+		ring2	=	"Regal Ring",
+        back	=	gear.DNC_WS1_Cape,
+		waist	=	"Fotia Belt",
+		legs	=	"Gleti's Breeches",
+		feet	=	"Nyame Sollerets"
+	}	
 
     sets.precast.WS['Aeolian Edge'] = 
 	{
