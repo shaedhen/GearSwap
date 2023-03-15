@@ -59,7 +59,7 @@ function job_setup()
     state.Buff.Innin = buffactive.Innin or false
     state.Buff.Futae = buffactive.Futae or false
 	
-	state.Stance = M{['description']='Stance','Innin','Yonin','None'}
+	state.Stance = M{['description']='Stance','None','Innin','Yonin'}
 
 	autows = "Blade: Shun"
 	autofood = 'Soy Ramen'

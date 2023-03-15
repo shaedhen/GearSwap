@@ -10,7 +10,7 @@ function user_job_setup()
 	state.PhysicalDefenseMode:options('PDT')
 	state.MagicalDefenseMode:options('MDT')
 	state.ResistDefenseMode:options('MEVA')
-	state.Weapons:options('Kikoku','Gokotai','Tauret','Naegling','Hachimonji','Kunimitsu')
+	state.Weapons:options('None','Shun','TenHybrid','Metsu','Ku','Naegling','Hachimonji','Ei','Tauret')
 
 	----NIN
 	--Hachiya
@@ -128,238 +128,406 @@ function init_gear_sets()
         back=gear.wsd_jse_back,
 	}
 	
-	sets.precast.WS['Blade: Metsu'] = 
-	{
-		ammo="Voluspa Tathlum",
-		neck	=	"Rep. Plat. Medal",
-		ear1="Mache Earring +1",
-		ear2="Lugra Earring +1",
-		head={ name="Nyame Helm", augments={'Path: B',}},
-		body={ name="Nyame Mail", augments={'Path: B',}},
-		hands={ name="Nyame Gauntlets", augments={'Path: B',}},
-		legs={ name="Nyame Flanchard", augments={'Path: B',}},
-		feet={ name="Nyame Sollerets", augments={'Path: B',}},	
-		ring1	=	"Ilabrat Ring",
-		ring2="Apate Ring",
-		back="Sacro Mantle",
-		waist="Sailfi Belt +1",
-	}
-	
-	sets.precast.WS['Blade: Metsu'].Capped = 
-	{
-		ammo="Crepuscular Tathlum",
+	sets.precast.WS['Blade: Metsu'] = {
+		ammo	=	"Coiste Bodhar",
+		head	=	"Nyame Helm",
 		neck	=	"Ninja Nodowa +1",
-		ear1="Lugra Earring +1",
-		ear2=" Hattori Earring +1",
-		head={ name="Nyame Helm", augments={'Path: B',}},
-		body={ name="Nyame Mail", augments={'Path: B',}},
-		hands={ name="Nyame Gauntlets", augments={'Path: B',}},
-		legs={ name="Nyame Flanchard", augments={'Path: B',}},
-		feet={ name="Nyame Sollerets", augments={'Path: B',}},	
-		ring1	=	"Ilabrat Ring",
-		ring2="Regal Ring",
-		back="Sacro Mantle",
-		waist="Sailfi Belt +1",
+		ear1	=	"Lugra Earring +1",
+		ear2	=	"Odr Earring",
+		body	=	"Nyame Mail",
+		hands	=	"Nyame Gauntlets",
+		ring1	=	"Gere Ring",
+		ring2	=	"Regal Ring",
+		back	=	gear.wsd_jse_back ,
+		waist	=	"Sailfi Belt +1",
+		legs	=	"Nyame Flanchard",
+		feet	=	"Nyame Sollerets"
 	}
 	
-	sets.precast.WS['Blade: Hi'] = 
-	{
-		ammo="Yetshila +1",
-		head="Blistering Sallet +1",
-        neck	=	"Fotia Gorget",
-		ear1="Odr Earring",
-    ear2="Ishvara Earring",
-    body="Nyame Mail",
-    hands="Nyame Gauntlets",
-        ring1	=	"Epaminondas's Ring",
-    ring2="Begrudging Ring",
-    back=gear.da_jse_back,
-    waist="Sailfi Belt +1",
-    legs="Nyame Flanchard",
-    feet="Nyame Sollerets"
+	sets.precast.WS['Blade: Metsu'].Capped = {
+		ammo	=	"Crepuscular Pebble",
+		head	=	gear.NIN_AF_Head,
+		neck	=	"Ninja Nodowa +1",
+		ear1	=	"Lugra Earring +1",
+		ear2	=	"Hattori Earring +1",
+		body	=	"Nyame Mail",
+		hands	=	"Nyame Gauntlets",
+		ring1	=	"Regal Ring",
+		ring2	=	"Epaminondas's Ring",
+		back	=	gear.wsd_jse_back ,
+		waist	=	"Kentarch Belt +1",
+		legs	=	"Mpaca's Hose",
+		feet	=	"Nyame Sollerets"
 	}
 	
-		    sets.precast.WS['Blade: Ei'] = 
-	{
-    ammo="Seeth. Bomblet +1",
-     head="Pixie Hairpin +1",
-    neck="Sibyl Scarf",
-    ear1="Moonshade Earring",
-    ear2="Friomisi Earring",
-    body="Nyame Mail",
-    hands="Nyame Gauntlets",
-     ring1	=	"Epaminondas's Ring",
-    ring2="Archon Ring",
-    back="Andartia's Mantle",
-    waist="Eschan Stone",
-    legs="Nyame Flanchard",
-    feet="Nyame Sollerets"
+	sets.precast.WS['Blade: Hi'] = {
+		ammo	=	"Yetshila +1",
+		head	=	gear.NIN_AF_Head,
+		neck	=	"Ninja Nodowa +1",
+		ear1	=	"Lugra Earring +1",
+		ear2	=	"Odr Earring",
+		body	=	gear.NIN_EMPY_Body,
+		hands	=	"Nyame Gauntlets",
+		ring1	=	"Gere Ring",
+		ring2	=	"Regal Ring",
+		back	=	gear.wsd_jse_back ,
+		waist	=	"Kentarch Belt +1",
+		legs	=	"Nyame Flanchard",
+		feet	=	"Nyame Sollerets"
 	}
 	
-	sets["Blade: Chi"] = {
-    ammo="Seeth. Bomblet +1",
-    head="Mochi. Hatsuburi +3",
-    neck="Fotia Gorget",
-    ear1="Moonshade Earring",
-    ear2="Lugra Earring +1",
-    body="Nyame Mail",
-    hands="Nyame Gauntlets",
-    ring1="Gere Ring",
-    ring2="Epaminondas's Ring",
-    back=gear.mab_jse_back,
-    waist="Orpheus's Sash",
-    legs="Nyame Flanchard",
-    feet="Nyame Sollerets"
-}
-
-	sets["Blade: Teki"] = {
-    ammo="Seeth. Bomblet +1",
-    head="Mochi. Hatsuburi +3",
-    neck="Fotia Gorget",
-    ear1="Moonshade Earring",
-    ear2="Lugra Earring +1",
-    body="Nyame Mail",
-    hands="Nyame Gauntlets",
-    ring1="Gere Ring",
-    ring2="Epaminondas's Ring",
-    back=gear.mab_jse_back,
-    waist="Orpheus's Sash",
-    legs="Nyame Flanchard",
-    feet="Nyame Sollerets"
-}
-
-	sets["Blade: To"] = {
-    ammo="Seeth. Bomblet +1",
-    head="Mochi. Hatsuburi +3",
-    neck="Fotia Gorget",
-    ear1="Moonshade Earring",
-    ear2="Lugra Earring +1",
-    body="Nyame Mail",
-    hands="Nyame Gauntlets",
-    ring1="Gere Ring",
-    ring2="Epaminondas's Ring",
-    back=gear.mab_jse_back,
-    waist="Orpheus's Sash",
-    legs="Nyame Flanchard",
-    feet="Nyame Sollerets"
-}
-	
-	sets.precast.WS['Blade: Ku'] = 
-	{
-    ammo="Coiste Bodhar",
-     head="Mpaca's Cap",
-    neck="Fotia Gorget",
-	ear1="Mache Earring +1",
-	ear2="Lugra Earring +1",
-    body="Mpaca's Doublet",
-    hands="Nyame Gauntlets",
-    ring1=	"Ilabrat Ring",
-    ring2="Regal Ring",
-    back=gear.da_jse_back,
-    waist="Fotia Belt",
-    legs="Nyame Flanchard",
-    feet="Nyame Sollerets"
+	sets.precast.WS['Blade: Hi'].Capped = {
+		ammo	=	"Yetshila +1",
+		head	=	gear.NIN_AF_Head,
+		neck	=	"Ninja Nodowa +1",
+		ear1	=	"Odr Earring",
+		ear2	=	"Hattori Earring +1",
+		body	=	"Nyame Mail",
+		hands	=	"Nyame Gauntlets",
+		ring1	=	"Sroda Ring",
+		ring2	=	"Epaminondas's Ring",
+		back	=	gear.wsd_jse_back ,
+		waist	=	"Kentarch Belt +1",
+		legs	=	"Mpaca's Hose",
+		feet	=	"Nyame Sollerets"
 	}
 	
-	sets.precast.WS['Blade: Shun'] = 
-	{
-    ammo=" Crepuscular Pebble ",
-	head="Mpaca's Cap",
-    neck="Fotia Gorget",
-    ear1="Moonshade Earring",
-    ear2=" Hattori Earring +1",
-    body="Adhemar Jacket +1",
-    hands="Nyame Gauntlets",
-       ring1	=	"Epaminondas's Ring",
-		ring2	=	"Rufescent Ring",
-    back=gear.da_jse_back ,
-    waist="Fotia Belt",
-    legs="Nyame Flanchard",
-    feet="Mpaca's Boots"
+	sets.precast.WS['Blade: Ei'] = {
+		ammo	=	"Seeth. Bomblet +1",
+		head	=	"Pixie Hairpin +1",
+		neck	=	"Sibyl Scarf",
+		ear1	=	"Moonshade Earring",
+		ear2	=	"Friomisi Earring",
+		body	=	"Nyame Mail",
+		hands	=	"Nyame Gauntlets",
+		ring1	=	"Epaminondas's Ring",
+		ring2	=	"Archon Ring",
+		back	=	"Andartia's Mantle",
+		waist	=	"Eschan Stone",
+		legs	=	"Nyame Flanchard",
+		feet	=	"Nyame Sollerets"
 	}
 	
-	sets.precast.WS['Tachi: Kasha'] = 
-	{
-		ammo="Seeth. Bomblet +1",
+	sets.precast.WS["Blade: Chi"] = {
+		ammo	=	"Seeth. Bomblet +1",
+		head	=	gear.NIN_RELIC_Head,
 		neck	=	"Fotia Gorget",
-		ear1="Moonshade Earring",
-		ear2="Friomisi Earring",
-		head={ name="Nyame Helm", augments={'Path: B',}},
-		body={ name="Nyame Mail", augments={'Path: B',}},
-		hands={ name="Nyame Gauntlets", augments={'Path: B',}},
-		legs={ name="Nyame Flanchard", augments={'Path: B',}},
-		feet={ name="Nyame Sollerets", augments={'Path: B',}},	
-		ring1	=	"Shukuyu Ring",
-		ring2="Regal Ring",
-		back="Sacro Mantle",
-		waist="Sailfi Belt +1",
+		ear1	=	"Moonshade Earring",
+		ear2	=	"Lugra Earring +1",
+		body	=	"Nyame Mail",
+		hands	=	"Nyame Gauntlets",
+		ring1	=	"Gere Ring",
+		ring2	=	"Epaminondas's Ring",
+		back	=	gear.wsd_jse_back,
+		waist	=	"Orpheus's Sash",
+		legs	=	"Nyame Flanchard",
+		feet	=	"Nyame Sollerets"
 	}
 	
-	sets.precast.WS['Tachi: Koki'] = 
-	{
-		ammo="Seeth. Bomblet +1",
+	sets.precast.WS["Blade: Teki"] = {
+		ammo	=	"Seeth. Bomblet +1",
+		head	=	gear.NIN_RELIC_Head,
 		neck	=	"Fotia Gorget",
-		ear1="Moonshade Earring",
-		ear2="Friomisi Earring",
-		head={ name="Nyame Helm", augments={'Path: B',}},
-		body={ name="Nyame Mail", augments={'Path: B',}},
-		hands={ name="Nyame Gauntlets", augments={'Path: B',}},
-		legs={ name="Nyame Flanchard", augments={'Path: B',}},
-		feet={ name="Nyame Sollerets", augments={'Path: B',}},	
-		ring1	=	"Shukuyu Ring",
-		ring2="Regal Ring",
-		back="Sacro Mantle",
-		waist="Sailfi Belt +1",
+		ear1	=	"Moonshade Earring",
+		ear2	=	"Lugra Earring +1",
+		body	=	"Nyame Mail",
+		hands	=	"Nyame Gauntlets",
+		ring1	=	"Gere Ring",
+		ring2	=	"Epaminondas's Ring",
+		back	=	gear.wsd_jse_back,
+		waist	=	"Orpheus's Sash",
+		legs	=	"Nyame Flanchard",
+		feet	=	"Nyame Sollerets"
+	}
+	
+	sets.precast.WS["Blade: To"] = {
+		ammo	=	"Seeth. Bomblet +1",
+		head	=	gear.NIN_RELIC_Head,
+		neck	=	"Fotia Gorget",
+		ear1	=	"Moonshade Earring",
+		ear2	=	"Lugra Earring +1",
+		body	=	"Nyame Mail",
+		hands	=	"Nyame Gauntlets",
+		ring1	=	"Gere Ring",
+		ring2	=	"Epaminondas's Ring",
+		back	=	gear.wsd_jse_back,
+		waist	=	"Orpheus's Sash",
+		legs	=	"Nyame Flanchard",
+		feet	=	"Nyame Sollerets"
+	}
+
+	
+	sets.precast.WS['Blade: Ku'] = {
+		ammo	=	"Coiste Bodhar",
+		head	=	"Mpaca's Cap",
+		neck	=	"Fotia Gorget",
+		ear1	=	"Lugra Earring +1",
+		ear2	=	"Brutal Earring",
+		body	=	"Nyame Mail",
+		hands	=	gear.NIN_Relic_Hands,
+		ring1	=	"Gere Ring",
+		ring2	=	"Regal Ring",
+		back	=	gear.da_jse_back ,
+		waist	=	"Fotia Belt",
+		legs	=	"Nyame Flanchard",
+		feet	=	"Nyame Sollerets"
+	}
+	
+	sets.precast.WS['Blade: Ku'].Capped = {
+		ammo	=	"Coiste Bodhar",
+		head	=	"Mpaca's Cap",
+		neck	=	"Ninja Nodowa +1",
+		ear1	=	"Lugra Earring +1",
+		ear2	=	"Hattori Earring +1",
+		body	=	"Nyame Mail",
+		hands	=	"Malignance Gloves",
+		ring1	=	"Gere Ring",
+		ring2	=	"Sroda Ring",
+		back	=	gear.da_jse_back ,
+		waist	=	"Fotia Belt",
+		legs	=	"Mpaca's Hose",
+		feet	=	"Nyame Sollerets"
+	}
+	
+	sets.precast.WS['Blade: Shun'] = {
+		ammo	=	"Coiste Bodhar",
+		head	=	"Mpaca's Cap",
+		neck	=	"Fotia Gorget",
+		ear1	=	"Moonshade Earring",
+		ear2	=	"Hattori Earring +1",
+		body	=	"Malignance Tabard",
+		hands	=	"Adhemar Wrist. +1",
+		ring1	=	"Gere Ring",
+		ring2	=	"Regal Ring",
+		back	=	gear.da_jse_back ,
+		waist	=	"Fotia Belt",
+		legs	=	"Mpaca's Hose",
+		feet	=	"Nyame Sollerets"
+	}
+	
+	sets.precast.WS['Blade: Shun'].Capped = {
+		ammo	=	"Crepuscular Pebble",
+		head	=	"Ken. Jinpachi +1",
+		neck	=	"Ninja Nodowa +1",
+		ear1	=	"Lugra Earring +1",
+		ear2	=	"Hattori Earring +1",
+		body	=	"Malignance Tabard",
+		hands	=	"Malignance Gloves",
+		ring1	=	"Gere Ring",
+		ring2	=	"Regal Ring",
+		back	=	gear.da_jse_back ,
+		waist	=	"Fotia Belt",
+		legs	=	"Mpaca's Hose",
+		feet	=	"Nyame Sollerets"
+	}
+	
+	sets.precast.WS['Blade: Ten'] = {
+		ammo	=	"Coiste Bodhar",
+		head	=	"Mpaca's Cap",
+		neck	=	"Rep. Plat. Medal",
+		ear1	=	"Moonshade Earring",
+		ear2	=	"Lugra Earring +1",
+		body	=	"Nyame Mail",
+		hands	=	"Nyame Gauntlets",
+		ring1	=	"Gere Ring",
+		ring2	=	"Regal Ring",
+		back	=	gear.wsd_jse_back ,
+		waist	=	"Sailfi Belt +1",
+		legs	=	"Nyame Flanchard",
+		feet	=	"Nyame Sollerets"
+	}
+	
+	sets.precast.WS['Blade: Ten'].Capped = {
+		ammo	=	"Crepuscular Pebble",
+		head	=	"Mpaca's Cap",
+		neck	=	"Rep. Plat. Medal",
+		ear1	=	"Moonshade Earring",
+		ear2	=	"Lugra Earring +1",
+		body	=	"Nyame Mail",
+		hands	=	"Nyame Gauntlets",
+		ring1	=	"Sroda Ring",
+		ring2	=	"Epaminondas's Ring",
+		back	=	gear.wsd_jse_back ,
+		waist	=	"Sailfi Belt +1",
+		legs	=	"Nyame Flanchard",
+		feet	=	"Nyame Sollerets"
+	}
+	
+	sets.precast.WS['Blade: Kamu'] = {
+		ammo	=	"Crepuscular Pebble",
+		head	=	"Mpaca's Cap",
+		neck	=	"Ninja Nodowa +1",
+		ear1	=	"Lugra Earring +1",
+		ear2	=	"Hattori Earring +1",
+		body	=	"Nyame Mail",
+		hands	=	"Nyame Gauntlets",
+		ring1	=	"Sroda Ring",
+		ring2	=	"Gere Ring",
+		back	=	gear.wsd_jse_back ,
+		waist	=	"Sailfi Belt +1",
+		legs	=	"Mpaca's Hose",
+		feet	=	"Nyame Sollerets"
+	}
+	
+	sets.precast.WS['Blade: Kamu'].Capped = {
+		ammo	=	"Crepuscular Pebble",
+		head	=	"Mpaca's Cap",
+		neck	=	"Ninja Nodowa +1",
+		ear1	=	"Lugra Earring +1",
+		ear2	=	"Hattori Earring +1",
+		body	=	"Nyame Mail",
+		hands	=	"Nyame Gauntlets",
+		ring1	=	"Sroda Ring",
+		ring2	=	"Gere Ring",
+		back	=	gear.wsd_jse_back ,
+		waist	=	"Sailfi Belt +1",
+		legs	=	"Mpaca's Hose",
+		feet	=	"Nyame Sollerets"
+	}
+	
+	sets.precast.WS['Tachi: Kasha'] = {
+		ammo	=	"Crepuscular Pebble",
+		neck	=	"Ninja Nodowa +1",
+		ear1	=	"Moonshade Earring",
+		ear2	=	"Lugra Earring +1",
+		head	=	"Mpaca's Cap",
+		body	=	{ name="Nyame Mail", augments={'Path: B',}},
+		hands	=	{ name="Nyame Gauntlets", augments={'Path: B',}},
+		legs	=	"Mpaca's Hose",
+		feet	=	{ name="Nyame Sollerets", augments={'Path: B',}},	
+		ring1	=	"Gere Ring",
+		ring2	=	"Epaminondas's Ring",
+		back	=	gear.wsd_jse_back ,
+		waist	=	"Sailfi Belt +1",
+	}
+	
+	sets.precast.WS['Tachi: Koki'] = {
+		ammo	=	"Seeth. Bomblet +1",
+		neck	=	"Fotia Gorget",
+		ear1	=	"Moonshade Earring",
+		ear2	=	"Friomisi Earring",
+		head	=	{ name="Nyame Helm", augments={'Path: B',}},
+		body	=	{ name="Nyame Mail", augments={'Path: B',}},
+		hands	=	{ name="Nyame Gauntlets", augments={'Path: B',}},
+		legs	=	{ name="Nyame Flanchard", augments={'Path: B',}},
+		feet	=	{ name="Nyame Sollerets", augments={'Path: B',}},	
+		ring1	=	"Weatherspoon Ring",
+		ring2	=	"Epaminondas's Ring",
+		back	=	gear.wsd_jse_back ,
+		waist	=	"Orpheus's Sash",
+	}
+	
+	sets.precast.WS['Tachi: Kagero'] = {
+		ammo	=	"Seeth. Bomblet +1",
+		neck	=	"Fotia Gorget",
+		ear1	=	"Moonshade Earring",
+		ear2	=	"Friomisi Earring",
+		head	=	{ name="Nyame Helm", augments={'Path: B',}},
+		body	=	{ name="Nyame Mail", augments={'Path: B',}},
+		hands	=	{ name="Nyame Gauntlets", augments={'Path: B',}},
+		legs	=	{ name="Nyame Flanchard", augments={'Path: B',}},
+		feet	=	{ name="Nyame Sollerets", augments={'Path: B',}},	
+		ring1	=	"Gere Ring",
+		ring2	=	"Epaminondas's Ring",
+		back	=	gear.wsd_jse_back ,
+		waist	=	"Orpheus's Sash",
+	}
+
+	sets.precast.WS['Tachi: Jinpu'] = {
+		ammo	=	"Seeth. Bomblet +1",
+		neck	=	"Fotia Gorget",
+		ear1	=	"Moonshade Earring",
+		ear2	=	"Friomisi Earring",
+		head	=	{ name="Nyame Helm", augments={'Path: B',}},
+		body	=	{ name="Nyame Mail", augments={'Path: B',}},
+		hands	=	{ name="Nyame Gauntlets", augments={'Path: B',}},
+		legs	=	{ name="Nyame Flanchard", augments={'Path: B',}},
+		feet	=	{ name="Nyame Sollerets", augments={'Path: B',}},	
+		ring1	=	"Gere Ring",
+		ring2	=	"Epaminondas's Ring",
+		back	=	gear.wsd_jse_back ,
+		waist	=	"Orpheus's Sash",
+	}	
+
+	sets.precast.WS['Tachi: Goten'] = {
+		ammo	=	"Seeth. Bomblet +1",
+		neck	=	"Fotia Gorget",
+		ear1	=	"Moonshade Earring",
+		ear2	=	"Friomisi Earring",
+		head	=	{ name="Nyame Helm", augments={'Path: B',}},
+		body	=	{ name="Nyame Mail", augments={'Path: B',}},
+		hands	=	{ name="Nyame Gauntlets", augments={'Path: B',}},
+		legs	=	{ name="Nyame Flanchard", augments={'Path: B',}},
+		feet	=	{ name="Nyame Sollerets", augments={'Path: B',}},	
+		ring1	=	"Gere Ring",
+		ring2	=	"Epaminondas's Ring",
+		back	=	gear.wsd_jse_back ,
+		waist	=	"Orpheus's Sash",
 	}
 
 	sets.precast.WS['Savage Blade'] =  {
-		ammo="Coiste Bodhar",
-		head="Mpaca's Cap",
-		body={ name="Nyame Mail", augments={'Path: B',}},
-		hands={ name="Nyame Gauntlets", augments={'Path: B',}},
-		legs={ name="Nyame Flanchard", augments={'Path: B',}},
-		feet={ name="Nyame Sollerets", augments={'Path: B',}},	
+		ammo	=	"Coiste Bodhar",
+		head	=	"Mpaca's Cap",
+		body	=	{ name="Nyame Mail", augments={'Path: B',}},
+		hands	=	{ name="Nyame Gauntlets", augments={'Path: B',}},
+		legs	=	{ name="Nyame Flanchard", augments={'Path: B',}},
+		feet	=	{ name="Nyame Sollerets", augments={'Path: B',}},	
         neck	=	"Rep. Plat. Medal",
 		ear1	=	"Moonshade Earring",
 		ear2	=	"Lugra Earring +1",
-        ring1	=	"Epaminondas's Ring",
+        ring1	=	"Beithir Ring",
 		ring2	=	"Regal Ring",
 		waist	=	"Sailfi Belt +1",	
-        back=gear.wsd_jse_back,
+        back	=	gear.wsd_jse_back,
 	}
 	
-		sets.precast.WS['Savage Blade'].Capped =  {
-		ammo="Crepuscular Pebble",
-		head="Mpaca's Cap",
-		body={ name="Nyame Mail", augments={'Path: B',}},
-		hands={ name="Nyame Gauntlets", augments={'Path: B',}},
-		legs={ name="Nyame Flanchard", augments={'Path: B',}},
-		feet={ name="Nyame Sollerets", augments={'Path: B',}},	
+	sets.precast.WS['Savage Blade'].Capped =  {
+		ammo	=	"Crepuscular Pebble",
+		head	=	"Mpaca's Cap",
+		body	=	{ name="Nyame Mail", augments={'Path: B',}},
+		hands	=	{ name="Nyame Gauntlets", augments={'Path: B',}},
+		legs	=	{ name="Nyame Flanchard", augments={'Path: B',}},
+		feet	=	{ name="Nyame Sollerets", augments={'Path: B',}},	
         neck	=	"Ninja Nodowa +1",
 		ear1	=	"Moonshade Earring",
 		ear2	=	"Hattori Earring +1",
         ring1	=	"Epaminondas's Ring",
 		ring2	=	"Sroda Ring",
 		waist	=	"Sailfi Belt +1",	
-        back=gear.wsd_jse_back,
+        back	=	gear.wsd_jse_back,
 	}
 	
-		sets.precast.WS['Evisceration'] = 
-	{
-		ammo="Yetshila +1",
-		head="Blistering Sallet +1",
+	sets.precast.WS['Evisceration'] = {
+		ammo	=	"Yetshila +1",
+		head	=	"Blistering Sallet +1",
         neck	=	"Fotia Gorget",
-		ear1="Odr Earring",
-    ear2="Moonshade Earring",
-    body="Nyame Mail",
-    hands="Nyame Gauntlets",
-        ring1	=	"Epaminondas's Ring",
-    ring2="Begrudging Ring",
-    back=gear.da_jse_back,
-    waist="Sailfi Belt +1",
-    legs="Jokushu Haidate",
-    feet="Nyame Sollerets"
+		ear1	=	"Odr Earring",
+		ear2	=	"Lugra Earring +1",
+		body	=	gear.NIN_EMPY_Body,
+		hands	=	"Ryuo Tekko +1",
+        ring1	=	"Gere Ring",
+		ring2	=	"Regal Ring",
+		back	=	gear.da_jse_back,
+		waist	=	"Fotia Belt",
+		legs	=	"Mpaca's Hose",
+		feet	=	"Ken. Sune-Ate +1"
 	}
+	
+	sets.precast.WS['Evisceration'].Capped = {
+		ammo	=	"Yetshila +1",
+		head	=	"Blistering Sallet +1",
+        neck	=	"Fotia Gorget",
+		ear1	=	"Odr Earring",
+		ear2	=	"Lugra Earring +1",
+		body	=	gear.NIN_EMPY_Body,
+		hands	=	"Ryuo Tekko +1",
+        ring1	=	"Gere Ring",
+		ring2	=	"Regal Ring",
+		back	=	gear.da_jse_back,
+		waist	=	"Fotia Belt",
+		legs	=	"Mpaca's Hose",
+		feet	=	"Ken. Sune-Ate +1"
+	}	
 
 	-- Swap to these on Moonshade using WS if at 3000 TP
 	sets.MaxTP = {ear1="Lugra Earring",ear2="Lugra Earring +1",}
@@ -535,13 +703,15 @@ function init_gear_sets()
 	sets.Skillchain = {legs="Ryuo Hakama"}
 
 	-- Weapons sets
-	--'Kikoku','Gokotai','Tauret','Naegling','Hachimonji','Kunimitsu'
-	sets.weapons.Kikoku = {main="Kikoku",sub="Kunimitsu"}
-	sets.weapons.Gokotai = {main="Gokotai",sub="Gleti's Knife"}
-	sets.weapons.Tauret = {main="Tauret",sub="Gleti's Knife"}
+	--'Shun','TenHybrid','Metsu','Ku','Naegling','Hachimonji','Ei'
+	sets.weapons.Shun = {main="Heishi Shorinken",sub="Gleti's Knife"}
+	sets.weapons.TenHybrid = {main="Heishi Shorinken",sub="Kunimitsu"}
+	sets.weapons.Metsu = {main="Kikoku",sub="Kunimitsu"}
+	sets.weapons.Ku = {main="Gokotai",sub="Gleti's Knife"}
 	sets.weapons.Naegling = {main="Naegling",sub="Uzura +2"}
 	sets.weapons.Hachimonji = {main="Hachimonji",sub="Bloodrain Strap"}
-	sets.weapons.Kunimitsu = {main="Kunimitsu",sub="Gleti's Knife"}
+	sets.weapons.Ei = {main="Heishi Shorinken",sub="Malevolence"}
+	sets.weapons.Tauret = {main="Tauret",sub="Gleti's Knife"}
 end
 
 -- Select default macro book on initial load or subjob change.
