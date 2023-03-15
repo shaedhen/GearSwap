@@ -5,11 +5,11 @@ function user_job_setup()
 	state.HybridMode:options('Normal','DT')
     state.WeaponskillMode:options('Normal','Capped')
     state.CastingMode:options('Normal')
-    state.IdleMode:options('Normal','Sphere','PDT','DTHippo')
+    state.IdleMode:options('Normal','Sphere')
 	state.PhysicalDefenseMode:options('PDT')
 	state.MagicalDefenseMode:options('MDT')
 	state.ResistDefenseMode:options('MEVA')
-	state.Weapons:options('None','NaegCola','NaegThib','Tanma','MeleeClubs')
+	state.Weapons:options('None','SeqThib','NaegThib','Tanma','MeleeClubs')
 	gear.da_jse_back = {name="Rosmerta's Cape",augments={'DEX+20','Accuracy+20 Attack+20','Accuracy+10','"Dbl.Atk."+10',}}
 	gear.stp_jse_back = {name="Rosmerta's Cape",augments={'DEX+20','Accuracy+20 Attack+20','"Store TP"+10',}}
 	gear.crit_jse_back = {name="Rosmerta's Cape",augments={'DEX+20','Accuracy+20 Attack+20','DEX+10','Crit.hit rate+10',}}
@@ -36,27 +36,6 @@ function user_job_setup()
     gear.BLU_EMPY_Legs		=	{ name="Hashishin Tayt +1"}
     gear.BLU_EMPY_Feet		=	{ name="Hashishin Basmak +1"}	
 
-	gear.obi_cure_waist = "Luminary Sash"
-	gear.obi_nuke_waist = "Eschan Stone"
-	gear.obi_cure_back = "Tempered Cape +1"
-
-	-- Additional local binds
---	send_command('bind ^` input /ja "Chain Affinity" <me>')
---	send_command('bind @` input /ja "Efflux" <me>')
---	send_command('bind !` input /ja "Burst Affinity" <me>')
---	send_command('bind ^@!` gs c cycle SkillchainMode')
---	send_command('bind ^backspace input /ja "Unbridled Learning" <me>;wait 1;input /ja "Diffusion" <me>;wait 2;input /ma "Mighty Guard" <me>')
---	send_command('bind !backspace input /ja "Unbridled Learning" <me>;wait 1;input /ja "Diffusion" <me>;wait 2;input /ma "Carcharian Verve" <me>')
---	send_command('bind @backspace input /ja "Convergence" <me>')
---	send_command('bind @f10 gs c toggle LearningMode')
---	send_command('bind ^@!` gs c cycle MagicBurstMode')
---	send_command('bind @f8 gs c toggle AutoNukeMode')
---	send_command('bind !@^f7 gs c toggle AutoWSMode')
---	send_command('bind !r gs c weapons None;gs c update')
---	send_command('bind @q gs c weapons MaccWeapons;gs c update')
---	send_command('bind ^q gs c weapons Almace;gs c update')
---	send_command('bind !q gs c weapons HybridWeapons;gs c update')
-
 	select_default_macro_book()
 end
 
@@ -73,10 +52,6 @@ function init_gear_sets()
 	sets.buff.Enchainment = {}
 	sets.buff.Efflux = {back=gear.da_jse_back,legs=gear.BLU_EMPY_Legs}
 	sets.buff.Doom = set_combine(sets.buff.Doom, {})
-
-	sets.HPDown = {head="Pixie Hairpin +1",neck="Loricate Torque +1",ear1="Mendicant's Earring",ear2="Evans Earring",
-		body="Jhakri Robe +2",hands="Jhakri Cuffs +2",ring1="Mephitas's Ring +1",ring2="Mephitas's Ring",
-		back="Swith Cape +1",waist="Flume Belt +1",legs="Shedir Seraweels",feet="Jhakri Pigaches +2"}
 
 	-- Precast Sets
 
@@ -135,8 +110,7 @@ function init_gear_sets()
 	sets.precast.WS = {
 		ammo	=	"Coiste Bodhar",
 		head={ name="Nyame Helm", augments={'Path: B',}},
-		body = "Gleti's Cuirass",
-	--	body={ name="Nyame Mail", augments={'Path: B',}},
+		body={ name="Nyame Mail", augments={'Path: B',}},
 		hands={ name="Nyame Gauntlets", augments={'Path: B',}},
 		legs={ name="Nyame Flanchard", augments={'Path: B',}},
 		feet={ name="Nyame Sollerets", augments={'Path: B',}},	
@@ -165,7 +139,134 @@ function init_gear_sets()
 		back	=	gear.wsd_jse_back,
 		waist	=	"Sailfi Belt +1"	
 	}
+	
+	sets.precast.WS['Savage Blade'] = {
+		ammo	=	"Coiste Bodhar",
+		head={ name="Nyame Helm", augments={'Path: B',}},
+		body={ name="Nyame Mail", augments={'Path: B',}},
+		hands={ name="Nyame Gauntlets", augments={'Path: B',}},
+		legs={ name="Nyame Flanchard", augments={'Path: B',}},
+		feet={ name="Nyame Sollerets", augments={'Path: B',}},	
+         neck	=	"Mirage Stole +1",
+		ear1	=	"Moonshade Earring",		
+        ear2	=	"Ishvara Earring",
+        ring1	=	"Epaminondas's Ring",		
+		ring2	=	"Beithir Ring",
+		back	=	gear.wsd_jse_back,
+		waist	=	"Sailfi Belt +1"	
+	}
 
+	sets.precast.WS['Savage Blade'].Capped = {
+		ammo	=	"Crepuscular Pebble",
+		head={ name="Nyame Helm", augments={'Path: B',}},
+		body = "Gleti's Cuirass",
+		hands={ name="Nyame Gauntlets", augments={'Path: B',}},
+		legs={ name="Nyame Flanchard", augments={'Path: B',}},
+		feet={ name="Nyame Sollerets", augments={'Path: B',}},	
+        neck	=	"Mirage Stole +1",
+		ear1	=	"Moonshade Earring",		
+        ear2	=	"Ishvara Earring",
+        ring1	=	"Epaminondas's Ring",		
+		ring2	=	"Sroda Ring",
+		back	=	gear.wsd_jse_back,
+		waist	=	"Sailfi Belt +1"	
+	}
+
+	sets.precast.WS['Expiacion'] = {
+		ammo	=	"Coiste Bodhar",
+		head={ name="Nyame Helm", augments={'Path: B',}},
+		body={ name="Nyame Mail", augments={'Path: B',}},
+		hands={ name="Nyame Gauntlets", augments={'Path: B',}},
+		legs={ name="Nyame Flanchard", augments={'Path: B',}},
+		feet={ name="Nyame Sollerets", augments={'Path: B',}},	
+        neck	=	"Mirage Stole +1",
+		ear1	=	"Moonshade Earring",		
+        ear2	=	"Ishvara Earring",
+        ring1	=	"Epaminondas's Ring",		
+		ring2	=	"Beithir Ring",
+		back	=	gear.wsd_jse_back,
+		waist	=	"Sailfi Belt +1"	
+	}
+
+	sets.precast.WS['Expiacion'].Capped = {
+		ammo	=	"Crepuscular Pebble",
+		head={ name="Nyame Helm", augments={'Path: B',}},
+		body = "Gleti's Cuirass",
+		hands={ name="Nyame Gauntlets", augments={'Path: B',}},
+		legs=	"Gleti's Breeches",
+		feet={ name="Nyame Sollerets", augments={'Path: B',}},	
+        neck	=	"Mirage Stole +1",
+		ear1	=	"Moonshade Earring",		
+        ear2	=	"Ishvara Earring",
+        ring1	=	"Epaminondas's Ring",		
+		ring2	=	"Sroda Ring",
+		back	=	gear.wsd_jse_back,
+		waist	=	"Sailfi Belt +1"	
+	}
+	
+	sets.precast.WS['Chant du Cygne'] = {
+		ammo	=	"Coiste Bodhar",
+		head	= 	"Adhemar Bonnet +1",
+		body	= 	"Gleti's Cuirass",
+		hands	=	"Adhemar Wrist. +1",
+		legs	=	"Gleti's Breeches",
+		feet	=	"Gleti's Boots",	
+        neck	=	"Mirage Stole +1",
+		ear1	=	"Mache Earring +1",		
+        ear2	=	"Odr Earring",
+        ring1	=	"Begrudging Ring",		
+		ring2	=	"Epona's Ring",
+		back	=	gear.crit_jse_back,
+		waist	=	"Fotia Belt"	
+	}
+
+	sets.precast.WS['Chant du Cygne'].Capped = {
+		ammo	=	"Coiste Bodhar",
+		head	= 	"Adhemar Bonnet +1",
+		body	= 	"Gleti's Cuirass",
+		hands	=	"Gleti's Gauntlets",
+		legs	=	"Gleti's Breeches",
+		feet	=	"Gleti's Boots",	
+        neck	=	"Mirage Stole +1",
+		ear1	=	"Mache Earring +1",		
+        ear2	=	"Odr Earring",
+        ring1	=	"Begrudging Ring",		
+		ring2	=	"Epona's Ring",
+		back	=	gear.crit_jse_back,
+		waist	=	"Fotia Belt"	
+	}
+
+	sets.precast.WS['Requiescat'] = {
+		ammo	=	"Coiste Bodhar",
+		head	=	"Nyame Helm",
+		body	=	"Nyame Mail", 
+		hands	=	"Nyame Gauntlets",
+		legs	=	"Nyame Flanchard", 
+		feet	=	"Nyame Sollerets",	
+        neck	=	"Fotia Gorget",
+		ear1	=	"Moonshade Earring",		
+        ear2	=	"Regal Earring",
+        ring1	=	"Metamorph Ring +1",		
+		ring2	=	"Rufescent Ring",
+		back	=	gear.wsd_jse_back,
+		waist	=	"Fotia Belt"	
+	}
+
+	sets.precast.WS['Requiescat'].Capped = {
+		ammo	=	"Crepuscular Pebble",
+		head	=	"Nyame Helm",
+		body 	= 	"Gleti's Cuirass",
+		hands	=	"Malignance Gloves",
+		legs	=	"Gleti's Breeches",
+		feet	=	"Nyame Sollerets",	
+        neck	=	"Fotia Gorget",
+		ear1	=	"Brutal Earring",		
+        ear2	=	"Regal Earring",
+        ring1	=	"Metamorph Ring +1",		
+		ring2	=	"Sroda Ring",
+		back	=	gear.wsd_jse_back,
+		waist	=	"Fotia Belt"	
+	}	
 
 	sets.precast.WS['Flash Nova'] = set_combine(sets.precast.WS,{ammo="Pemphredo Tathlum",
 			         neck="Baetyl Pendant",ear1="Regal Earring",ear2="Friomisi Earring",
@@ -291,13 +392,8 @@ function init_gear_sets()
 		body="Cohort Cloak +1",hands="Amalric Gages +1",ring1="Shiva Ring +1",ring2="Shiva Ring +1",
 		back=gear.nuke_jse_back,waist=gear.ElementalObi,legs="Hagondes Pants +1",feet="Jhakri Pigaches +2"}
 
-	sets.midcast['Elemental Magic'].Resistant = {main="Nibiru Cudgel",sub="Nibiru Cudgel",ammo="Pemphredo Tathlum",
-		head="Jhakri Coronal +2",neck="Mirage Stole +1",ear1="Regal Earring",ear2="Friomisi Earring",
-		body="Jhakri Robe +2",hands="Jhakri Cuffs +2",ring1="Shiva Ring +1",ring2="Shiva Ring +1",
-		back=gear.nuke_jse_back,waist="Yamabuki-no-Obi",legs="Jhakri Slops +2",feet="Jhakri Pigaches +2"}
 
 	sets.midcast.Helix = sets.midcast['Elemental Magic']
-	sets.midcast.Helix.Resistant = sets.midcast['Elemental Magic'].Resistant
 
 	sets.element.Dark = {head="Pixie Hairpin +1",ring2="Archon Ring"}
 	sets.element.Light = {} --ring2="Weatherspoon Ring"
@@ -419,7 +515,7 @@ function init_gear_sets()
 		head="Gleti's Mask",
 		neck="Loricate Torque +1",
 		ear1="Etiolation Earring", 
-		ear2="Ethereal Earring",
+		ear2="Genmei Earring",
 		body=gear.BLU_EMPY_Body,
 		hands="Gleti's Gauntlets",
 		ring1="Defending Ring",
@@ -465,7 +561,7 @@ function init_gear_sets()
 	sets.TreasureHunter = set_combine(sets.TreasureHunter, {})
 	
 	-- Weapons sets
-	sets.weapons.NaegCola = {main="Naegling",sub="Tanmogayi +1"}
+	sets.weapons.SeqThib = {main="Sequence",sub="Machaera +2"}
 	sets.weapons.NaegThib = {main="Naegling",sub="Machaera +2"}
 	sets.weapons.Tanma = {main="Tanmayongi +1",sub="Colada"}
 	sets.weapons.MeleeClubs = {main="Maxentius",sub="Bunzi's Rod"}
