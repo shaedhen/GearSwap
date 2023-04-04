@@ -1,8 +1,9 @@
 function user_job_setup()
 include('Shaedhen-Items.lua')
 	-- Options: Override default values
-    state.OffenseMode:options('Normal','Acc')
+    state.OffenseMode:options('Normal')
 	state.HybridMode:options('Normal','DT')
+	state.WeaponskillMode:options('Normal', 'Capped')
     state.CastingMode:options('Normal','Resistant','AoE','Enmity','LongBallad')
     state.IdleMode:options('Normal','DT')
 	state.WeaponsSongMode:options('Always','300','1000','Never')
@@ -137,35 +138,69 @@ function init_gear_sets()
     head="Blistering Sallet +1",
     neck="Fotia Gorget",
     ear1="Moonshade Earring",
-    ear2="Brutal Earring",
-    body="Ayanmo Corazza +2",
-    hands="Bunzi's Gloves",
-    ring1="Hetairoi Ring",
+    ear2="Mache Earring +1",
+    body=gear.BRD_RELIC_Body,
+    hands="Nyame Gauntlets",
+    ring1="Ilabrat Ring",
     ring2="Begrudging Ring",
     back=gear.BRD_WS1_Cape,
     waist="Fotia Belt",
-    legs="Zoar Subligar +1",
-    feet="Bihu Slippers +3"
-}
+    legs="Jokushu Haidate",
+    feet=gear.BRD_RELIC_Feet
+	}
+	
+	sets.precast.WS['Evisceration'].Capped = 
+	{
+    ammo="Crepuscular Pebble",
+    head="Blistering Sallet +1",
+    neck="Bard's Charm +1",
+    ear1="Mache Earring +1",
+    ear2="Mache Earring +1",
+    body="Bunzi's Robe",
+    hands="Nyame Gauntlets",
+    ring1="Ilabrat Ring",
+    ring2="Cacoethic Ring +1",
+    back=gear.BRD_WS1_Cape,
+    waist="Fotia Belt",
+    legs="Jokushu Haidate",
+    feet=gear.BRD_RELIC_Feet
+	}
 	
 		sets.precast.WS["Rudra's Storm"] = 
 	{
     range=gear.Linus_WS,
-    head="Lustratio Cap +1",
+    head="Nyame Helm",
     neck="Bard's Charm +1",
     ear1="Moonshade Earring",
-    ear2="Ishvara Earring",
+    ear2="Mache Earring +1",
     body="Bihu Justaucorps +3",
-    hands="Lustr. Mittens +1",
-    ring1="Apate Ring",
+    hands="Nyame Gauntlets",
+    ring1="Epaminondas's Ring",
     ring2="Ilabrat Ring",
     back=gear.BRD_WS1_Cape,
     waist="Kentarch Belt +1",
-    legs="Lustr. Subligar +1",
-    feet="Lustra. Leggings +1"
+    legs="Nyame Flanchard",
+    feet="Nyame Sollerets"
 }
+
+	sets.precast.WS["Rudra's Storm"].Capped = 
+	{
+    range=gear.Linus_WS,
+    head="Nyame Helm",
+    neck="Bard's Charm +1",
+    ear1="Moonshade Earring",
+    ear2="Mache Earring +1",
+    body="Bihu Justaucorps +3",
+    hands="Nyame Gauntlets",
+    ring1="Epaminondas's Ring",
+    ring2="Ilabrat Ring",
+    back=gear.BRD_WS1_Cape,
+    waist="Kentarch Belt +1",
+    legs="Nyame Flanchard",
+    feet="Nyame Sollerets"
+	}
 	
-		sets.precast.WS['Mordant Rime'] = 
+	sets.precast.WS['Mordant Rime'] = 
 	{
     range=gear.Linus_WS,
     neck="Bard's Charm +1",
@@ -180,7 +215,24 @@ function init_gear_sets()
     ring2="Epaminondas's Ring",
     back=gear.BRD_WS1_Cape,
     waist="Kentarch Belt +1",
-}
+	}
+	
+	sets.precast.WS['Mordant Rime'].Capped = 
+	{
+    range=gear.Linus_WS,
+    neck="Bard's Charm +1",
+    ear1="Regal Earring",
+    ear2="Ishvara Earring",
+    head={ name="Nyame Helm", augments={'Path: B',}},
+    body={ name="Bihu Justaucorps +3", augments={'Enhances "Troubadour" effect',}},
+    hands={ name="Nyame Gauntlets", augments={'Path: B',}},
+    legs={ name="Nyame Flanchard", augments={'Path: B',}},
+    feet={ name="Nyame Sollerets", augments={'Path: B',}},
+    ring1="Metamor. Ring +1",
+    ring2="Epaminondas's Ring",
+    back=gear.BRD_WS1_Cape,
+    waist="Kentarch Belt +1",
+	}
 	
 		sets.precast.WS['Exenterator'] = 
 	{
@@ -202,7 +254,7 @@ function init_gear_sets()
 		sets.precast.WS['Aeolian Edge'] = 
 	{
     range=gear.Linos_AE,
-		head="C. Palug Crown",
+	head="Nyame Helm",
     body="Nyame Mail",
     hands="Nyame Gauntlets",
     legs="Nyame Flanchard",
@@ -213,7 +265,7 @@ function init_gear_sets()
     ring1="Shiva Ring +1",
     ring2="Epaminondas's Ring",
     back=gear.BRD_WS1_Cape,
-    waist="Reffocilation Stone",
+    waist="Orpheus's Sash",
 }
 	
 	sets.precast.WS['Savage Blade'] = 
@@ -227,9 +279,26 @@ function init_gear_sets()
     neck="Republican Platinum Medal",
     waist={ name="Sailfi Belt +1", augments={'Path: A',}},
     left_ear="Ishvara Earring",
-    right_ear="Regal Earring",
+    right_ear="Moonshade Earring",
     left_ring="Epaminondas's Ring",
-    right_ring="Rufescent Ring",
+    right_ring="Sroda Ring",
+    back={ name="Intarabus's Cape", augments={'STR+20','Accuracy+20 Attack+20','Weapon skill damage +10%',}},
+}
+
+	sets.precast.WS['Savage Blade'].Capped = 
+	{
+    range=gear.Linus_WS,
+    head={ name="Nyame Helm", augments={'Path: B',}},
+    body="Nyame Mail",
+    hands={ name="Nyame Gauntlets", augments={'Path: B',}},
+    legs={ name="Nyame Flanchard", augments={'Path: B',}},
+    feet={ name="Nyame Sollerets", augments={'Path: B',}},
+    neck="Bard's Charm +1",
+    waist={ name="Sailfi Belt +1", augments={'Path: A',}},
+    left_ear="Ishvara Earring",
+    right_ear="Moonshade Earring",
+    left_ring="Epaminondas's Ring",
+    right_ring="Sroda Ring",
     back={ name="Intarabus's Cape", augments={'STR+20','Accuracy+20 Attack+20','Weapon skill damage +10%',}},
 }
 		
@@ -421,7 +490,7 @@ function init_gear_sets()
 	sets.idle = {        
 	ammo="Staunch Tathlum +1",
     head={ name="Nyame Helm", augments={'Path: B',}},
-    body={ name="Nyame Mail", augments={'Path: B',}},
+    body="Ashera Harness",
     hands={ name="Nyame Gauntlets", augments={'Path: B',}},
     legs={ name="Nyame Flanchard", augments={'Path: B',}},
     feet=gear.BRD_EMPY_Feet,
@@ -438,10 +507,10 @@ function init_gear_sets()
     sub="Sangoma",
 	ammo="Staunch Tathlum +1",
     head="Bunzi's Hat",
-    body="Bunzi's Robe",
+    body="Ashera Harness",
     hands="Bunzi's Gloves",
     legs="Bunzi's Pants",
-    feet="Fili Cothurnes +2",
+    feet=gear.BRD_EMPY_Feet,
     neck="Warder's Charm +1",
     waist="Carrier's Sash",
     left_ear="Etiolation Earring",
@@ -480,41 +549,7 @@ function init_gear_sets()
     right_ear="Odnowa Earring +1",
     left_ring="Defending Ring",
     right_ring="Paguroidea Ring",
-    back=gear.BRD_Idle_Cape,}
-	
-	-- Defense sets
-
-	sets.defense.PDT = {    main="Carnwenhan",
-    sub="Genmei Shield",
-    ammo="Staunch Tathlum +1",
-    head={ name="Nyame Helm", augments={'Path: B',}},
-    body={ name="Nyame Mail", augments={'Path: B',}},
-    hands={ name="Nyame Gauntlets", augments={'Path: B',}},
-    legs={ name="Nyame Flanchard", augments={'Path: B',}},
-    feet={ name="Nyame Sollerets", augments={'Path: B',}},
-    neck={ name="Loricate Torque +1", augments={'Path: A',}},
-    waist="Carrier's Sash",
-    left_ear="Etiolation Earring",
-    right_ear="Odnowa Earring +1",
-    left_ring="Defending Ring",
-    right_ring="Paguroidea Ring",
-    back="Moonbeam Cape",}
-
-	sets.defense.MDT = {    main="Carnwenhan",
-    sub="Genmei Shield",
-    ammo="Staunch Tathlum +1",
-    head={ name="Nyame Helm", augments={'Path: B',}},
-    body={ name="Nyame Mail", augments={'Path: B',}},
-    hands={ name="Nyame Gauntlets", augments={'Path: B',}},
-    legs={ name="Nyame Flanchard", augments={'Path: B',}},
-    feet={ name="Nyame Sollerets", augments={'Path: B',}},
-    neck={ name="Loricate Torque +1", augments={'Path: A',}},
-    waist="Carrier's Sash",
-    left_ear="Etiolation Earring",
-    right_ear="Odnowa Earring +1",
-    left_ring="Defending Ring",
-    right_ring="Paguroidea Ring",
-    back="Moonbeam Cape",}
+    back=gear.BRD_Idle_Cape,}	
 
 	sets.Kiting = {feet="Fili Cothurnes +3"}
 	sets.latent_refresh = {waist="Fucho-no-obi"}
@@ -529,25 +564,19 @@ function init_gear_sets()
 	-- EG: sets.engaged.Dagger.Accuracy.Evasion
 	
 	sets.engaged = {range=gear.Linos_TP,
-		head="Nyame Helm",neck="Bard's Charm +1",ear1="Telos Earring",ear2="Brutal Earring",
-		body="Nyame Mail",hands="Bunzi's gloves",ring1="Petrov Ring",ring2="Defending Ring",
+		head="Bunzi's Hat",neck="Bard's Charm +1",ear1="Telos Earring",ear2="Brutal Earring",
+		body="Ashera Harness",hands="Bunzi's gloves",ring1="Petrov Ring",ring2="Defending Ring",
 		back=gear.BRD_TP_Cape,waist="Sailfi Belt +1",legs="Nyame Flanchard",feet="Nyame Sollerets"}
-	sets.engaged.Acc = {range=gear.Linos_TP,
-		head="Blistering Sallet +1",neck="Bard's Charm +1",ear1="Digni. Earring",ear2="Telos Earring",
-		body="Ayanmo Corazza +2",hands="Bunzi's gloves",ring1="Ramuh Ring +1",ring2="Ilabrat Ring",
-		back=gear.BRD_TP_Cape,waist="Kentarch Belt +1",legs="Zoar Subligar +1",feet="Nyame Sollerets"}
+
 	sets.engaged.DW = {range=gear.Linos_TP,
 		head="Bunzi's Hat",neck="Bard's Charm +1",ear1="Telos Earring",ear2="Brutal Earring",
-		body="Agony Jerkin +1",hands="Bunzi's gloves",ring1="Petrov Ring",ring2="Chirich Ring +1",
+		body="Ashera Harness",hands="Bunzi's gloves",ring1="Petrov Ring",ring2="Chirich Ring +1",
 		back=gear.BRD_TP_Cape,waist="Windbuffet Belt +1",legs="Zoar Subligar +1",feet=gear.Chiro_Quad_feet}
 	sets.engaged.DW.DT = {range=gear.Linos_TP,
 		head="Bunzi's Hat",neck="Bard's Charm +1",ear1="Telos Earring",ear2="Brutal Earring",
-		body="Nyame Mail",hands="Bunzi's gloves",ring1="Defending Ring",ring2="Chirich Ring +1",
+		body="Ashera Harness",hands="Bunzi's gloves",ring1="Defending Ring",ring2="Chirich Ring +1",
 		back=gear.BRD_TP_Cape,waist="Windbuffet Belt +1",legs="Nyame Flanchard",feet="Nyame Sollerets"}
-	sets.engaged.DW.Acc = {range=gear.Linos_TP,
-		head="Aya. Zucchetto +2",neck="Bard's Charm +1",ear1="Suppanomimi",ear2="Telos Earring",
-		body="Ayanmo Corazza +2",hands="Bunzi's gloves",ring1="Chirich ring +1",ring2="Ilabrat Ring",
-		back=gear.BRD_TP_Cape,waist="Reiki Yotai",legs="Zoar Subligar +1",feet="Nyame Sollerets"}
+
 end
 
 -- Select default macro book on initial load or subjob change.
